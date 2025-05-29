@@ -1,0 +1,154 @@
+/* General Styles */
+body {
+    font-family: 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', sans-serif;
+    line-height: 1.7;
+    margin: 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    color: #333;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.manual-container {
+    max-width: 800px; /* A4-like width */
+    margin: 20px auto;
+    padding: 30px 40px;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+    border-radius: 8px;
+}
+
+header h1 {
+    text-align: center;
+    color: #2c3e50; /* Dark Blue */
+    margin-bottom: 30px;
+    font-size: 1.9em;
+    font-weight: 600;
+    border-bottom: 2px solid #3498db; /* Bright Blue */
+    padding-bottom: 15px;
+}
+
+section {
+    margin-bottom: 30px;
+}
+
+section h2 {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: #3498db; /* Bright Blue */
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+section h3 {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #34495e; /* Darker Blue/Gray */
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+p, ul {
+    margin-bottom: 15px;
+    font-size: 1em;
+}
+
+ul {
+    list-style-type: disc;
+    padding-left: 25px; /* Indent for lists */
+}
+
+ul ul { /* Nested lists */
+    list-style-type: circle;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+li {
+    margin-bottom: 8px;
+}
+
+strong {
+    color: #e74c3c; /* Red for emphasis on screen */
+    font-weight: 600;
+}
+
+footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #ced4da;
+    text-align: center;
+    font-size: 0.9em;
+    color: #6c757d; /* Gray */
+}
+
+/* Print-Specific Styles */
+@media print {
+    body {
+        background-color: #fff;
+        padding: 0;
+        margin: 0.75in; /* Standard print margin */
+        font-size: 11pt;
+        color: #000;
+    }
+
+    .manual-container {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    header h1 {
+        font-size: 18pt;
+        text-align: left;
+        border-bottom: 2px solid #000;
+        color: #000;
+        padding-bottom: 10px;
+    }
+
+    section h2 {
+        font-size: 14pt;
+        border-bottom: 1px solid #000;
+        color: #000;
+        page-break-after: avoid;
+    }
+
+    section h3 {
+        font-size: 12pt;
+        color: #000;
+        page-break-after: avoid;
+    }
+    
+    ul {
+        padding-left: 20px;
+    }
+
+    strong {
+        color: #000; /* Black for print */
+        font-weight: bold;
+    }
+
+    footer {
+        font-size: 9pt;
+        color: #000;
+        text-align: left;
+        border-top: 1px solid #000;
+        page-break-before: auto; /* Try to put footer on new page if it's alone */
+    }
+
+    section, p, ul, li {
+        page-break-inside: avoid;
+    }
+    
+    a { /* Ensure links are styled for print if any */
+        color: #000;
+        text-decoration: underline;
+    }
+}
