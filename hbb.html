@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>주요 바퀴벌레 종류별 특성 및 방역 솔루션 (방역 전문가 교육 자료)</title>
+    <title>주요 바퀴벌레 종류별 특성 및 방역 솔루션</title>
     <style>
         body {
             font-family: 'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', sans-serif;
@@ -110,7 +110,7 @@
             text-decoration: underline;
             color: #003875;
         }
-        .species-section {
+        .species-section, .general-section { /* Added .general-section */
             border-left: 5px solid #0056b3; /* More prominent left border */
             padding-left: 25px;
             margin-bottom: 35px;
@@ -118,7 +118,7 @@
             padding: 25px;
             border-radius: 0 8px 8px 0;
         }
-        .solution-method {
+        .solution-method, .trace-item { /* Added .trace-item */
             margin-bottom: 25px;
             padding: 18px;
             background-color: #f8f9fa; /* Consistent with body background for contrast */
@@ -135,7 +135,7 @@
         .collapsible-content.show {
             display: block;
         }
-        .note, .educational-emphasis { /* Added .educational-emphasis */
+        .note, .educational-emphasis {
             background-color: #e6f7ff; /* Light blue for notes */
             border-left: 4px solid #007bff; /* Bootstrap primary blue */
             padding: 18px;
@@ -169,12 +169,12 @@
     <div class="container">
         <h1>주요 바퀴벌레 종류별 특성 및 방역 솔루션<br>(방역 전문가 교육 자료)</h1>
 
-        <section id="common-principles-section">
-            <h2 data-toggle="collapse" data-target="#common-principles-content">제 1장: 공통 적용 기본 방역 원칙 (Integrate Pest Management)</h2>
+        <section id="common-principles-section" class="general-section">
+            <h2 data-toggle="collapse" data-target="#common-principles-content">제 1장: 공통 적용 기본 방역 원칙 (Integrated Pest Management)</h2>
             <div id="common-principles-content" class="collapsible-content">
                 <p class="educational-emphasis"><strong>IPM (Integrated Pest Management, 통합 해충 관리)</strong>은 효과적이고 지속 가능한 해충 관리를 위해 필수적인 접근법입니다. 단순 약제 처리를 넘어 환경적, 물리적, 화학적 요소를 종합적으로 고려해야 합니다.</p>
                 <ul>
-                    <li><strong>정확한 종 동정 (Species Identification):</strong> 방제의 첫 단계는 대상 해충을 정확히 식별하는 것입니다. 이는 해충의 생태, 습성, 서식처에 맞는 최적의 방제 전략을 수립하는 데 필수적입니다.</li>
+                    <li><strong>정확한 종 동정 (Species Identification):</strong> 방제의 첫 단계는 대상 해충을 정확히 식별하는 것입니다. 이는 해충의 생태, 습성, 서식처에 맞는 최적의 방제 전략을 수립하는 데 필수적입니다. (세부 종별 특징은 각 장 참조)</li>
                     <li><strong>서식처 및 먹이원 관리 (Habitat & Food Source Management):</strong>
                         <ul>
                             <li>음식물 잔여물, 유기물 쓰레기 등의 신속한 제거 및 밀폐 보관.</li>
@@ -199,13 +199,114 @@
             </div>
         </section>
 
+        <section id="trace-detection-section" class="general-section">
+            <h2 data-toggle="collapse" data-target="#trace-detection-content">제 2장: 바퀴벌레 서식 흔적 탐지 및 분석</h2>
+            <div id="trace-detection-content" class="collapsible-content">
+                <p class="educational-emphasis">바퀴벌레의 존재와 활동 수준을 파악하기 위해서는 직접적인 개체 확인 외에도 다양한 서식 흔적을 탐지하고 분석하는 능력이 중요합니다. 이는 정확한 진단과 효과적인 방제 계획 수립의 기초가 됩니다.</p>
+                
+                <div class="trace-item">
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-feces">2.1 분변 (Droppings / Feces)</h4>
+                    <div id="trace-feces" class="collapsible-content">
+                        <p>바퀴벌레의 분변은 종의 크기 및 식성에 따라 다르게 나타납니다.</p>
+                        <ul>
+                            <li><strong>소형종 (예: 독일바퀴):</strong>
+                                <ul>
+                                    <li>형태: 미세한 검은색 입자로, 후추 가루나 커피 가루와 유사합니다.</li>
+                                    <li>특징: 활동이 많은 구역이나 습도가 높은 곳에서는 번진 얼룩(smear) 형태로 나타나기도 합니다.</li>
+                                </ul>
+                            </li>
+                            <li><strong>대형종 (예: 미국바퀴, 먹바퀴, 일본바퀴):</strong>
+                                <ul>
+                                    <li>형태: 길이가 수 mm에 이르는 원통형의 단단한 펠릿 형태이며, 색상은 암갈색에서 검은색입니다.</li>
+                                    <li>특징: 종종 표면에 세로 방향의 능선(ridge)이 관찰될 수 있습니다. (쥐의 배설물은 일반적으로 끝이 뾰족하고 표면이 매끄러운 반면, 대형 바퀴벌레 분변은 끝이 뭉툭하거나 약간 각진 형태를 보일 수 있음 – 정확한 구별 필요)</li>
+                                </ul>
+                            </li>
+                            <li><strong>주요 발견 장소:</strong> 은신처 입구나 내부, 이동 경로, 벽 모서리, 선반 위, 서랍 내부, 가전제품의 하단부나 후면 등.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="trace-item">
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-oothecae">2.2 난협 (Oothecae / Egg Cases)</h4>
+                    <div id="trace-oothecae" class="collapsible-content">
+                        <p>난협은 바퀴벌레의 알이 들어있는 주머니로, 종에 따라 크기, 색상, 형태 및 부착 방식이 상이합니다.</p>
+                        <ul>
+                            <li><strong>독일바퀴:</strong> 연갈색, 약 6-9mm 길이. 암컷이 부화 직전까지 복부 말단에 부착하고 다니다가 안전한 곳에 떨어뜨림. 빈 난협은 은신처 주변에서 발견.</li>
+                            <li><strong>미국바퀴:</strong> 암적갈색에서 검은색, 약 8-10mm 길이. 암컷이 분비물로 표면에 단단히 고정시키므로 가구 뒷면, 상자 틈새 등에서 발견.</li>
+                            <li><strong>일본바퀴/먹바퀴:</strong> 암갈색에서 검은색, 미국바퀴와 유사하거나 약간 더 클 수 있음. 은폐된 장소에 부착.</li>
+                            <li><strong>주요 발견 장소:</strong> 균열 및 틈새, 가구 밑이나 후면, 가전제품 내부 또는 뒷면, 골판지 상자 내부, 천장과 벽의 모서리 등 사람의 접근이 어렵고 안전한 곳.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="trace-item">
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-exuviae">2.3 탈피각 (Exuviae / Shed Skins)</h4>
+                    <div id="trace-exuviae" class="collapsible-content">
+                        <p>바퀴벌레 약충(nymph)은 성장 과정에서 여러 번 탈피를 하며, 이때 벗어놓은 허물을 탈피각이라고 합니다.</p>
+                        <ul>
+                            <li><strong>형태:</strong> 바퀴벌레의 전체적인 모양을 유지하고 있으며, 비어있고 매우 가볍습니다. 색상은 연갈색에서 황갈색으로 반투명한 질감.</li>
+                            <li><strong>크기:</strong> 다양한 크기의 탈피각이 발견될 수 있으며, 이는 여러 성장 단계의 약충이 혼재하고 있음을 시사합니다.</li>
+                            <li><strong>주요 발견 장소:</strong> 주로 약충의 주된 서식처나 은신처 근처에서 다량으로 발견될 수 있습니다 (예: 싱크대 하부, 찬장 내부, 가구 틈새).</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="trace-item">
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-odor">2.4 특유의 냄새 (Characteristic Odor)</h4>
+                    <div id="trace-odor" class="collapsible-content">
+                        <p>바퀴벌레는 밀도가 높아지면 특유의 불쾌한 냄새를 발산합니다.</p>
+                        <ul>
+                            <li><strong>원인:</strong> 주로 집합페로몬(aggregation pheromones)을 포함한 분비물, 배설물, 사체 부패 등에서 기인합니다.</li>
+                            <li><strong>특징:</strong> 일반적으로 "기름에 쩐 냄새", "퀴퀴한 냄새", "곰팡이 냄새" 등으로 표현됩니다.</li>
+                            <li><strong>감지 조건:</strong> 통풍이 불량하고 밀폐된 공간, 또는 오염도가 높은 장소에서 더욱 강하게 느껴질 수 있습니다. 장기간 방치된 주방이나 창고 등에서 확인될 가능성이 높습니다.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="trace-item">
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-smears">2.5 얼룩 자국 (Smear Marks / Streaks)</h4>
+                    <div id="trace-smears" class="collapsible-content">
+                        <p>바퀴벌레가 이동하면서 남기는 어둡고 불규칙한 자국입니다.</p>
+                        <ul>
+                            <li><strong>형태:</strong> 주로 독일바퀴와 같이 소형종에서 뚜렷하게 나타나며, 이동 경로를 따라 형성되는 검은색 또는 암갈색의 줄무늬나 번진 얼룩 형태.</li>
+                            <li><strong>주요 발견 장소:</strong> 습도가 높거나 기름기가 많은 표면, 벽과 바닥이 만나는 모서리, 선반의 가장자리, 문틀 주변 등 바퀴벌레가 자주 기어 다니는 경로.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="trace-item">
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-damage">2.6 식흔 및 오염 (Feeding Marks & Contamination)</h4>
+                    <div id="trace-damage" class="collapsible-content">
+                        <p>바퀴벌레는 다양한 유기물을 섭식하며, 이 과정에서 식흔이나 오염을 유발할 수 있습니다.</p>
+                        <ul>
+                            <li><strong>피해 대상:</strong> 식품뿐만 아니라 전분질 물질(종이류, 책 표지, 벽지 접착제), 직물, 가죽 제품 등.</li>
+                            <li><strong>형태:</strong> 불규칙하게 갉아먹은 흔적, 표면 오염(배설물, 분비물), 구토물에 의한 얼룩 등. (설치류의 뚜렷한 갉은 자국과는 구별됨)</li>
+                            <li><strong>중요성:</strong> 직접적인 경제적 손실 외에도 식품 오염을 통한 병원균 전파 가능성을 시사.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="trace-item">
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-live">2.7 생존 개체 직접 관찰 (Observation of Live Specimens)</h4>
+                    <div id="trace-live" class="collapsible-content">
+                        <p>생존 개체의 직접 관찰은 가장 확실한 증거입니다.</p>
+                        <ul>
+                            <li><strong>주간 관찰의 의미:</strong> 바퀴벌레는 주로 야행성이므로, 주간에 활동하는 개체가 관찰된다면 이는 서식 밀도가 매우 높거나, 기존 서식지가 교란되었거나, 먹이 경쟁이 심화되었음을 강력히 시사합니다.</li>
+                            <li><strong>관찰 요령:</strong> 플래시라이트를 사용하여 어둡고 은폐된 장소(틈새, 균열, 가구 밑, 가전제품 주변 등)를 집중적으로 조사합니다. 특히 주방, 욕실, 창고, 보일러실 등 바퀴벌레가 선호하는 환경을 정밀 점검합니다.</li>
+                            <li><strong>종 동정:</strong> 관찰된 개체의 크기, 색상, 형태적 특징을 통해 정확한 종을 동정하는 것이 중요합니다.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <div class="species-section">
-            <h2 data-toggle="collapse" data-target="#german-cockroach-content">제 2장: 독일바퀴 (German Cockroach, <i>Blattella germanica</i>)</h2>
+            <h2 data-toggle="collapse" data-target="#german-cockroach-content">제 3장: 독일바퀴 (German Cockroach, <i>Blattella germanica</i>)</h2>
             <div id="german-cockroach-content" class="collapsible-content">
                 <div class="image-link-placeholder">
                     <p><strong>참고 이미지:</strong> <a href="https://www.google.com/search?q=%EB%8F%85%EC%9D%BC%EB%B0%94%ED%80%B4&tbm=isch" target="_blank" rel="noopener noreferrer">독일바퀴 이미지 검색 (Google Images)</a></p>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#german-features">2.1 생태 및 서식 특징</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#german-features">3.1 생태 및 서식 특징</h3>
                 <div id="german-features" class="collapsible-content">
                     <ul>
                         <li><strong>형태:</strong> 성충 크기 약 1.0~1.5cm, 황갈색. 전흉배판(앞가슴등판)에 평행한 두 줄의 짙은 줄무늬가 특징적.</li>
@@ -215,7 +316,7 @@
                     </ul>
                 </div>
 
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#german-solutions">2.2 방역 솔루션</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#german-solutions">3.2 방역 솔루션</h3>
                 <div id="german-solutions" class="collapsible-content">
                     <div class="solution-method">
                         <h4 class="collapsible-h4" data-toggle="collapse" data-target="#german-solution-1">식독제(먹이형 살충제, Gel Bait) 집중 적용</h4>
@@ -255,12 +356,12 @@
         </div>
 
         <div class="species-section">
-            <h2 data-toggle="collapse" data-target="#smokybrown-cockroach-content">제 3장: 먹바퀴 (Smokybrown Cockroach, <i>Periplaneta fuliginosa</i>)</h2>
+            <h2 data-toggle="collapse" data-target="#smokybrown-cockroach-content">제 4장: 먹바퀴 (Smokybrown Cockroach, <i>Periplaneta fuliginosa</i>)</h2>
             <div id="smokybrown-cockroach-content" class="collapsible-content">
                 <div class="image-link-placeholder">
                     <p><strong>참고 이미지:</strong> <a href="https://www.google.com/search?q=%EB%A8%B9%EB%B0%94%ED%80%B4&tbm=isch" target="_blank" rel="noopener noreferrer">먹바퀴 이미지 검색 (Google Images)</a></p>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#smokybrown-features">3.1 생태 및 서식 특징</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#smokybrown-features">4.1 생태 및 서식 특징</h3>
                 <div id="smokybrown-features" class="collapsible-content">
                     <ul>
                         <li><strong>형태:</strong> 성충 크기 약 2.5~3.5cm, 전체적으로 균일한 광택성 암갈색 또는 흑갈색.</li>
@@ -269,7 +370,7 @@
                     </ul>
                 </div>
 
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#smokybrown-solutions">3.2 방역 솔루션</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#smokybrown-solutions">4.2 방역 솔루션</h3>
                  <div id="smokybrown-solutions" class="collapsible-content">
                     <div class="solution-method">
                         <h4 class="collapsible-h4" data-toggle="collapse" data-target="#smokybrown-solution-1">외부 환경 관리 및 유입 경로 차단 강화</h4>
@@ -293,7 +394,7 @@
                     <div class="solution-method">
                         <h4 class="collapsible-h4" data-toggle="collapse" data-target="#smokybrown-solution-3">식독제(과립형 또는 대형바퀴용 겔) 활용</h4>
                         <div id="smokybrown-solution-3" class="collapsible-content">
-                             <p><strong>적용 원리:</strong> 내부 서식처 및 이동 경로에 설치하여 침입 개체 제거.</p>
+                             <p><strong>적용 원리:</strong> 내부 서식처나 이동 경로에 설치하여 침입 개체 제거.</p>
                              <p><strong>시공 방법:</strong> 다용도실 구석, 창고 선반 하부, 천장 점검구 주변 등 먹바퀴 출현 지점에 설치. 과립형은 습기에 강한 제품을, 겔 타입은 대형 바퀴용으로 개발된 제품을 고려.</p>
                         </div>
                     </div>
@@ -308,12 +409,12 @@
         </div>
 
         <div class="species-section">
-            <h2 data-toggle="collapse" data-target="#japanese-cockroach-content">제 4장: 일본바퀴 (Japanese Cockroach, <i>Periplaneta japonica</i>)</h2>
+            <h2 data-toggle="collapse" data-target="#japanese-cockroach-content">제 5장: 일본바퀴 (Japanese Cockroach, <i>Periplaneta japonica</i>)</h2>
             <div id="japanese-cockroach-content" class="collapsible-content">
                 <div class="image-link-placeholder">
                      <p><strong>참고 이미지:</strong> <a href="https://www.google.com/search?q=%EC%9D%BC%EB%B3%B8%EB%B0%94%ED%80%B4&tbm=isch" target="_blank" rel="noopener noreferrer">일본바퀴 이미지 검색 (Google Images)</a></p>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#japanese-features">4.1 생태 및 서식 특징</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#japanese-features">5.1 생태 및 서식 특징</h3>
                 <div id="japanese-features" class="collapsible-content">
                     <ul>
                         <li><strong>형태:</strong> 성충 크기 약 2.0~2.5cm, 전체적으로 흑갈색 또는 검은색. 먹바퀴와 유사하나 크기가 다소 작고 광택이 덜한 경향. (비전문가의 경우 먹바퀴와 혼동 용이)</li>
@@ -321,7 +422,7 @@
                         <li><strong>행동 특성:</strong> 야외 서식 성향이 강하나, 실내로 침입하여 정착하기도 함.</li>
                     </ul>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#japanese-solutions">4.2 방역 솔루션 (먹바퀴 방제 전략과 유사)</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#japanese-solutions">5.2 방역 솔루션 (먹바퀴 방제 전략과 유사)</h3>
                 <div id="japanese-solutions" class="collapsible-content">
                      <div class="solution-method">
                         <h4 class="collapsible-h4" data-toggle="collapse" data-target="#japanese-solution-1">외부 환경 관리 및 유입 경로 차단</h4>
@@ -352,12 +453,12 @@
         </div>
         
         <div class="species-section">
-            <h2 data-toggle="collapse" data-target="#american-cockroach-content">제 5장: 미국바퀴 (American Cockroach, <i>Periplaneta americana</i>)</h2>
+            <h2 data-toggle="collapse" data-target="#american-cockroach-content">제 6장: 미국바퀴 (American Cockroach, <i>Periplaneta americana</i>)</h2>
             <div id="american-cockroach-content" class="collapsible-content">
                 <div class="image-link-placeholder">
                     <p><strong>참고 이미지:</strong> <a href="https://www.google.com/search?q=%EB%AF%B8%EA%B5%AD%EB%B0%94%ED%80%B4&tbm=isch" target="_blank" rel="noopener noreferrer">미국바퀴 이미지 검색 (Google Images)</a></p>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#american-features">5.1 생태 및 서식 특징</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#american-features">6.1 생태 및 서식 특징</h3>
                 <div id="american-features" class="collapsible-content">
                     <ul>
                         <li><strong>형태:</strong> 성충 크기 약 3.0~5.0cm로 국내 서식 바퀴 중 대형종에 속함. 적갈색 또는 황갈색이며, 전흉배판에 테두리가 불분명한 황색 고리 무늬가 특징.</li>
@@ -365,7 +466,7 @@
                         <li><strong>행동 특성:</strong> 수명이 길고(1년 이상), 비행 가능. 집단으로 서식하며 이동성이 큼.</li>
                     </ul>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#american-solutions">5.2 방역 솔루션</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#american-solutions">6.2 방역 솔루션</h3>
                 <div id="american-solutions" class="collapsible-content">
                     <div class="solution-method">
                         <h4 class="collapsible-h4" data-toggle="collapse" data-target="#american-solution-1">서식처 중심 집중 방제 및 유입 경로 정밀 차단</h4>
@@ -412,12 +513,12 @@
         </div>
 
         <div class="species-section">
-            <h2 data-toggle="collapse" data-target="#outdoor-cockroach-content">제 6장: 산바퀴벌레 (Outdoor/Wood Cockroaches, 예: <i>Ectobius spp.</i> 등)</h2>
+            <h2 data-toggle="collapse" data-target="#outdoor-cockroach-content">제 7장: 산바퀴벌레 (Outdoor/Wood Cockroaches, 예: <i>Ectobius spp.</i> 등)</h2>
             <div id="outdoor-cockroach-content" class="collapsible-content">
                 <div class="image-link-placeholder">
                     <p><strong>참고 이미지:</strong> <a href="https://www.google.com/search?q=%EC%82%B0%EB%B0%94%ED%80%B4%EB%B2%8C%EB%A0%88+Ectobius&tbm=isch" target="_blank" rel="noopener noreferrer">산바퀴벌레 이미지 검색 (Google Images)</a></p>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#outdoor-features">6.1 생태 및 서식 특징</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#outdoor-features">7.1 생태 및 서식 특징</h3>
                 <div id="outdoor-features" class="collapsible-content">
                     <ul>
                         <li><strong>형태:</strong> 종에 따라 다양하나, 일반적으로 크기는 1.0~2.0cm 내외. 색상은 주로 연갈색, 황갈색, 짙은 갈색 등 다양하며, 일부 종은 특유의 무늬를 가짐.</li>
@@ -427,7 +528,7 @@
                     </ul>
                 </div>
 
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#outdoor-solutions">6.2 방역 솔루션</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#outdoor-solutions">7.2 방역 솔루션</h3>
                 <div id="outdoor-solutions" class="collapsible-content">
                     <div class="solution-method">
                         <h4 class="collapsible-h4" data-toggle="collapse" data-target="#outdoor-solution-1">유입 경로 차단 (Exclusion) 최우선 조치</h4>
@@ -483,8 +584,8 @@
         </div>
 
 
-        <section id="precautions-section">
-            <h2 data-toggle="collapse" data-target="#precautions-content">제 7장: 방역 작업 시 주의사항 및 추가 제언</h2>
+        <section id="precautions-section" class="general-section">
+            <h2 data-toggle="collapse" data-target="#precautions-content">제 8장: 방역 작업 시 주의사항 및 추가 제언</h2>
             <div id="precautions-content" class="collapsible-content">
                 <ul class="note">
                     <li><strong>안전 제일:</strong> 모든 살충제 사용 시, 제품 라벨에 명시된 사용 방법, 희석 비율, 주의사항을 철저히 준수해야 합니다. 개인보호장비(PPE: 마스크, 장갑, 보안경 등) 착용은 필수입니다.</li>
@@ -506,16 +607,15 @@
                 const targetId = collapsible.dataset.target;
                 const targetElement = document.querySelector(targetId);
                 
-                // Ensure targetElement exists before trying to manipulate its style
                 if (targetElement) {
-                    targetElement.style.display = 'none'; // All sections start collapsed
+                    targetElement.style.display = 'none'; 
                 } else {
-                    console.warn('Collapsible target not found:', targetId); // Warn if target is missing
+                    console.warn('Collapsible target not found:', targetId); 
                 }
 
                 collapsible.addEventListener('click', function () {
                     this.classList.toggle('active');
-                    const currentTargetId = this.dataset.target; // Use 'this' to get current element's target
+                    const currentTargetId = this.dataset.target; 
                     const currentTargetElement = document.querySelector(currentTargetId);
 
                     if (currentTargetElement) {
@@ -533,3 +633,4 @@
     </script>
 </body>
 </html>
+
