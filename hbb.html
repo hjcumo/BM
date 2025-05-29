@@ -3,196 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>주요 바퀴벌레 종류별 특성 및 방역 솔루션</title>
+    <title>바퀴벌레 방역 솔루션 📚</title>
     <style>
         body {
             font-family: 'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', sans-serif;
-            line-height: 1.8;
-            color: #212529; /* Bootstrap default text color for better contrast */
-            background-color: #f8f9fa;
+            line-height: 1.7; /* Slightly reduced for mobile better fit, can be adjusted in media query */
+            color: #212529;
+            background-color: #f0f2f5; /* Slightly different background */
             margin: 0;
-            padding: 20px;
+            padding: 10px; /* Base padding for mobile */
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
         }
         .container {
-            max-width: 960px; /* Increased max-width for better readability on larger screens */
-            margin: 20px auto;
+            max-width: 960px;
+            margin: 15px auto; /* Reduced margin for mobile first */
             background: #ffffff;
-            padding: 30px;
-            border-radius: 8px; /* Softer border radius */
-            box-shadow: 0 6px 18px rgba(0,0,0,0.07); /* More subtle shadow */
+            padding: 20px; /* Base padding */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
         h1 {
-            color: #1a3a5d; /* Darker, more professional blue */
+            color: #17304f; /* Slightly adjusted professional blue */
             text-align: center;
-            margin-bottom: 35px;
-            font-size: 2.2em; /* Slightly larger main title */
+            margin-bottom: 30px;
+            font-size: 2em;
             font-weight: 600;
+            line-height: 1.3;
         }
-        h2 {
-            color: #2c5079; /* Professional blue for section titles */
-            border-bottom: 2px solid #dee2e6; /* Standard Bootstrap border color */
-            padding-bottom: 12px;
-            margin-top: 45px;
-            margin-bottom: 25px;
-            font-size: 1.8em;
-            font-weight: 500;
+        h2, .collapsible-h3, .collapsible-h4 { /* Common style for clickable headers */
             cursor: pointer;
             position: relative;
             padding-right: 30px; /* Space for toggle icon */
+            transition: background-color 0.2s ease-in-out; /* Hover effect */
+        }
+        h2:hover, .collapsible-h3:hover, .collapsible-h4:hover {
+            background-color: #f8f9fa; /* Subtle hover background */
+        }
+        h2 {
+            color: #2a4a6d;
+            border-bottom: 2px solid #dde2e6;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.7em;
+            font-weight: 500;
         }
         h2::after, .collapsible-h3::after, .collapsible-h4::after {
-            content: '▼'; /* Collapsed state */
-            font-size: 0.75em; /* Adjusted icon size */
+            content: '▼';
+            font-size: 0.8em;
             font-weight: bold;
             position: absolute;
-            right: 5px;
+            right: 8px;
             top: 50%;
             transform: translateY(-50%);
-            transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
-            color: #4a7db1;
+            transition: transform 0.25s ease-in-out, color 0.25s ease-in-out;
+            color: #3a70a1;
         }
         h2.active::after, .collapsible-h3.active::after, .collapsible-h4.active::after {
-            content: '▲'; /* Expanded state */
-            color: #3a658f;
+            transform: translateY(-50%) rotate(180deg); /* Rotate for up arrow */
+            color: #2a5a8a;
         }
-        h3 {
-            color: #495057; /* Bootstrap secondary text color */
-            margin-top: 30px;
-            margin-bottom: 18px;
-            font-size: 1.45em; /* Adjusted size */
+        h3 { /* Non-collapsible h3, if any, would use this */
+            color: #42484f;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.4em;
             font-weight: 500;
         }
-        .collapsible-h3, .collapsible-h4 { /* For JS targeting and styling */
-            cursor: pointer;
-            position: relative;
-            padding-right: 25px; /* Space for toggle icon */
-        }
-        h4 {
-            color: #5a6268; /* Slightly darker than default h4 */
-            margin-top: 22px;
-            margin-bottom: 12px;
-            font-size: 1.25em; /* Adjusted size */
+        .collapsible-h3 { /* Specific styling for collapsible H3s */
+            color: #42484f;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.4em;
             font-weight: 500;
+            padding: 8px 30px 8px 5px; /* Padding for better tap area */
+            border-radius: 4px;
+        }
+        h4 { /* Non-collapsible h4 */
+            color: #52585e;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+         .collapsible-h4 { /* Specific styling for collapsible H4s */
+            color: #52585e;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            font-weight: 500;
+            padding: 6px 30px 6px 5px; /* Padding for better tap area */
+            border-radius: 4px;
         }
         ul, ol {
-            margin-bottom: 22px;
-            padding-left: 28px; /* Consistent padding */
+            margin-bottom: 20px;
+            padding-left: 25px;
         }
         li {
             margin-bottom: 10px;
+            line-height: 1.6;
         }
         p {
             margin-bottom: 15px;
-            text-align: justify; /* Justify text for professional documents */
+            text-align: left; /* Default to left, justify can be hard on mobile */
+            line-height: 1.7;
         }
         strong {
-            color: #343a40; /* Bootstrap default strong color */
-            font-weight: 600; /* Emphasize strong tags */
+            color: #2c3e50;
+            font-weight: 600;
         }
         .image-link-placeholder {
-            margin-bottom: 18px;
-            padding: 15px;
-            background-color: #e9ecef; /* Bootstrap muted background */
+            margin-bottom: 15px;
+            padding: 12px;
+            background-color: #eef2f5;
             border-radius: 5px;
-            border: 1px solid #ced4da; /* Bootstrap input border color */
+            border: 1px solid #d8dfe5;
         }
         .image-link-placeholder p {
             margin: 0;
-            font-size: 0.98em;
-            text-align: left; /* Align left for image links */
+            font-size: 0.95em;
         }
         a {
-            color: #0056b3; /* Darker blue for links for better accessibility */
+            color: #0066cc;
             text-decoration: none;
             font-weight: 500;
         }
         a:hover {
             text-decoration: underline;
-            color: #003875;
+            color: #004c99;
         }
-        .species-section, .general-section { /* Added .general-section */
-            border-left: 5px solid #0056b3; /* More prominent left border */
-            padding-left: 25px;
-            margin-bottom: 35px;
-            background-color: #fdfdfd; /* Slightly off-white for section background */
-            padding: 25px;
+        .species-section, .general-section {
+            border-left: 5px solid #0066cc;
+            padding: 20px 20px 20px 20px; /* Adjusted padding */
+            margin-bottom: 30px;
+            background-color: #ffffff; /* Ensure white background for sections */
             border-radius: 0 8px 8px 0;
         }
-        .solution-method, .trace-item { /* Added .trace-item */
-            margin-bottom: 25px;
-            padding: 18px;
-            background-color: #f8f9fa; /* Consistent with body background for contrast */
-            border: 1px solid #e9ecef;
+        .solution-method, .trace-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9fc;
+            border: 1px solid #eef2f5;
             border-radius: 6px;
         }
         .collapsible-content {
-            display: none; /* Initially hidden */
-            padding-left: 20px; /* Indent content */
-            border-left: 2px dashed #adb5bd; /* Softer dashed line */
-            margin-top: 12px;
-            padding-top: 10px; /* Space above content */
+            display: none;
+            padding-left: 15px;
+            border-left: 2px dashed #b8c2cc;
+            margin-top: 10px;
+            padding-top: 8px;
+            animation: fadeIn 0.5s; /* Fade in animation */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .collapsible-content.show {
             display: block;
         }
-        .note, .educational-emphasis {
-            background-color: #e6f7ff; /* Light blue for notes */
-            border-left: 4px solid #007bff; /* Bootstrap primary blue */
-            padding: 18px;
-            margin-top: 25px;
+        .note, .educational-emphasis, .pro-tip { /* Combined styles */
+            background-color: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin-top: 20px;
             border-radius: 4px;
-            font-size: 0.98em;
+            font-size: 0.95em;
         }
-        .educational-emphasis strong {
-            color: #004085; /* Darker blue for emphasis within note */
+        .educational-emphasis strong, .pro-tip strong {
+            color: #0056b3;
         }
-        .table-responsive {
-            overflow-x: auto; /* For potentially wide tables in future */
+        .emoji-bullet li::marker { /* For modern browsers, style list markers with emoji */
+            /* content: '🔹 '; Not widely supported, use inline emoji instead */
         }
-        table { /* Basic table styling for future use */
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+
+        /* Mobile Optimizations */
+        @media (min-width: 768px) { /* Apply justify for larger screens if desired */
+            p {
+                 /* text-align: justify; */ /* Keep left for consistency or enable for desktop */
+            }
+            .container {
+                padding: 30px;
+                margin: 20px auto;
+            }
+             h1 {
+                font-size: 2.2em;
+            }
+            h2 {
+                font-size: 1.8em;
+            }
+             .collapsible-h3, h3 {
+                font-size: 1.45em;
+            }
+            .collapsible-h4, h4 {
+                font-size: 1.25em;
+            }
         }
-        th, td {
-            border: 1px solid #dee2e6;
-            padding: 10px;
-            text-align: left;
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+                font-size: 14px; /* Slightly smaller base for very small screens */
+            }
+            .container {
+                padding: 15px;
+                margin: 10px auto;
+            }
+            h1 {
+                font-size: 1.7em;
+            }
+            h2 {
+                font-size: 1.45em;
+                padding-bottom: 8px;
+                margin-top: 30px;
+                margin-bottom: 15px;
+            }
+             .collapsible-h3, h3 {
+                font-size: 1.25em;
+                margin-top: 20px;
+                margin-bottom: 12px;
+            }
+            .collapsible-h4, h4 {
+                font-size: 1.1em;
+                 margin-top: 18px;
+                margin-bottom: 10px;
+            }
+            ul, ol {
+                padding-left: 20px;
+            }
+            .species-section, .general-section {
+                padding: 15px;
+                padding-left: 15px;
+            }
+            .solution-method, .trace-item {
+                padding: 12px;
+            }
         }
-        th {
-            background-color: #e9ecef;
-            font-weight: 600;
-        }
+
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>주요 바퀴벌레 종류별 특성 및 방역 솔루션<br>(방역 전문가 교육 자료)</h1>
+        <h1>바퀴벌레 완전 정복! 🐜<br>(방역 전문가 교육 자료 📚)</h1>
 
         <section id="common-principles-section" class="general-section">
-            <h2 data-toggle="collapse" data-target="#common-principles-content">제 1장: 공통 적용 기본 방역 원칙 (Integrated Pest Management)</h2>
+            <h2 data-toggle="collapse" data-target="#common-principles-content">📜 제 1장: 공통 적용 기본 방역 원칙 (IPM)</h2>
             <div id="common-principles-content" class="collapsible-content">
-                <p class="educational-emphasis"><strong>IPM (Integrated Pest Management, 통합 해충 관리)</strong>은 효과적이고 지속 가능한 해충 관리를 위해 필수적인 접근법입니다. 단순 약제 처리를 넘어 환경적, 물리적, 화학적 요소를 종합적으로 고려해야 합니다.</p>
+                <p class="educational-emphasis">💡 <strong>핵심원칙 IPM (Integrated Pest Management, 통합 해충 관리):</strong> 효과적이고 지속 가능한 해충 관리를 위한 필수 접근법입니다. 단순 약제 처리를 넘어 환경적, 물리적, 화학적 요소를 종합적으로 고려해야 합니다.</p>
                 <ul>
-                    <li><strong>정확한 종 동정 (Species Identification):</strong> 방제의 첫 단계는 대상 해충을 정확히 식별하는 것입니다. 이는 해충의 생태, 습성, 서식처에 맞는 최적의 방제 전략을 수립하는 데 필수적입니다. (세부 종별 특징은 각 장 참조)</li>
-                    <li><strong>서식처 및 먹이원 관리 (Habitat & Food Source Management):</strong>
+                    <li>✅ <strong>정확한 종 동정 (Species Identification):</strong> 방제의 첫 단계! 대상 해충을 정확히 식별해야 최적의 전략을 수립할 수 있습니다.</li>
+                    <li>🍽️ <strong>서식처 및 먹이원 관리 (Habitat & Food Source Management):</strong>
                         <ul>
-                            <li>음식물 잔여물, 유기물 쓰레기 등의 신속한 제거 및 밀폐 보관.</li>
-                            <li>주방 및 관련 구역의 유분, 오염물 정기적 세척.</li>
-                            <li>누수 지점 수리 및 습도 관리를 통한 수분 공급원 차단.</li>
+                            <li>🗑️ 음식물 잔여물, 유기물 쓰레기 등 신속 제거 및 밀폐 보관.</li>
+                            <li>🧼 주방 및 관련 구역의 유분, 오염물 정기적 세척.</li>
+                            <li>💧 누수 지점 수리 및 습도 관리를 통한 수분 공급원 차단.</li>
                         </ul>
                     </li>
-                    <li><strong>물리적 방제 (Physical Control) 및 유입 경로 차단 (Exclusion):</strong>
+                    <li>🧱 <strong>물리적 방제 (Physical Control) 및 유입 경로 차단 (Exclusion):</strong>
                         <ul>
-                            <li>건물 내외부 균열, 틈새, 배관 주변 등의 밀폐 처리 (실리콘, 퍼티 등 활용).</li>
-                            <li>창문, 출입문 방충 시설 점검 및 보수.</li>
-                            <li>하수구 및 배수시설 트랩 점검 및 보완.</li>
+                            <li>🛠️ 건물 내외부 균열, 틈새, 배관 주변 등 밀폐 처리 (실리콘, 퍼티 활용).</li>
+                            <li>🕸️ 창문, 출입문 방충 시설 점검 및 보수.</li>
+                            <li>🚿 하수구 및 배수시설 트랩 점검 및 보완.</li>
                         </ul>
                     </li>
-                    <li><strong>모니터링 트랩 설치 및 활용 (Monitoring & Trapping):</strong>
+                    <li>📊 <strong>모니터링 트랩 설치 및 활용 (Monitoring & Trapping):</strong>
                         <ul>
-                            <li>끈끈이 트랩 등을 활용하여 해충의 종류, 발생 위치, 밀도 변화 등을 지속적으로 모니터링합니다.</li>
-                            <li>모니터링 결과는 방제 계획 수립 및 효과 판정에 중요한 기초 자료로 활용됩니다.</li>
+                            <li>끈끈이 트랩 등을 활용하여 해충 종류, 발생 위치, 밀도 변화 등을 지속적으로 모니터링합니다.</li>
+                            <li>📈 모니터링 결과는 방제 계획 수립 및 효과 판정에 중요한 기초 자료!</li>
                         </ul>
                     </li>
                 </ul>
@@ -200,100 +276,100 @@
         </section>
 
         <section id="trace-detection-section" class="general-section">
-            <h2 data-toggle="collapse" data-target="#trace-detection-content">제 2장: 바퀴벌레 서식 흔적 탐지 및 분석</h2>
+            <h2 data-toggle="collapse" data-target="#trace-detection-content">🔍 제 2장: 바퀴벌레 서식 흔적 탐지 및 분석</h2>
             <div id="trace-detection-content" class="collapsible-content">
-                <p class="educational-emphasis">바퀴벌레의 존재와 활동 수준을 파악하기 위해서는 직접적인 개체 확인 외에도 다양한 서식 흔적을 탐지하고 분석하는 능력이 중요합니다. 이는 정확한 진단과 효과적인 방제 계획 수립의 기초가 됩니다.</p>
+                <p class="pro-tip">🕵️ <strong>탐정처럼 찾아라!</strong> 바퀴벌레의 존재와 활동 수준을 파악하려면 직접적인 개체 확인 외에도 다양한 서식 흔적을 탐지하고 분석하는 능력이 중요합니다. 이것이 바로 정확한 진단과 효과적인 방제 계획의 시작입니다.</p>
                 
                 <div class="trace-item">
-                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-feces">2.1 분변 (Droppings / Feces)</h4>
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-feces">2.1 ⚫ 분변 (Droppings / Feces)</h4>
                     <div id="trace-feces" class="collapsible-content">
                         <p>바퀴벌레의 분변은 종의 크기 및 식성에 따라 다르게 나타납니다.</p>
                         <ul>
                             <li><strong>소형종 (예: 독일바퀴):</strong>
                                 <ul>
-                                    <li>형태: 미세한 검은색 입자로, 후추 가루나 커피 가루와 유사합니다.</li>
-                                    <li>특징: 활동이 많은 구역이나 습도가 높은 곳에서는 번진 얼룩(smear) 형태로 나타나기도 합니다.</li>
+                                    <li>🌶️ 형태: 미세한 검은색 입자로, 후추 가루나 커피 가루와 유사.</li>
+                                    <li>💧 특징: 활동이 많은 구역이나 습도가 높은 곳에서는 번진 얼룩(smear) 형태로 나타나기도 함.</li>
                                 </ul>
                             </li>
                             <li><strong>대형종 (예: 미국바퀴, 먹바퀴, 일본바퀴):</strong>
                                 <ul>
-                                    <li>형태: 길이가 수 mm에 이르는 원통형의 단단한 펠릿 형태이며, 색상은 암갈색에서 검은색입니다.</li>
-                                    <li>특징: 종종 표면에 세로 방향의 능선(ridge)이 관찰될 수 있습니다. (쥐의 배설물은 일반적으로 끝이 뾰족하고 표면이 매끄러운 반면, 대형 바퀴벌레 분변은 끝이 뭉툭하거나 약간 각진 형태를 보일 수 있음 – 정확한 구별 필요)</li>
+                                    <li>📏 형태: 길이가 수 mm에 이르는 원통형의 단단한 펠릿 형태, 암갈색에서 검은색.</li>
+                                    <li>🧐 특징: 종종 표면에 세로 방향의 능선(ridge) 관찰 가능. (<strong>주의:</strong> 쥐 배설물과 구별 필요!)</li>
                                 </ul>
                             </li>
-                            <li><strong>주요 발견 장소:</strong> 은신처 입구나 내부, 이동 경로, 벽 모서리, 선반 위, 서랍 내부, 가전제품의 하단부나 후면 등.</li>
+                            <li><strong>📍 주요 발견 장소:</strong> 은신처 주변, 이동 경로, 벽 모서리, 선반 위, 서랍 내부, 가전제품 하단부나 후면 등.</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="trace-item">
-                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-oothecae">2.2 난협 (Oothecae / Egg Cases)</h4>
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-oothecae">2.2 🥚 난협 (Oothecae / Egg Cases)</h4>
                     <div id="trace-oothecae" class="collapsible-content">
-                        <p>난협은 바퀴벌레의 알이 들어있는 주머니로, 종에 따라 크기, 색상, 형태 및 부착 방식이 상이합니다.</p>
+                        <p>난협은 바퀴벌레의 알이 들어있는 주머니로, 종에 따라 다릅니다.</p>
                         <ul>
-                            <li><strong>독일바퀴:</strong> 연갈색, 약 6-9mm 길이. 암컷이 부화 직전까지 복부 말단에 부착하고 다니다가 안전한 곳에 떨어뜨림. 빈 난협은 은신처 주변에서 발견.</li>
-                            <li><strong>미국바퀴:</strong> 암적갈색에서 검은색, 약 8-10mm 길이. 암컷이 분비물로 표면에 단단히 고정시키므로 가구 뒷면, 상자 틈새 등에서 발견.</li>
-                            <li><strong>일본바퀴/먹바퀴:</strong> 암갈색에서 검은색, 미국바퀴와 유사하거나 약간 더 클 수 있음. 은폐된 장소에 부착.</li>
-                            <li><strong>주요 발견 장소:</strong> 균열 및 틈새, 가구 밑이나 후면, 가전제품 내부 또는 뒷면, 골판지 상자 내부, 천장과 벽의 모서리 등 사람의 접근이 어렵고 안전한 곳.</li>
+                            <li>🇩🇪 <strong>독일바퀴:</strong> 연갈색, 약 6-9mm. 암컷이 부화 직전까지 부착. 빈 난협은 은신처 주변에!</li>
+                            <li>🇺🇸 <strong>미국바퀴:</strong> 암적갈색~검은색, 약 8-10mm. 표면에 단단히 고정.</li>
+                            <li>🌳 <strong>일본바퀴/먹바퀴:</strong> 암갈색~검은색. 은폐된 장소에 부착.</li>
+                            <li><strong>📍 주요 발견 장소:</strong> 균열, 틈새, 가구 밑/후면, 가전제품 내부/뒷면, 골판지 상자 내부 등 안전한 곳.</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="trace-item">
-                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-exuviae">2.3 탈피각 (Exuviae / Shed Skins)</h4>
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-exuviae">2.3 🍂 탈피각 (Exuviae / Shed Skins)</h4>
                     <div id="trace-exuviae" class="collapsible-content">
-                        <p>바퀴벌레 약충(nymph)은 성장 과정에서 여러 번 탈피를 하며, 이때 벗어놓은 허물을 탈피각이라고 합니다.</p>
+                        <p>약충(어린 바퀴)이 성장하며 벗어놓은 허물입니다.</p>
                         <ul>
-                            <li><strong>형태:</strong> 바퀴벌레의 전체적인 모양을 유지하고 있으며, 비어있고 매우 가볍습니다. 색상은 연갈색에서 황갈색으로 반투명한 질감.</li>
-                            <li><strong>크기:</strong> 다양한 크기의 탈피각이 발견될 수 있으며, 이는 여러 성장 단계의 약충이 혼재하고 있음을 시사합니다.</li>
-                            <li><strong>주요 발견 장소:</strong> 주로 약충의 주된 서식처나 은신처 근처에서 다량으로 발견될 수 있습니다 (예: 싱크대 하부, 찬장 내부, 가구 틈새).</li>
+                            <li>✨ 형태: 바퀴벌레 모양, 비어있고 가벼움. 연갈색~황갈색, 반투명.</li>
+                            <li>📏 크기: 다양한 크기는 여러 성장 단계의 약충이 있다는 증거!</li>
+                            <li><strong>📍 주요 발견 장소:</strong> 약충의 주 서식처나 은신처 근처 (싱크대 하부, 찬장 내부 등).</li>
                         </ul>
                     </div>
                 </div>
                 
                 <div class="trace-item">
-                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-odor">2.4 특유의 냄새 (Characteristic Odor)</h4>
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-odor">2.4 👃 특유의 냄새 (Characteristic Odor)</h4>
                     <div id="trace-odor" class="collapsible-content">
-                        <p>바퀴벌레는 밀도가 높아지면 특유의 불쾌한 냄새를 발산합니다.</p>
+                        <p>바퀴벌레 밀도가 높을 때 나는 불쾌한 냄새입니다.</p>
                         <ul>
-                            <li><strong>원인:</strong> 주로 집합페로몬(aggregation pheromones)을 포함한 분비물, 배설물, 사체 부패 등에서 기인합니다.</li>
-                            <li><strong>특징:</strong> 일반적으로 "기름에 쩐 냄새", "퀴퀴한 냄새", "곰팡이 냄새" 등으로 표현됩니다.</li>
-                            <li><strong>감지 조건:</strong> 통풍이 불량하고 밀폐된 공간, 또는 오염도가 높은 장소에서 더욱 강하게 느껴질 수 있습니다. 장기간 방치된 주방이나 창고 등에서 확인될 가능성이 높습니다.</li>
+                            <li>🧪 원인: 집합페로몬, 배설물, 사체 부패 등.</li>
+                            <li>😖 특징: "기름 쩐 냄새", "퀴퀴한 냄새".</li>
+                            <li><strong>📍 감지 조건:</strong> 통풍 불량, 밀폐 공간, 오염도 높은 장소에서 더 강하게 느껴짐.</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="trace-item">
-                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-smears">2.5 얼룩 자국 (Smear Marks / Streaks)</h4>
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-smears">2.5 〰️ 얼룩 자국 (Smear Marks / Streaks)</h4>
                     <div id="trace-smears" class="collapsible-content">
-                        <p>바퀴벌레가 이동하면서 남기는 어둡고 불규칙한 자국입니다.</p>
+                        <p>바퀴벌레가 이동하며 남기는 어둡고 불규칙한 자국.</p>
                         <ul>
-                            <li><strong>형태:</strong> 주로 독일바퀴와 같이 소형종에서 뚜렷하게 나타나며, 이동 경로를 따라 형성되는 검은색 또는 암갈색의 줄무늬나 번진 얼룩 형태.</li>
-                            <li><strong>주요 발견 장소:</strong> 습도가 높거나 기름기가 많은 표면, 벽과 바닥이 만나는 모서리, 선반의 가장자리, 문틀 주변 등 바퀴벌레가 자주 기어 다니는 경로.</li>
+                            <li>🇩🇪 형태: 주로 독일바퀴에서 뚜렷. 검은색/암갈색 줄무늬나 번진 얼룩.</li>
+                            <li><strong>📍 주요 발견 장소:</strong> 습하거나 기름진 표면, 벽/바닥 모서리, 선반 가장자리 등 이동 경로.</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="trace-item">
-                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-damage">2.6 식흔 및 오염 (Feeding Marks & Contamination)</h4>
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-damage">2.6  giấy 식흔 및 오염 (Feeding Marks & Contamination)</h4>
                     <div id="trace-damage" class="collapsible-content">
-                        <p>바퀴벌레는 다양한 유기물을 섭식하며, 이 과정에서 식흔이나 오염을 유발할 수 있습니다.</p>
+                        <p>바퀴벌레가 먹으면서 남기는 흔적입니다.</p>
                         <ul>
-                            <li><strong>피해 대상:</strong> 식품뿐만 아니라 전분질 물질(종이류, 책 표지, 벽지 접착제), 직물, 가죽 제품 등.</li>
-                            <li><strong>형태:</strong> 불규칙하게 갉아먹은 흔적, 표면 오염(배설물, 분비물), 구토물에 의한 얼룩 등. (설치류의 뚜렷한 갉은 자국과는 구별됨)</li>
-                            <li><strong>중요성:</strong> 직접적인 경제적 손실 외에도 식품 오염을 통한 병원균 전파 가능성을 시사.</li>
+                            <li>🎯 피해 대상: 식품, 전분질(종이, 책), 직물 등.</li>
+                            <li>❗ 형태: 불규칙하게 갉아먹은 흔적, 오염. (<strong>주의:</strong> 설치류 피해와 구별!)</li>
+                            <li>🦠 중요성: 경제적 손실 및 병원균 전파 가능성.</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="trace-item">
-                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-live">2.7 생존 개체 직접 관찰 (Observation of Live Specimens)</h4>
+                    <h4 class="collapsible-h4" data-toggle="collapse" data-target="#trace-live">2.7 🏃 생존 개체 직접 관찰 (Live Specimens)</h4>
                     <div id="trace-live" class="collapsible-content">
-                        <p>생존 개체의 직접 관찰은 가장 확실한 증거입니다.</p>
+                        <p>가장 확실한 증거!</p>
                         <ul>
-                            <li><strong>주간 관찰의 의미:</strong> 바퀴벌레는 주로 야행성이므로, 주간에 활동하는 개체가 관찰된다면 이는 서식 밀도가 매우 높거나, 기존 서식지가 교란되었거나, 먹이 경쟁이 심화되었음을 강력히 시사합니다.</li>
-                            <li><strong>관찰 요령:</strong> 플래시라이트를 사용하여 어둡고 은폐된 장소(틈새, 균열, 가구 밑, 가전제품 주변 등)를 집중적으로 조사합니다. 특히 주방, 욕실, 창고, 보일러실 등 바퀴벌레가 선호하는 환경을 정밀 점검합니다.</li>
-                            <li><strong>종 동정:</strong> 관찰된 개체의 크기, 색상, 형태적 특징을 통해 정확한 종을 동정하는 것이 중요합니다.</li>
+                            <li>☀️ <strong>주간 관찰의 의미:</strong> 야행성이므로 낮에 보이면 🚨<strong>심각한 상황</strong>🚨 (밀도 높음, 서식지 교란 등).</li>
+                            <li>🔦 <strong>관찰 요령:</strong> 플래시라이트 활용! 어둡고 은폐된 장소 집중 점검.</li>
+                            <li>🧐 <strong>종 동정:</strong> 크기, 색상, 형태 특징으로 정확한 종 파악!</li>
                         </ul>
                     </div>
                 </div>
@@ -301,54 +377,54 @@
         </section>
 
         <div class="species-section">
-            <h2 data-toggle="collapse" data-target="#german-cockroach-content">제 3장: 독일바퀴 (German Cockroach, <i>Blattella germanica</i>)</h2>
+            <h2 data-toggle="collapse" data-target="#german-cockroach-content">🇩🇪 제 3장: 독일바퀴 (German Cockroach)</h2>
             <div id="german-cockroach-content" class="collapsible-content">
                 <div class="image-link-placeholder">
-                    <p><strong>참고 이미지:</strong> <a href="https://www.google.com/search?q=%EB%8F%85%EC%9D%BC%EB%B0%94%ED%80%B4&tbm=isch" target="_blank" rel="noopener noreferrer">독일바퀴 이미지 검색 (Google Images)</a></p>
+                    <p><strong>🖼️ 참고 이미지:</strong> <a href="https://www.google.com/search?q=%EB%8F%85%EC%9D%BC%EB%B0%94%ED%80%B4&tbm=isch" target="_blank" rel="noopener noreferrer">독일바퀴 이미지 검색</a></p>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#german-features">3.1 생태 및 서식 특징</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#german-features">3.1 🧬 생태 및 서식 특징</h3>
                 <div id="german-features" class="collapsible-content">
                     <ul>
-                        <li><strong>형태:</strong> 성충 크기 약 1.0~1.5cm, 황갈색. 전흉배판(앞가슴등판)에 평행한 두 줄의 짙은 줄무늬가 특징적.</li>
-                        <li><strong>서식처:</strong> 주로 주방, 다용도실 등 따뜻하고(25~30°C 선호) 습하며 먹이가 풍부한 실내 환경. 냉장고, 싱크대, 조리대, 가전제품 내부 등 어둡고 은폐된 틈새를 선호.</li>
-                        <li><strong>번식력:</strong> 매우 높음. 암컷은 난협(알집)을 부화 직전까지 복부 말단에 부착하고 다님. 한 난협 당 약 30~40개의 알 포함.</li>
-                        <li><strong>행동 특성:</strong> 군집 생활, 야행성. 좁은 틈새 선호 (Thigmotactic).</li>
+                        <li>📏 <strong>형태:</strong> 성충 약 1.0~1.5cm, 황갈색. 앞가슴등판에 || 두 줄의 짙은 줄무늬!</li>
+                        <li>🏠 <strong>서식처:</strong> 주로 주방, 다용도실 등 따뜻하고(25~30°C🔥) 습하며 먹이가 풍부한 실내.</li>
+                        <li>🚀 <strong>번식력:</strong> 매우 높음! 암컷은 알집을 부화 직전까지 부착. (알집 당 약 30~40개 알)</li>
+                        <li>🌙 <strong>행동 특성:</strong> 군집 생활, 야행성. 좁은 틈새 사랑 ❤️ (Thigmotactic).</li>
                     </ul>
                 </div>
 
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#german-solutions">3.2 방역 솔루션</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#german-solutions">3.2 🛡️ 방역 솔루션</h3>
                 <div id="german-solutions" class="collapsible-content">
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#german-solution-1">식독제(먹이형 살충제, Gel Bait) 집중 적용</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#german-solution-1">🎯 식독제(먹이형 살충제, Gel Bait) 집중 적용</h4>
                         <div id="german-solution-1" class="collapsible-content">
-                            <p><strong>적용 원리:</strong> 독일바퀴는 활동 반경이 비교적 좁고, 동료의 사체나 분비물을 섭식하는 습성(Coprophagy, Necrophagy)이 있어 연쇄 살충 효과(Domino Effect)를 기대할 수 있습니다. 살충제 기피 현상을 유발할 수 있는 광범위한 분무 처리보다 효과적입니다.</p>
-                            <p><strong>시공 방법:</strong></p>
+                            <p><strong>✨ 원리:</strong> 연쇄 살충 효과 (Domino Effect) 기대! (동료 사체/분비물 섭식)</p>
+                            <p><strong>🛠️ 시공 방법:</strong></p>
                             <ul>
-                                <li>예상 이동 경로, 은신처 주변(싱크대 경첩 부위, 찬장 모서리, 가전제품 후면 및 내부 틈새, 전기 콘센트 주변 등)에 제품 설명서에 따른 적정량(일반적으로 콩알 크기)을 다수 지점에 처리.</li>
-                                <li>겔의 경화, 오염, 소실 시 주기적으로 (통상 2주~1개월) 보충 또는 재처리.</li>
+                                <li>이동 경로, 은신처 주변에 콩알 크기로 여러 군데 처리.</li>
+                                <li>주기적 (2주~1개월) 보충/재처리.</li>
                             </ul>
-                            <p><strong>주요 성분 예시:</strong> 피프로닐, 히드라메틸논, 인독사카브, 클로티아니딘 등.</p>
+                            <p><strong>💊 주요 성분 예시:</strong> 피프로닐, 히드라메틸논, 인독사카브 등.</p>
                         </div>
                     </div>
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#german-solution-2">잔류 분무 처리 (Residual Spray) - 국소 및 틈새 중심</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#german-solution-2">💨 잔류 분무 처리 (Residual Spray) - 국소/틈새 중심</h4>
                          <div id="german-solution-2" class="collapsible-content">
-                            <p><strong>적용 원리:</strong> 식독제 처리가 어려운 넓은 틈새나 벽체 내부 등에 제한적으로 사용하여 서식 밀도를 낮춥니다.</p>
-                            <p><strong>시공 방법:</strong> 살충제를 희석(제품 라벨 준수)하여 바퀴벌레의 은신처 및 활동 예상 지역의 틈새(Crack & Crevice), 벽과 바닥이 만나는 모서리, 가구 후면 등에 국소적으로 분무. 넓은 공간에 대한 전면 살포는 지양.</p>
-                            <p><strong>주요 성분 예시:</strong> 델타메트린, 람다사이할로트린 등 피레스로이드 계열.</p>
+                            <p><strong>🎯 원리:</strong> 식독제 처리가 어려운 곳에 제한적 사용.</p>
+                            <p><strong>🛠️ 시공 방법:</strong> 틈새, 모서리, 가구 후면 등에 국소 분무. 🚫 넓은 공간 전면 살포 금지!</p>
+                            <p><strong>💊 주요 성분 예시:</strong> 델타메트린, 람다사이할로트린 등.</p>
                         </div>
                     </div>
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#german-solution-3">곤충성장조절제 (IGR, Insect Growth Regulator) 활용</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#german-solution-3">⏳ 곤충성장조절제 (IGR) 활용</h4>
                         <div id="german-solution-3" class="collapsible-content">
-                            <p><strong>적용 원리:</strong> 유충의 탈피 억제, 성충의 생식 능력 저하 등을 유도하여 장기적으로 개체군 밀도를 제어. 직접적인 살충 효과는 없으나 기존 살충제와 병용 시 방제 효과 증대.</p>
-                            <p><strong>시공 방법:</strong> 식독제 또는 잔류 분무제와 혼합 사용하거나 IGR 함유 제품을 선택.</p>
+                            <p><strong>🎯 원리:</strong> 유충 탈피 억제, 성충 생식 능력 저하 → 장기적 밀도 제어.</p>
+                            <p><strong>🛠️ 시공 방법:</strong> 식독제/분무제와 병용 또는 IGR 함유 제품 선택.</p>
                         </div>
                     </div>
                      <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#german-solution-4">모니터링 트랩 지속 운영</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#german-solution-4">🎣 모니터링 트랩 지속 운영</h4>
                         <div id="german-solution-4" class="collapsible-content">
-                           <p>싱크대 하부, 냉장고 주변 등 주요 지점에 설치하여 방제 효과를 정량적으로 평가하고, 잔존 개체 포획 및 재발생 조기 감지.</p>
+                           <p>싱크대 하부, 냉장고 주변 등에 설치하여 📊 효과 평가, 🎣 잔존 개체 포획, 🚨 재발생 조기 감지.</p>
                         </div>
                     </div>
                 </div>
@@ -356,52 +432,52 @@
         </div>
 
         <div class="species-section">
-            <h2 data-toggle="collapse" data-target="#smokybrown-cockroach-content">제 4장: 먹바퀴 (Smokybrown Cockroach, <i>Periplaneta fuliginosa</i>)</h2>
-            <div id="smokybrown-cockroach-content" class="collapsible-content">
+            <h2 data-toggle="collapse" data-target="#smokybrown-cockroach-content">💨 제 4장: 먹바퀴 (Smokybrown Cockroach)</h2>
+             <div id="smokybrown-cockroach-content" class="collapsible-content">
                 <div class="image-link-placeholder">
-                    <p><strong>참고 이미지:</strong> <a href="https://www.google.com/search?q=%EB%A8%B9%EB%B0%94%ED%80%B4&tbm=isch" target="_blank" rel="noopener noreferrer">먹바퀴 이미지 검색 (Google Images)</a></p>
+                    <p><strong>🖼️ 참고 이미지:</strong> <a href="https://www.google.com/search?q=%EB%A8%B9%EB%B0%94%ED%80%B4&tbm=isch" target="_blank" rel="noopener noreferrer">먹바퀴 이미지 검색</a></p>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#smokybrown-features">4.1 생태 및 서식 특징</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#smokybrown-features">4.1 🧬 생태 및 서식 특징</h3>
                 <div id="smokybrown-features" class="collapsible-content">
                     <ul>
-                        <li><strong>형태:</strong> 성충 크기 약 2.5~3.5cm, 전체적으로 균일한 광택성 암갈색 또는 흑갈색.</li>
-                        <li><strong>서식처:</strong> 주로 실외의 따뜻하고 습한 환경(화단, 낙엽층, 목재 더미, 배수로 주변 등)에 서식. 실내 유입 시 보일러실, 다용도실, 창고, 지하실, 천장 속 등 상대적으로 습도가 높은 장소 선호.</li>
-                        <li><strong>행동 특성:</strong> 비행 능력이 있으며, 빛에 유인되기도 함. 수분 손실에 민감하여 높은 습도를 선호.</li>
+                        <li>📏 <strong>형태:</strong> 성충 약 2.5~3.5cm, ✨ 광택성 암갈색/흑갈색.</li>
+                        <li>🌳 <strong>서식처:</strong> 주로 실외 따뜻하고 습한 환경. 실내 유입 시 보일러실, 창고 등 습도 높은 곳.</li>
+                        <li>✈️ <strong>행동 특성:</strong> 비행 가능, 빛에 유인되기도 함. 💧 수분 손실에 민감.</li>
                     </ul>
                 </div>
 
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#smokybrown-solutions">4.2 방역 솔루션</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#smokybrown-solutions">4.2 🛡️ 방역 솔루션</h3>
                  <div id="smokybrown-solutions" class="collapsible-content">
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#smokybrown-solution-1">외부 환경 관리 및 유입 경로 차단 강화</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#smokybrown-solution-1">🏞️ 외부 환경 관리 및 유입 경로 차단 강화</h4>
                         <div id="smokybrown-solution-1" class="collapsible-content">
-                            <p><strong>적용 원리:</strong> 주된 서식지가 실외이므로, 외부 서식 환경 정비 및 건물 내부로의 물리적 침입 경로 차단이 핵심.</p>
-                            <p><strong>조치 사항:</strong> 건물 주변 낙엽, 폐목재, 쓰레기 더미 등 잠재적 서식처 제거. 외벽 균열, 배관 인입부 틈새 밀폐. 방충망 점검 및 보수.</p>
+                            <p><strong>🎯 원리:</strong>  मुख्य 서식지가 실외이므로, 외부 환경 정비 및 침입로 차단이 핵심!</p>
+                            <p><strong>🛠️ 조치 사항:</strong> 건물 주변 낙엽/폐목재 제거, 외벽 틈새 밀폐, 방충망 보수.</p>
                         </div>
                     </div>
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#smokybrown-solution-2">외곽 방어선 구축 (Perimeter Treatment)</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#smokybrown-solution-2">🛡️ 외곽 방어선 구축 (Perimeter Treatment)</h4>
                         <div id="smokybrown-solution-2" class="collapsible-content">
-                            <p><strong>적용 원리:</strong> 건물 외부에서 내부로 침입하는 개체를 효과적으로 차단.</p>
-                            <p><strong>시공 방법:</strong></p>
+                            <p><strong>🎯 원리:</strong> 건물 외부에서 내부로 침입하는 개체 차단.</p>
+                            <p><strong>🛠️ 시공 방법:</strong></p>
                             <ul>
-                                <li><strong>외부:</strong> 건물 외벽 하단부(지면에서 약 1m 높이까지), 창문틀 및 출입문 주변, 환풍구 등 침입 예상 경로에 잔효성 살충제를 충분히 분무.</li>
-                                <li><strong>내부:</strong> 지하실 벽면, 보일러실 바닥 및 벽, 다용도실 구석, 천장 공간(접근 가능 시) 등 출몰 예상 지점에 제한적 분무.</li>
+                                <li>외부: 건물 외벽 하단부, 창문틀, 출입문 주변 등에 잔효성 살충제 분무.</li>
+                                <li>내부: 지하실, 보일러실 등 출몰 예상 지점에 제한적 분무.</li>
                             </ul>
-                            <p><strong>주요 성분 예시:</strong> 사이퍼메트린, 비펜트린 등 잔효성이 우수한 피레스로이드 계열.</p>
+                            <p><strong>💊 주요 성분 예시:</strong> 사이퍼메트린, 비펜트린 등.</p>
                         </div>
                     </div>
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#smokybrown-solution-3">식독제(과립형 또는 대형바퀴용 겔) 활용</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#smokybrown-solution-3">🍬 식독제(과립형 또는 대형바퀴용 겔) 활용</h4>
                         <div id="smokybrown-solution-3" class="collapsible-content">
-                             <p><strong>적용 원리:</strong> 내부 서식처나 이동 경로에 설치하여 침입 개체 제거.</p>
-                             <p><strong>시공 방법:</strong> 다용도실 구석, 창고 선반 하부, 천장 점검구 주변 등 먹바퀴 출현 지점에 설치. 과립형은 습기에 강한 제품을, 겔 타입은 대형 바퀴용으로 개발된 제품을 고려.</p>
+                             <p><strong>🎯 원리:</strong> 내부 서식처/이동 경로에 설치하여 침입 개체 제거.</p>
+                             <p><strong>🛠️ 시공 방법:</strong> 다용도실 구석, 창고 선반 하부 등에 설치. (과립형은 습기에 강한 제품!)</p>
                         </div>
                     </div>
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#smokybrown-solution-4">대형 끈끈이 트랩 설치</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#smokybrown-solution-4">🎣 대형 끈끈이 트랩 설치</h4>
                         <div id="smokybrown-solution-4" class="collapsible-content">
-                            <p>지하실, 다용도실, 창고 등 주요 침입 및 서식 예상 지점에 설치하여 모니터링 강화 및 일부 개체 포획.</p>
+                            <p>지하실, 다용도실, 창고 등에 설치하여 📊 모니터링 강화 및 일부 개체 포획.</p>
                         </div>
                     </div>
                 </div>
@@ -409,43 +485,43 @@
         </div>
 
         <div class="species-section">
-            <h2 data-toggle="collapse" data-target="#japanese-cockroach-content">제 5장: 일본바퀴 (Japanese Cockroach, <i>Periplaneta japonica</i>)</h2>
+            <h2 data-toggle="collapse" data-target="#japanese-cockroach-content">🇯🇵 제 5장: 일본바퀴 (Japanese Cockroach)</h2>
             <div id="japanese-cockroach-content" class="collapsible-content">
                 <div class="image-link-placeholder">
-                     <p><strong>참고 이미지:</strong> <a href="https://www.google.com/search?q=%EC%9D%BC%EB%B3%B8%EB%B0%94%ED%80%B4&tbm=isch" target="_blank" rel="noopener noreferrer">일본바퀴 이미지 검색 (Google Images)</a></p>
+                     <p><strong>🖼️ 참고 이미지:</strong> <a href="https://www.google.com/search?q=%EC%9D%BC%EB%B3%B8%EB%B0%94%ED%80%B4&tbm=isch" target="_blank" rel="noopener noreferrer">일본바퀴 이미지 검색</a></p>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#japanese-features">5.1 생태 및 서식 특징</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#japanese-features">5.1 🧬 생태 및 서식 특징</h3>
                 <div id="japanese-features" class="collapsible-content">
                     <ul>
-                        <li><strong>형태:</strong> 성충 크기 약 2.0~2.5cm, 전체적으로 흑갈색 또는 검은색. 먹바퀴와 유사하나 크기가 다소 작고 광택이 덜한 경향. (비전문가의 경우 먹바퀴와 혼동 용이)</li>
-                        <li><strong>서식처:</strong> 먹바퀴와 유사하게 실외의 습한 환경(정원, 퇴비 더미, 하수구 주변, 건물 지하실 등)을 선호. 먹바퀴보다 상대적으로 저온에 대한 내성이 강한 편.</li>
-                        <li><strong>행동 특성:</strong> 야외 서식 성향이 강하나, 실내로 침입하여 정착하기도 함.</li>
+                        <li>📏 <strong>형태:</strong> 성충 약 2.0~2.5cm, 흑갈색/검은색. (<strong>팁:</strong> 먹바퀴와 혼동 주의!)</li>
+                        <li>🌳 <strong>서식처:</strong> 먹바퀴와 유사 (실외 습한 환경). ❄️ 상대적으로 저온에 강함!</li>
+                        <li>🏞️ <strong>행동 특성:</strong> 야외 서식 성향 강하나 실내 침입 가능.</li>
                     </ul>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#japanese-solutions">5.2 방역 솔루션 (먹바퀴 방제 전략과 유사)</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#japanese-solutions">5.2 🛡️ 방역 솔루션 (먹바퀴 방제 전략과 유사)</h3>
                 <div id="japanese-solutions" class="collapsible-content">
                      <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#japanese-solution-1">외부 환경 관리 및 유입 경로 차단</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#japanese-solution-1">🏞️ 외부 환경 관리 및 유입 경로 차단</h4>
                         <div id="japanese-solution-1" class="collapsible-content">
-                            <p>먹바퀴와 동일하게 외부 서식 환경 개선 및 물리적 침입로 차단이 최우선 과제.</p>
+                            <p>⭐ 매우 중요! 건물 주변 정리, 틈새 막기.</p>
                         </div>
                     </div>
                      <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#japanese-solution-2">외곽 방어선 구축 (Perimeter Treatment)</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#japanese-solution-2">🛡️ 외곽 방어선 구축 (Perimeter Treatment)</h4>
                         <div id="japanese-solution-2" class="collapsible-content">
-                            <p>건물 외벽, 출입구 주변, 실내 침입 예상 경로(지하실, 다용도실, 배관 주변 등)에 잔효성 살충제 적용.</p>
+                            <p>건물 외벽, 출입구 주변, 실내 침입 예상 경로에 적용.</p>
                         </div>
                     </div>
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#japanese-solution-3">식독제 적용</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#japanese-solution-3">🍬 식독제 적용</h4>
                         <div id="japanese-solution-3" class="collapsible-content">
-                             <p>실내 은신처 및 이동 경로에 대형 바퀴용 식독제 설치.</p>
+                             <p>실내 은신처나 이동 경로에 설치.</p>
                         </div>
                     </div>
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#japanese-solution-4">끈끈이 트랩 활용</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#japanese-solution-4">🎣 끈끈이 트랩 활용</h4>
                         <div id="japanese-solution-4" class="collapsible-content">
-                            <p>모니터링 및 일부 개체 포획 용도로 활용.</p>
+                            <p>📊 모니터링 및 일부 개체 포획용.</p>
                         </div>
                     </div>
                 </div>
@@ -453,59 +529,59 @@
         </div>
         
         <div class="species-section">
-            <h2 data-toggle="collapse" data-target="#american-cockroach-content">제 6장: 미국바퀴 (American Cockroach, <i>Periplaneta americana</i>)</h2>
+            <h2 data-toggle="collapse" data-target="#american-cockroach-content">🇺🇸 제 6장: 미국바퀴 (American Cockroach)</h2>
             <div id="american-cockroach-content" class="collapsible-content">
                 <div class="image-link-placeholder">
-                    <p><strong>참고 이미지:</strong> <a href="https://www.google.com/search?q=%EB%AF%B8%EA%B5%AD%EB%B0%94%ED%80%B4&tbm=isch" target="_blank" rel="noopener noreferrer">미국바퀴 이미지 검색 (Google Images)</a></p>
+                    <p><strong>🖼️ 참고 이미지:</strong> <a href="https://www.google.com/search?q=%EB%AF%B8%EA%B5%AD%EB%B0%94%ED%80%B4&tbm=isch" target="_blank" rel="noopener noreferrer">미국바퀴 이미지 검색</a></p>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#american-features">6.1 생태 및 서식 특징</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#american-features">6.1 🧬 생태 및 서식 특징</h3>
                 <div id="american-features" class="collapsible-content">
                     <ul>
-                        <li><strong>형태:</strong> 성충 크기 약 3.0~5.0cm로 국내 서식 바퀴 중 대형종에 속함. 적갈색 또는 황갈색이며, 전흉배판에 테두리가 불분명한 황색 고리 무늬가 특징.</li>
-                        <li><strong>서식처:</strong> 하수관, 정화조, 보일러실, 지하실, 배관 덕트 등 어둡고 매우 습하며(상대습도 80% 이상 선호) 따뜻한 환경. 대형 음식점, 빌딩, 아파트 단지 등에서 집단 서식.</li>
-                        <li><strong>행동 특성:</strong> 수명이 길고(1년 이상), 비행 가능. 집단으로 서식하며 이동성이 큼.</li>
+                        <li>📏 <strong>형태:</strong> 성충 약 3.0~5.0cm (대형종!). 적갈색/황갈색, 앞가슴등판에 🟡 고리 무늬.</li>
+                        <li>💧 <strong>서식처:</strong> 하수관, 정화조, 보일러실 등 어둡고 매우 습하며(80% 이상 습도 선호) 따뜻한 곳.</li>
+                        <li>⏳ <strong>행동 특성:</strong> 수명 김(1년 이상), ✈️ 비행 가능, 집단 서식, 이동성 큼.</li>
                     </ul>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#american-solutions">6.2 방역 솔루션</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#american-solutions">6.2 🛡️ 방역 솔루션</h3>
                 <div id="american-solutions" class="collapsible-content">
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#american-solution-1">서식처 중심 집중 방제 및 유입 경로 정밀 차단</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#american-solution-1">🎯 서식처 중심 집중 방제 및 유입 경로 정밀 차단</h4>
                         <div id="american-solution-1" class="collapsible-content">
-                            <p><strong>적용 원리:</strong> 주로 하수구나 배관 시스템을 통해 건물 내부로 침투 및 확산되므로, 해당 경로에 대한 방제와 차단이 핵심.</p>
-                            <p><strong>조치 사항:</strong></p>
+                            <p><strong>🎯 원리:</strong> 하수구/배관 통해 침투/확산 → 경로 차단 및 서식처 방제가 핵심!</p>
+                            <p><strong>🛠️ 조치 사항:</strong></p>
                             <ul>
-                                <li>하수구 및 배수구 트랩 설치 또는 정비. (정기적인 뜨거운 물 투입은 제한적 효과)</li>
-                                <li>맨홀, 정화조 등 접근 가능한 공동 지하 공간에 대한 전문적인 약제 처리 (전문 방역업체 영역).</li>
-                                <li>건물 내 배관 관통부, 바닥 및 벽체 균열 등 모든 잠재적 유입로 밀폐.</li>
+                                <li>하수구 트랩 설치/정비.</li>
+                                <li>맨홀, 정화조 등 공동 지하 공간 전문 약제 처리 (🚨 전문가 영역).</li>
+                                <li>배관 관통부, 균열 등 모든 잠재 유입로 밀폐.</li>
                             </ul>
                         </div>
                     </div>
                      <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#american-solution-2">잔류 분무 처리 (광범위 및 공간 처리 병행 가능)</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#american-solution-2">💨 잔류 분무 처리 (광범위/공간 처리 병행 가능)</h4>
                         <div id="american-solution-2" class="collapsible-content">
-                            <p><strong>적용 원리:</strong> 서식지 및 이동 경로에 약제를 잔류시켜 접촉 개체를 제거. 필요시 ULV(초미립자) 살포 등 공간 처리 병행.</p>
-                            <p><strong>시공 방법:</strong> 지하실 전체 벽면과 바닥, 보일러실, 배관 주변, 쓰레기 집하장 등 주요 서식처 및 이동 경로에 희석 살충제를 충분히 분무. 정화조 및 하수 시스템에 대한 직접적인 약제 투입은 환경 규제 확인 후 신중히 결정.</p>
-                            <p><strong>주요 성분 예시:</strong> 프로폭서, 벤디오카브 등 카바메이트 계열 또는 효과적인 피레스로이드 계열.</p>
+                            <p><strong>🎯 원리:</strong> 서식지/이동 경로에 약제 잔류. 필요시 ULV(초미립자) 살포 등 공간 처리 병행.</p>
+                            <p><strong>🛠️ 시공 방법:</strong> 지하실, 보일러실, 배관 주변 등에 충분히 분무. (⚠️ 환경 규제 확인 후 신중 결정!)</p>
+                            <p><strong>💊 주요 성분 예시:</strong> 프로폭서, 벤디오카브 등.</p>
                         </div>
                     </div>
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#american-solution-3">대형 바퀴용 식독제(블록형, 페이스트형 등) 활용</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#american-solution-3">🧱 대형 바퀴용 식독제(블록형, 페이스트형 등) 활용</h4>
                         <div id="american-solution-3" class="collapsible-content">
-                             <p><strong>적용 원리:</strong> 바퀴의 섭식을 유도하여 박멸. 미국바퀴는 섭식량이 많으므로 충분한 양을 공급.</p>
-                             <p><strong>시공 방법:</strong> 출몰이 확인된 어둡고 습한 구석(보일러실 구석, 배관 근처, 지하 집수정 주변 등)에 설치. 습기에 강한 블록형이나 페이스트형 제품이 유리할 수 있음.</p>
+                             <p><strong>🎯 원리:</strong> 섭식 유도 박멸. (미국바퀴는 섭식량 많음! 넉넉히 공급)</p>
+                             <p><strong>🛠️ 시공 방법:</strong> 어둡고 습한 구석에 설치. (습기에 강한 블록/페이스트형 유리)</p>
                         </div>
                     </div>
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#american-solution-4">분제(Dust formulations) 활용</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#american-solution-4">⚪ 분제(Dust formulations) 활용</h4>
                         <div id="american-solution-4" class="collapsible-content">
-                            <p><strong>적용 원리:</strong> 액체 살충제 사용이 어려운 벽체 내부 공동, 전기 설비 주변 공간, 접근 어려운 틈새 등에 적용.</p>
-                            <p><strong>시공 방법:</strong> 붕산(Boric acid) 분말, 규조토(Diatomaceous Earth), 또는 살충 성분이 포함된 분제를 해당 공간에 살포. 안전을 위해 과다 사용을 피하고, 비산되지 않도록 주의.</p>
+                            <p><strong>🎯 원리:</strong> 액체 살충제 사용 어려운 곳 (벽체 내부, 전기 설비 주변)에 적용.</p>
+                            <p><strong>🛠️ 시공 방법:</strong> 붕산 분말, 규조토 등 살포. (⚠️ 과다 사용 금지, 비산 주의!)</p>
                         </div>
                     </div>
                      <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#american-solution-5">대형 끈끈이 트랩 지속 운영</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#american-solution-5">🎣 대형 끈끈이 트랩 지속 운영</h4>
                         <div id="american-solution-5" class="collapsible-content">
-                            <p>주요 서식 및 이동 경로에 설치하여 침입 규모 파악, 방제 효과 모니터링 및 일부 개체 포획.</p>
+                            <p>주요 서식/이동 경로에 설치하여 📊 침입 규모 파악, 효과 모니터링, 일부 개체 포획.</p>
                         </div>
                     </div>
                 </div>
@@ -513,86 +589,85 @@
         </div>
 
         <div class="species-section">
-            <h2 data-toggle="collapse" data-target="#outdoor-cockroach-content">제 7장: 산바퀴벌레 (Outdoor/Wood Cockroaches, 예: <i>Ectobius spp.</i> 등)</h2>
+            <h2 data-toggle="collapse" data-target="#outdoor-cockroach-content">🌲 제 7장: 산바퀴벌레 (Outdoor/Wood Cockroaches)</h2>
             <div id="outdoor-cockroach-content" class="collapsible-content">
                 <div class="image-link-placeholder">
-                    <p><strong>참고 이미지:</strong> <a href="https://www.google.com/search?q=%EC%82%B0%EB%B0%94%ED%80%B4%EB%B2%8C%EB%A0%88+Ectobius&tbm=isch" target="_blank" rel="noopener noreferrer">산바퀴벌레 이미지 검색 (Google Images)</a></p>
+                    <p><strong>🖼️ 참고 이미지:</strong> <a href="https://www.google.com/search?q=%EC%82%B0%EB%B0%94%ED%80%B4%EB%B2%8C%EB%A0%88+Ectobius&tbm=isch" target="_blank" rel="noopener noreferrer">산바퀴벌레 이미지 검색</a></p>
                 </div>
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#outdoor-features">7.1 생태 및 서식 특징</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#outdoor-features">7.1 🧬 생태 및 서식 특징</h3>
                 <div id="outdoor-features" class="collapsible-content">
                     <ul>
-                        <li><strong>형태:</strong> 종에 따라 다양하나, 일반적으로 크기는 1.0~2.0cm 내외. 색상은 주로 연갈색, 황갈색, 짙은 갈색 등 다양하며, 일부 종은 특유의 무늬를 가짐.</li>
-                        <li><strong>서식처:</strong> 주로 산림, 정원, 공원 등의 낙엽층, 나무껍질 밑, 돌 밑, 풀숲 등 습기가 있는 실외 환경. 실내에서 장기간 생존하거나 번식하지 않음.</li>
-                        <li><strong>행동 특성:</strong> 주로 야행성이며, 빛에 유인되어 실내로 들어오거나, 문이나 창문 개방 시 우연히 침입. 실내 환경에 적응하지 못함.</li>
-                        <li><strong>해충 상태:</strong> 실내 침입 시 불쾌감을 주는 일시적 침입 해충(Nuisance Pest/Accidental Invader)으로 분류. 질병 매개나 실내 자재 피해 가능성은 매우 낮음.</li>
+                        <li>📏 <strong>형태:</strong> 종에 따라 다양 (일반적 1.0~2.0cm). 색상 다양 (연갈색, 황갈색 등).</li>
+                        <li>🏞️ <strong>서식처:</strong> 주로 실외 (산림, 정원, 낙엽 밑). 🚫 실내 번식 불가!</li>
+                        <li>🚶 <strong>행동 특성:</strong> 주로 야행성, 빛에 유인 또는 우연히 실내 침입. 실내 적응 못함.</li>
+                        <li>😥 <strong>해충 상태:</strong> 일시적 침입 해충 (Nuisance Pest). (질병 매개/자재 피해 거의 없음)</li>
                     </ul>
                 </div>
 
-                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#outdoor-solutions">7.2 방역 솔루션</h3>
+                <h3 class="collapsible-h3" data-toggle="collapse" data-target="#outdoor-solutions">7.2 🛡️ 방역 솔루션</h3>
                 <div id="outdoor-solutions" class="collapsible-content">
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#outdoor-solution-1">유입 경로 차단 (Exclusion) 최우선 조치</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#outdoor-solution-1">🚧 유입 경로 차단 (Exclusion) 최우선 조치</h4>
                         <div id="outdoor-solution-1" class="collapsible-content">
-                            <p><strong>적용 원리:</strong> 실내에서 번식하지 않는 종이므로, 외부로부터의 유입을 원천적으로 차단하는 것이 가장 중요하고 효과적인 대책.</p>
-                            <p><strong>조치 사항:</strong></p>
+                            <p><strong>🎯 원리:</strong> 실내 번식 불가 → 외부 유입 원천 차단이 가장 중요!</p>
+                            <p><strong>🛠️ 조치 사항:</strong></p>
                             <ul>
-                                <li>창문 및 문틈, 방충망 손상 부위, 외벽의 갈라진 틈, 배관 인입부 주변 틈새 등을 정밀 점검하고 실리콘, 우레탄폼, 퍼티 등으로 완벽히 밀폐.</li>
-                                <li>현관문, 창문 하단 틈새에 문풍지 또는 특수 차단재(door sweep) 설치.</li>
+                                <li>창문/문틈, 방충망, 외벽 틈새 등 정밀 점검 및 완벽 밀폐!</li>
+                                <li>현관문/창문 하단 틈새에 문풍지/차단재 설치.</li>
                             </ul>
                         </div>
                     </div>
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#outdoor-solution-2">건물 주변 외부 환경 관리</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#outdoor-solution-2">🧹 건물 주변 외부 환경 관리</h4>
                         <div id="outdoor-solution-2" class="collapsible-content">
-                            <p><strong>적용 원리:</strong> 건물 주변의 잠재적 서식 환경을 최소화하여 실내 유입 가능성을 저감.</p>
-                            <p><strong>조치 사항:</strong></p>
+                            <p><strong>🎯 원리:</strong> 건물 주변 잠재 서식 환경 최소화 → 실내 유입 가능성 저감.</p>
+                            <p><strong>🛠️ 조치 사항:</strong></p>
                             <ul>
-                                <li>건물 외벽 주변에 쌓인 낙엽, 장작더미, 폐자재, 무성한 풀 등을 제거하고, 건물 기초와 최소 30cm 이상의 이격 공간 확보.</li>
-                                <li>야간 조명은 곤충 유인 효과가 적은 나트륨등 또는 황색 계열 LED 등으로 교체하거나, 건물에서 떨어진 곳에 설치하여 유인 방향 전환 고려.</li>
+                                <li>건물 외벽 주변 낙엽, 장작더미, 풀 등 정리 (건물과 30cm 이상 이격).</li>
+                                <li>야간 조명은 곤충 유인 적은 것(나트륨등, 황색 LED)으로 교체 고려.</li>
                             </ul>
                         </div>
                     </div>
                      <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#outdoor-solution-3">외곽 방어선 구축 (Perimeter Treatment)</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#outdoor-solution-3">🛡️ 외곽 방어선 구축 (Perimeter Treatment)</h4>
                         <div id="outdoor-solution-3" class="collapsible-content">
-                            <p><strong>적용 원리:</strong> 건물로 접근하는 개체를 차단하거나 살충 효과를 제공.</p>
-                            <p><strong>시공 방법:</strong> 건물 외벽 하단부(지면에서 약 1m), 창문틀 및 문틀 주변, 기타 확인된 유입 경로에 잔효성이 우수한 살충제를 살포. (예: 비펜트린, 람다사이할로트린, 델타메트린 등 피레스로이드 계열)</p>
+                            <p><strong>🎯 원리:</strong> 건물 접근 개체 차단/살충 효과.</p>
+                            <p><strong>🛠️ 시공 방법:</strong> 건물 외벽 하단부, 창문틀/문틀 주변 등에 잔효성 살충제 살포.</p>
                         </div>
                     </div>
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#outdoor-solution-4">실내 발견 개체 물리적 제거</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#outdoor-solution-4">🧹 실내 발견 개체 물리적 제거</h4>
                         <div id="outdoor-solution-4" class="collapsible-content">
-                            <p><strong>적용 원리:</strong> 실내 살충제 사용을 최소화하고 즉각적으로 개체를 제거.</p>
-                            <p><strong>조치 방법:</strong> 진공청소기를 이용하여 흡입하거나, 부드러운 빗자루 등으로 쓸어 외부로 방출. 직접적인 접촉이 불쾌할 경우, 위생장갑 착용 후 처리.</p>
+                            <p><strong>🎯 원리:</strong> 실내 살충제 사용 최소화 및 즉각 제거.</p>
+                            <p><strong>🛠️ 조치 방법:</strong> 진공청소기 흡입 또는 빗자루로 쓸어 외부 방출.</p>
                         </div>
                     </div>
                      <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#outdoor-solution-5">실내 살충제 사용 (제한적이고 국소적)</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#outdoor-solution-5">💨 실내 살충제 사용 (제한적/국소적)</h4>
                         <div id="outdoor-solution-5" class="collapsible-content">
-                            <p><strong>적용 원리:</strong> 대량 유입이 확인되거나 물리적 제거가 어려운 경우에 한하여 보조적으로 사용.</p>
-                            <p><strong>시공 방법:</strong> 창틀 주변, 문틈 등 주요 유입 경로 및 발견 지점에 국소적으로 에어로졸 형태의 살충제를 분사. 실내 전역에 대한 광범위한 살포는 불필요하며, 환경 및 인체 안전을 위해 권장되지 않음. 식독제(겔 타입 미끼)는 실내에서 번식하지 않는 산바퀴에게는 유인 효과 및 살충 효과가 거의 없음.</p>
+                            <p><strong>🎯 원리:</strong> 대량 유입 또는 물리적 제거 어려운 경우 보조적 사용.</p>
+                            <p><strong>🛠️ 시공 방법:</strong> 창틀, 문틈 등 유입 경로에 국소적 에어로졸 분사. (🚫 실내 전역 살포 금지! 🚫 식독제 효과 거의 없음!)</p>
                         </div>
                     </div>
                     <div class="solution-method">
-                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#outdoor-solution-6">끈끈이 트랩 설치</h4>
+                        <h4 class="collapsible-h4" data-toggle="collapse" data-target="#outdoor-solution-6">🎣 끈끈이 트랩 설치</h4>
                         <div id="outdoor-solution-6" class="collapsible-content">
-                            <p>실내 유입 경로 주변(창문 밑, 현관 구석 등)에 설치하여 침입 여부 모니터링 및 일부 개체 포획. 이는 방제 전략 수립에 기초 자료로 활용 가능.</p>
+                            <p>실내 유입 경로 주변에 설치하여 📊 모니터링 및 일부 개체 포획.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-
         <section id="precautions-section" class="general-section">
-            <h2 data-toggle="collapse" data-target="#precautions-content">제 8장: 방역 작업 시 주의사항 및 추가 제언</h2>
+            <h2 data-toggle="collapse" data-target="#precautions-content">⚠️ 제 8장: 방역 작업 시 주의사항 및 추가 제언</h2>
             <div id="precautions-content" class="collapsible-content">
-                <ul class="note">
-                    <li><strong>안전 제일:</strong> 모든 살충제 사용 시, 제품 라벨에 명시된 사용 방법, 희석 비율, 주의사항을 철저히 준수해야 합니다. 개인보호장비(PPE: 마스크, 장갑, 보안경 등) 착용은 필수입니다.</li>
-                    <li><strong>고객 고지:</strong> 약제 처리 전후 고객에게 처리 내용, 주의사항(환기, 접촉 금지 시간 등)을 명확히 고지하고, MSDS(물질안전보건자료) 관련 정보를 제공할 준비가 되어 있어야 합니다.</li>
-                    <li><strong>환경 고려:</strong> 약제의 과다 사용 및 오용을 피하고, 비표적생물(non-target organisms) 및 환경에 대한 영향을 최소화하도록 노력해야 합니다. 특히 수계 주변 작업 시 유의합니다.</li>
-                    <li><strong>지속적 관리:</strong> 바퀴벌레 방제는 일회성 처리로 끝나지 않는 경우가 많습니다. 정기적인 모니터링과 필요시 추가 조치를 통해 재발을 방지하는 것이 중요합니다. 고객과의 지속적인 커뮤니케이션을 통해 협조를 유도합니다.</li>
-                    <li><strong>문서화:</strong> 모든 방제 작업 내용(사용 약제, 처리 농도, 처리 구역, 작업 일시, 담당자, 특이사항 등)을 정확히 기록하고 보관하여 추적 관리 및 효과 분석에 활용합니다.</li>
+                <ul class="pro-tip">
+                    <li>🛡️ <strong>안전 제일:</strong> 모든 살충제 사용 시, 제품 라벨 준수! 😷 개인보호장비(PPE) 착용 필수!</li>
+                    <li>🗣️ <strong>고객 고지:</strong> 처리 내용, 주의사항(환기 등) 명확히 고지. MSDS 제공 준비.</li>
+                    <li>🌍 <strong>환경 고려:</strong> 약제 과다 사용/오용 금지. 비표적생물 및 환경 영향 최소화. (특히 수계 주변!)</li>
+                    <li>🔄 <strong>지속적 관리:</strong> 정기 모니터링과 추가 조치로 재발 방지. 고객과의 소통 중요!</li>
+                    <li>✍️ <strong>문서화:</strong> 모든 작업 내용 정확히 기록/보관 (추적 관리 및 효과 분석).</li>
                 </ul>
             </div>
         </section>
@@ -608,7 +683,14 @@
                 const targetElement = document.querySelector(targetId);
                 
                 if (targetElement) {
-                    targetElement.style.display = 'none'; 
+                    // Check if this element should be open by default based on a class
+                    if (collapsible.classList.contains('open-by-default')) {
+                        targetElement.style.display = 'block';
+                        targetElement.classList.add('show');
+                        collapsible.classList.add('active');
+                    } else {
+                        targetElement.style.display = 'none'; 
+                    }
                 } else {
                     console.warn('Collapsible target not found:', targetId); 
                 }
@@ -629,8 +711,15 @@
                     }
                 });
             });
+
+            // Optional: Open the first main section by default for better initial view
+            // You can add 'open-by-default' class to any H2, H3, H4 in HTML to make it open.
+            // For example, to open the first H2:
+            // const firstMainSection = document.querySelector('#common-principles-section > h2');
+            // if (firstMainSection) {
+            //    firstMainSection.click(); // Simulate a click to open it
+            // }
         });
     </script>
 </body>
 </html>
-
