@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>판매 마진 계산기</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .section-title {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .radio-item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .radio-item input[type="radio"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        .result-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+        }
+        
+        .result-title {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        
+        .result-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .result-percent {
+            font-size: 1.8em;
+            opacity: 0.9;
+        }
+        
+        .calculation-details {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: left;
+            font-size: 0.9em;
+            line-height: 1.8;
+        }
+        
+        .detail-row {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .warning {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 30px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            transition: transform 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .input-group input {
+            flex: 1;
+        }
+        
+        .input-group span {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>판매 마진 계산기</h1>
+        
+        <div class="form-section">
+            <div class="section-title">기본 정보</div>
+            
+            <div class="form-group">
+                <label>판매가격 (원)</label>
+                <input type="number" id="salesPrice" value="42980" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label>상품 매입가 (원)</label>
+                <input type="number" id="purchasePrice" value="33000" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label>판매 타입 (사업자/회원 = 자사몰기준)</label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="business" name="salesType" value="business" checked>
+                        <label for="business">사업자 (3.7%)</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="member" name="salesType" value="member">
+                        <label for="member">회원 (3.7%)</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="general" name="salesType" value="general">
+                        <label for="general">일반 (13%)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <div class="section-title">배송 정보</div>
+            
+            <div class="form-group">
+                <label>고객 부담 배송비</label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="freeShip" name="shipType" value="0">
+                        <label for="freeShip">무료배송</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="ship3000" name="shipType" value="3000" checked>
+                        <label for="ship3000">3,000원</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="ship5000" name="shipType" value="5000">
+                        <label for="ship5000">5,000원</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>출고 배송비</label>
+                <select id="deliveryType">
+                    <option value="2250">극소 - 2,250원</option>
+                    <option value="2350">소1 - 2,350원</option>
+                    <option value="2670" selected>소2 - 2,670원</option>
+                    <option value="3200">중 - 3,200원</option>
+                    <option value="5000">대형 - 5,000원</option>
+                    <option value="5500">이형 - 5,500원</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <div class="section-title">판관비 항목</div>
+            
+            <div class="form-group">
+                <label>포장/인건비 비용 (판매가격 대비)</label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="pack2" name="packType" value="2" checked>
+                        <label for="pack2">2%</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="pack3" name="packType" value="3">
+                        <label for="pack3">3%</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="pack4" name="packType" value="4">
+                        <label for="pack4">4%</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <div class="section-title">광고비 항목</div>
+            
+            <div class="form-group">
+                <label>광고 집행 여부</label>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="adYes" name="adType" value="yes" checked>
+                        <label for="adYes">광고 집행</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="adNo" name="adType" value="no">
+                        <label for="adNo">광고 집행하지 않음</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group" id="adRateGroup">
+                <label>광고비 (%)</label>
+                <div class="input-group">
+                    <input type="number" id="adRate" value="25" min="0" max="100">
+                    <span>%</span>
+                </div>
+            </div>
+        </div>
+        
+        <button onclick="calculateMargin()">마진 계산하기</button>
+        
+        <div class="result-section" id="resultSection" style="display: none;">
+            <div class="result-title">최종 판매 마진</div>
+            <div class="result-value" id="marginWon">0원</div>
+            <div class="result-percent" id="marginPercent">0%</div>
+            
+            <div class="calculation-details" id="details"></div>
+        </div>
+    </div>
+    
+    <script>
+        // 광고 집행 여부에 따른 광고비 입력 필드 표시/숨김
+        document.querySelectorAll('input[name="adType"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const adRateGroup = document.getElementById('adRateGroup');
+                if (this.value === 'yes') {
+                    adRateGroup.style.display = 'block';
+                } else {
+                    adRateGroup.style.display = 'none';
+                }
+            });
+        });
+        
+        function calculateMargin() {
+            // 입력값 가져오기
+            const salesPrice = parseFloat(document.getElementById('salesPrice').value) || 0;
+            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value) || 0;
+            
+            // 판매 타입에 따른 채널 수수료율
+            const salesType = document.querySelector('input[name="salesType"]:checked').value;
+            let channelFeeRate = salesType === 'general' ? 0.13 : 0.037;
+            
+            // 고객 부담 배송비
+            const customerShipFee = parseFloat(document.querySelector('input[name="shipType"]:checked').value) || 0;
+            
+            // 출고 배송비
+            const deliveryFee = parseFloat(document.getElementById('deliveryType').value) || 0;
+            
+            // 포장비용 비율
+            const packRate = parseFloat(document.querySelector('input[name="packType"]:checked').value) / 100 || 0;
+            
+            // 광고 집행 여부 및 광고비율
+            const adType = document.querySelector('input[name="adType"]:checked').value;
+            const adRate = adType === 'yes' ? parseFloat(document.getElementById('adRate').value) / 100 || 0 : 0;
+            
+            // 계산 시작
+            // 1. 채널 수수료
+            const channelFee = salesPrice * channelFeeRate;
+            
+            // 2. 배송비 수수료 (고정 3.3%)
+            const shipFeeCommission = customerShipFee * 0.033;
+            
+            // 3. 판매채널 정산금액
+            const settlementAmount = salesPrice + customerShipFee - channelFee - shipFeeCommission;
+            
+            // 4. 포장비용
+            const packingCost = salesPrice * packRate;
+            
+            // 5. 판매마진 (광고비 반영 전)
+            const marginBeforeAd = settlementAmount - packingCost - deliveryFee - purchasePrice;
+            
+            // 6. 광고비
+            const adCost = salesPrice * adRate;
+            
+            // 7. 최종 판매마진 (광고비 반영 후)
+            const finalMargin = marginBeforeAd - adCost;
+            
+            // 8. 마진율 계산
+            const marginRate = (finalMargin / salesPrice) * 100;
+            
+            // 결과 표시
+            const resultSection = document.getElementById('resultSection');
+            const marginWon = document.getElementById('marginWon');
+            const marginPercent = document.getElementById('marginPercent');
+            const details = document.getElementById('details');
+            
+            resultSection.style.display = 'block';
+            
+            // 마진이 음수인 경우 경고 표시
+            if (finalMargin < 0) {
+                marginWon.style.color = '#ff6b6b';
+                marginPercent.style.color = '#ff6b6b';
+                marginWon.innerHTML = `${finalMargin.toLocaleString()}원 <span style="font-size: 0.6em;">(손실)</span>`;
+            } else {
+                marginWon.style.color = 'white';
+                marginPercent.style.color = 'white';
+                marginWon.textContent = `${finalMargin.toLocaleString()}원`;
+            }
+            
+            marginPercent.textContent = `${marginRate.toFixed(2)}%`;
+            
+            // 상세 계산 내역
+            details.innerHTML = `
+                <div class="detail-row">
+                    <strong>판매가격:</strong> ${salesPrice.toLocaleString()}원
+                </div>
+                <div class="detail-row">
+                    <strong>고객 부담 배송비:</strong> ${customerShipFee.toLocaleString()}원
+                </div>
+                <div class="detail-row">
+                    <strong>채널 수수료:</strong> -${channelFee.toLocaleString()}원 (${(channelFeeRate * 100).toFixed(1)}%)
+                </div>
+                <div class="detail-row">
+                    <strong>배송비 수수료:</strong> -${shipFeeCommission.toLocaleString()}원 (3.3%)
+                </div>
+                <div class="detail-row" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 5px;">
+                    <strong>판매채널 정산금액:</strong> ${settlementAmount.toLocaleString()}원
+                </div>
+                <div class="detail-row">
+                    <strong>상품 매입가:</strong> -${purchasePrice.toLocaleString()}원
+                </div>
+                <div class="detail-row">
+                    <strong>포장비용:</strong> -${packingCost.toLocaleString()}원 (${(packRate * 100).toFixed(0)}%)
+                </div>
+                <div class="detail-row">
+                    <strong>출고 배송비:</strong> -${deliveryFee.toLocaleString()}원
+                </div>
+                ${adType === 'yes' ? `
+                <div class="detail-row">
+                    <strong>광고비 반영 전 마진:</strong> ${marginBeforeAd.toLocaleString()}원
+                </div>
+                <div class="detail-row">
+                    <strong>광고비:</strong> -${adCost.toLocaleString()}원 (${(adRate * 100).toFixed(0)}%)
+                </div>
+                ` : ''}
+                <div class="detail-row" style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 5px; font-size: 1.1em;">
+                    <strong>최종 판매마진:</strong> ${finalMargin.toLocaleString()}원 (${marginRate.toFixed(2)}%)
+                </div>
+            `;
+            
+            // 결과 섹션으로 스크롤
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        // Enter 키로도 계산 가능하도록
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateMargin();
+            }
+        });
+    </script>
+</body>
+</html>
