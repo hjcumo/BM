@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            font-family: 'Inter', 'Noto Sans KR', sans-serif; /* Noto Sans KR 추가 */
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
         }
         .number-input::-webkit-outer-spin-button,
         .number-input::-webkit-inner-spin-button {
@@ -18,78 +18,78 @@
             -moz-appearance: textfield;
         }
         
-        /* 전체 컨테이너 */
         .calculator-container {
             transition: all 0.3s ease-in-out;
         }
 
-        /* 입력 그룹 */
         .input-group label {
-            color: #4A5568; /* gray-700 (조금 더 부드럽게) */
+            color: #4A5568; 
             font-weight: 500; 
-            display: flex; /* 이모지와 텍스트 정렬 */
+            display: flex; 
             align-items: center;
         }
         .input-group label .emoji {
-            margin-right: 0.5rem; /* 이모지와 텍스트 간격 */
+            margin-right: 0.5rem; 
             font-size: 1.1em;
         }
 
         .input-field, .select-field {
-            border-color: #E2E8F0; /* gray-300 (조금 더 부드럽게) */
-            border-radius: 0.5rem; /* rounded-lg */
-            padding: 0.75rem 1rem; /* p-3에서 p-4 정도로 키움 */
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px 0 rgba(0, 0, 0, 0.04); /* shadow-md */
+            border-color: #E2E8F0; 
+            border-radius: 0.5rem; 
+            padding: 0.75rem 1rem; 
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px 0 rgba(0, 0, 0, 0.04); 
             transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .input-field:focus, .select-field:focus {
-            border-color: #6366F1; /* indigo-500 */
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3); /* ring-indigo-300 ring-opacity-30 */
+            border-color: #6366F1; 
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3); 
             outline: none;
         }
+        .input-field[readonly] {
+            background-color: #F3F4F6; /* Tailwind gray-100 */
+            cursor: not-allowed;
+        }
+
 
         .radio-label {
-            color: #2D3748; /* gray-800 (조금 더 진하게) */
+            color: #2D3748; 
             transition: color 0.2s ease;
         }
         input[type="radio"]:checked + .radio-label {
-            color: #4F46E5; /* indigo-600 */
+            color: #4F46E5; 
         }
         input[type="radio"] {
             transition: all 0.2s ease;
         }
         input[type="radio"]:focus {
-            ring-offset-color: white; /* 포커스 링 오프셋 색상 */
+            ring-offset-color: white; 
         }
 
-
-        /* 버튼 */
         .calculate-button {
-            background-color: #4F46E5; /* indigo-600 */
-            font-size: 1.125rem; /* text-lg */
-            font-weight: 600; /* semibold */
-            padding: 0.875rem 1.5rem; /* py-3.5 px-6 */
-            border-radius: 0.5rem; /* rounded-lg */
+            background-color: #4F46E5; 
+            font-size: 1.125rem; 
+            font-weight: 600; 
+            padding: 0.875rem 1.5rem; 
+            border-radius: 0.5rem; 
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .calculate-button:hover {
-            background-color: #4338CA; /* indigo-700 */
+            background-color: #4338CA; 
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         .calculate-button:active {
             transform: translateY(1px);
-            background-color: #3730A3; /* indigo-800 */
+            background-color: #3730A3; 
         }
 
-        /* 결과 섹션 */
         .results-card {
             background-color: white;
-            border: 1px solid #E2E8F0; /* gray-200 */
-            border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03); /* shadow-lg */
-            opacity: 0; /* 초기에는 숨김 */
-            transform: translateY(20px); /* 아래에서 나타나는 효과 */
+            border: 1px solid #E2E8F0; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03); 
+            opacity: 0; 
+            transform: translateY(20px); 
             transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
         .results-card.show {
@@ -98,21 +98,21 @@
         }
 
         .results-title {
-            color: #1A202C; /* gray-900 */
+            color: #1A202C; 
             border-bottom: 1px solid #E2E8F0;
             padding-bottom: 0.75rem;
         }
         .result-item {
-             border-bottom: 1px dashed #E2E8F0; /* 구분선 점선으로 변경 */
-             padding: 1rem 0.5rem; /* 상하 패딩 증가, 좌우 패딩 약간 감소 */
+             border-bottom: 1px dashed #E2E8F0; 
+             padding: 1rem 0.5rem; 
              transition: background-color 0.2s ease;
         }
         .result-item:hover {
-            background-color: #F7FAFC; /* gray-100 아주 연하게 */
+            background-color: #F7FAFC; 
         }
         .result-item strong {
-            color: #2D3748; /* gray-800 */
-            font-weight: 500; /* medium */
+            color: #2D3748; 
+            font-weight: 500; 
             display: flex;
             align-items: center;
         }
@@ -121,59 +121,117 @@
             font-size: 1em;
         }
         .result-item span {
-            color: #4A5568; /* gray-700 */
+            color: #4A5568; 
             font-weight: 500;
         }
         .result-item:last-child {
             border-bottom: none;
         }
         .result-item:first-child {
-            padding-top: 0.5rem; /* 첫 항목 상단 패딩 조정 */
+            padding-top: 0.5rem; 
         }
 
-        /* 중간 합계 강조 */
         .summary-total {
-            background-color: #EEF2FF; /* indigo-50 */
+            background-color: #EEF2FF; 
             padding: 1rem;
-            border-radius: 0.5rem; /* rounded-lg */
+            border-radius: 0.5rem; 
             margin-top: 0.5rem !important;
             margin-bottom: 0.5rem !important;
-            border-left: 4px solid #6366F1; /* indigo-500 */
+            border-left: 4px solid #6366F1; 
         }
         .summary-total strong, .summary-total span {
-            color: #3730A3; /* indigo-800 */
-            font-weight: 600; /* semibold */
+            color: #3730A3; 
+            font-weight: 600; 
         }
         
-        /* 최종 마진 강조 */
         #finalMarginKRWResult.loss, #finalMarginPercentageResult.loss {
-            color: #E53E3E; /* red-600 */
+            color: #E53E3E; 
         }
         #finalMarginKRWResult.profit, #finalMarginPercentageResult.profit {
-            color: #38A169; /* green-600 */
+            color: #38A169; 
         }
 
         .final-summary-item strong{
-            font-size: 1.125rem; /* text-lg */
+            font-size: 1.125rem; 
         }
         .final-summary-item span{
-            font-size: 1.25rem; /* text-xl */
+            font-size: 1.25rem; 
         }
 
-        /* 에러 메시지 */
         .error-message {
-            background-color: #FFF5F5; /* red-50 */
-            color: #C53030; /* red-700 */
-            border: 1px solid #FC8181; /* red-300 */
+            background-color: #FFF5F5; 
+            color: #C53030; 
+            border: 1px solid #FC8181; 
             border-left-width: 4px;
-            border-left-color: #E53E3E; /* red-600 */
+            border-left-color: #E53E3E; 
             padding: 1rem;
-            border-radius: 0.375rem; /* rounded-md */
+            border-radius: 0.375rem; 
             transition: opacity 0.3s ease;
         }
-         .hidden {
-            display: none !important; /* Tailwind hidden을 확실히 오버라이드 */
+        .hidden {
+            display: none !important; 
         }
+        .product-dropdown {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #E2E8F0;
+            border-top: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+            width: calc(100% - 2px); 
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .product-dropdown-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-size: 0.875rem; 
+        }
+        .product-dropdown-item:hover {
+            background-color: #F7FAFC; 
+        }
+        .product-dropdown-item .product-price {
+            font-size: 0.75rem; 
+            color: #718096; 
+            margin-left: 0.5rem;
+        }
+        /* 수량 조절 버튼 스타일 */
+        .quantity-control-button {
+            background-color: #E0E7FF; /* indigo-200 */
+            color: #4338CA; /* indigo-700 */
+            border: 1px solid #C7D2FE; /* indigo-300 */
+            padding: 0.3rem 0.6rem; /* 더 작게 */
+            font-size: 0.8rem; /* 더 작게 */
+            font-weight: bold;
+            border-radius: 0.375rem; /* rounded-md */
+            transition: background-color 0.2s ease, color 0.2s ease;
+            line-height: 1; /* 수직 정렬 개선 */
+        }
+        .quantity-control-button:hover {
+            background-color: #C7D2FE; /* indigo-300 */
+            color: #3730A3; /* indigo-800 */
+        }
+         .quantity-input-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        .quantity-input-wrapper input {
+            text-align: center;
+            border-left: none;
+            border-right: none;
+            border-radius: 0; /* 중간 input의 radius 제거 */
+             flex-grow: 1;
+        }
+        .quantity-input-wrapper .quantity-control-button:first-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .quantity-input-wrapper .quantity-control-button:last-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
 
     </style>
 </head>
@@ -188,11 +246,32 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
                 <div class="input-group">
                     <label for="salePrice" class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="money bag">💰</span>판매가격 (원)</label>
-                    <input type="text" id="salePrice" name="salePrice" placeholder="예: 42,980" required class="number-input mt-1 block w-full input-field"> <!-- type="text"로 변경 -->
+                    <input type="text" id="salePrice" name="salePrice" placeholder="예: 42,980" required class="number-input mt-1 block w-full input-field">
                 </div>
+                <!-- 상품 검색 및 매입가 표시 영역 -->
                 <div class="input-group">
-                    <label for="purchasePrice" class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="shopping cart">🛒</span>상품매입가 (원)</label>
-                    <input type="text" id="purchasePrice" name="purchasePrice" placeholder="예: 33,000" required class="number-input mt-1 block w-full input-field"> <!-- type="text"로 변경 -->
+                    <label for="productSearchInput" class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="search">🔍</span>상품 검색</label>
+                    <div class="relative">
+                        <input type="text" id="productSearchInput" placeholder="상품명을 입력하여 검색하세요..." class="mt-1 block w-full input-field">
+                        <div id="productDropdown" class="product-dropdown hidden"></div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-x-3 mt-2 items-end"> <!-- 수량 필드를 2개 컬럼으로 나누기 위함 -->
+                        <div >
+                            <label for="unitPurchasePrice" class="block text-xs font-medium text-gray-700 mb-1"><span class="emoji" role="img" aria-label="price tag">🏷️</span>상품 단가 (원)</label>
+                            <input type="text" id="unitPurchasePrice" name="unitPurchasePrice" placeholder="상품 선택 시 자동 입력" readonly class="number-input block w-full input-field text-sm">
+                        </div>
+                        <div>
+                            <label for="quantity" class="block text-xs font-medium text-gray-700 mb-1"><span class="emoji" role="img" aria-label="counter">🔢</span>수량</label>
+                            <div class="quantity-input-wrapper mt-0"> <!-- mt-0 추가 -->
+                                <button type="button" id="decreaseQuantity" class="quantity-control-button">-</button>
+                                <input type="number" id="quantity" name="quantity" value="1" min="1" class="number-input block w-full input-field text-sm h-full py-2.5"> <!-- h-full py-2.5 추가-->
+                                <button type="button" id="increaseQuantity" class="quantity-control-button">+</button>
+                            </div>
+                        </div>
+                    </div>
+                     <label for="totalPurchasePrice" class="block text-sm font-medium text-gray-700 mb-1 mt-3"><span class="emoji" role="img" aria-label="shopping cart">🛒</span>총 매입가 (원)</label>
+                    <input type="text" id="totalPurchasePrice" name="totalPurchasePrice" placeholder="자동 계산" readonly required class="number-input block w-full input-field bg-gray-100 cursor-not-allowed">
                 </div>
             </div>
 
@@ -315,7 +394,7 @@
                     <span id="salesChannelSettlementResult" class="text-base font-semibold">0 원</span>
                 </div>
                 <div class="result-item flex justify-between items-center">
-                    <strong class="text-sm"><span class="emoji" role="img" aria-label="receipt">🧾</span>(-) 상품 매입가:</strong>
+                    <strong class="text-sm"><span class="emoji" role="img" aria-label="receipt">🧾</span>(-) 총 상품 매입가:</strong>
                     <span id="resPurchasePrice" class="text-sm font-medium">0 원</span>
                 </div>
                 <div class="result-item flex justify-between items-center">
@@ -350,9 +429,124 @@
     </div>
 
     <script>
+        const productData = [
+            { name: "제작*원터치캡 1캡", price: 13.2 }, { name: "바퀴트랩거치대 양면테이프형", price: 275.0 },
+            { name: "국보 레전드 겔 220g", price: 14500.0 }, { name: "바퀴벌레 사각 먹이캡 6캡", price: 33.0 },
+            { name: "바퀴트랩거치대 자석형", price: 550.0 }, { name: "삼현소독용에탄올 83% 250ml", price: 750.0 },
+            { name: "보령 홈라이프 슈퍼울트라 에어졸 500ml", price: 2420.0 }, { name: "킬파프 바퀴벌레 제거제(작은바퀴용) 12개입 zero", price: 3630.0 },
+            { name: "맥스포스 퀀텀 30g", price: 10670.0 }, { name: "그린세이프 매트 훈증기", price: 3135.0 },
+            { name: "보령 그린세이프 리필(45일)", price: 1650.0 }, { name: "킬파프 바퀴벌레 제거제(큰바퀴용) 6개입 zero", price: 3509.0 },
+            { name: "허브 개미파워 과립 1g*5개", price: 2310.0 }, { name: "킬파프 그린 에어졸 420ml", price: 2552.0 },
+            { name: "보령 매트에스 전자모기향 리필(60매)", price: 1925.0 }, { name: "잡스 퍼펙트킬 에어졸 500ml", price: 2860.0 },
+            { name: "제트파워 울트라 킬라에어졸 420ml", price: 1870.0 }, { name: "보령 그린세이프 리필(90일)", price: 1870.0 },
+            { name: "국내산 화랑곡나방트랩 1갑*2매", price: 1100.0 }, { name: "야옹(싸래기) 50g", price: 800.0 },
+            { name: "킬파프 울트라 파워 500ml", price: 3289.0 }, { name: "킬파프 그린 개미에어졸 250ml", price: 2123.0 },
+            { name: "보령 로하스 키퍼 네츄럴 오렌지 450ml", price: 1738.0 }, { name: "보령 로하스 키퍼 450ml", price: 1738.0 },
+            { name: "보령 플러스 피톤치드 에어졸 500ml", price: 1815.0 }, { name: "쥐 약 용기", price: 35.2 },
+            { name: "킬파프 굿나잇 에프에어로졸(피톤치드) 500ml", price: 2607.0 }, { name: "디펜스존 에스에어로솔(무향) 180ml", price: 1650.0 },
+            { name: "제트파워 개미킬라 300ml", price: 1650.0 }, { name: "노런 플라이다운 1갑*10매", price: 1320.0 },
+            { name: "노런 쥐본드 스페셜 1갑*2매", price: 506.0 }, { name: "제트파워 로취캣취 큰바퀴용 6개입", price: 2090.0 },
+            { name: "제트파워 로취캣취 작은바퀴용 12개입", price: 2090.0 }, { name: "킬파프 에어로졸 내츄럴오렌지 500ml", price: 2739.0 },
+            { name: "보령 그린세이프 액체훈증기(코드형)", price: 4620.0 }, { name: "쥐 표식지(가로형)", price: 550.0 },
+            { name: "보령 그린세이프 액체훈증기(플러그형)", price: 4510.0 }, { name: "델타파워 유제 250ml", price: 2695.0 },
+            { name: "킬파프 리퀴드케이 48일 리필", price: 1210.0 }, { name: "제트파워 앤트킬(6개입)", price: 1870.0 },
+            { name: "마우스올킬 블럭 100g", price: 1760.0 }, { name: "파워킬 맥스 100g", price: 2310.0 },
+            { name: "노런 쥐 끈끈이 트랩 1갑*2매", price: 880.0 }, { name: "노런 왕파리끈끈이 1갑*5매", price: 468.0 },
+            { name: "마우스킹 산제 100g", price: 2750.0 }, { name: "스카이원 블랙키토 카트리지 5매", price: 2750.0 },
+            { name: "킬파프 어웨이 에어로졸 200ml", price: 2442.0 }, { name: "잡스에프엑스마일드가드 200ml", price: 3190.0 },
+            { name: "굿나잇에스매트 60매", price: 2376.0 }, { name: "킬파프 내츄럴 초파리 유제 290ml", price: 3058.0 },
+            { name: "킬파프 초파리트랩 15ml", price: 4257.0 }, { name: "킬파프 어웨이 에어로졸 100ml", price: 2079.0 },
+            { name: "삼현소독용에탄올 83% 500ml", price: 1450.0 }, { name: "쿠마펜펠렛 100g", price: 1700.0 },
+            { name: "크로바 부속품 약제마개", price: 2200.0 }, { name: "맥스포스 셀렉트 이지겔 20g", price: 5720.0 },
+            { name: "라쿠민 티피 1kg", price: 26400.0 }, { name: "엠트랩 골드 글루페이퍼 1set*5매", price: 2750.0 },
+            { name: "울트라357 카트리지 1set (상,하)", price: 1320.0 }, { name: "킬파프 진드기 싹 액제 400ml", price: 3619.0 },
+            { name: "피프로겔(시린지) 35g", price: 1650.0 }, { name: "싸이언 홀 카트리지", price: 990.0 },
+            { name: "라쿠민 티피 100g", price: 3520.0 }, { name: "OEM 아로마 쥐 끈끈이 1갑*2매", price: 880.0 },
+            { name: "OEM 아로마 M 트랩 1줄*4칸", price: 143.0 }, { name: "IVT에어졸 500ml", price: 2255.0 },
+            { name: "킬파프 전기매트 훈증기", price: 3388.0 }, { name: "삼현소독용에탄올 83% 1L", price: 2450.0 },
+            { name: "울트라맥스(겔) 튜브 40g", price: 3000.0 }, { name: "윙집 카트리지", price: 990.0 },
+            { name: "쿠마펜쥐킬(블록) 100g", price: 2200.0 }, { name: "프리엠 P-1 카트리지", price: 1100.0 },
+            { name: "비오킬 500ml", price: 7000.0 }, { name: "윈디 카트리지", price: 1320.0 },
+            { name: "블루버드 카트리지 1set (상,하)", price: 1320.0 }, { name: "두더지 싹 100g", price: 2200.0 },
+            { name: "크로바 부속품 호스 1.5m", price: 3080.0 }, { name: "크로바 부속품 손잡이", price: 3520.0 },
+            { name: "NEC 20W 유문등", price: 8250.0 }, { name: "필립스 24W 유문등", price: 7700.0 },
+            { name: "무무스가드액 80ml", price: 3500.0 }, { name: "연예인 마스크", price: 0 },
+            { name: "구서터널(小)", price: 1320.0 }, { name: "무무스가드 플러스(60ml))", price: 4200.0 },
+            { name: "다이아제타 산제 350g", price: 6000.0 }, { name: "닥터크린 액제 1L", price: 11000.0 },
+            { name: "잡스울트라에어솔(레몬향) 500ml", price: 3465.0 }, { name: "라쿠민 페이스트 100g(10g*10개)", price: 3850.0 },
+            { name: "닥터크린 450ml", price: 3500.0 }, { name: "조은 소독용 에탄올 95% 4L", price: 14000.0 },
+            { name: "울트라맥스(겔) 220g", price: 9000.0 }, { name: "벅스올킬 유제 500ml", price: 3300.0 },
+            { name: "울트라맥스(겔) 시린지 35g", price: 3800.0 }, { name: "노런 하드보드 1갑*2매", price: 1122.0 },
+            { name: "킬파프 좀벌레 제로 (서랍장용) 20개입", price: 5082.0 }, { name: "앤트라이온 30g", price: 5500.0 },
+            { name: "비오샷(수성/저독성) 500ml", price: 3850.0 }, { name: "필립스 15W 유문등", price: 5830.0 },
+            { name: "잡스 스톰 500g", price: 10450.0 }, { name: "킬파프 리퀴드케이 (코드형)", price: 4950.0 },
+            { name: "맥스포스 퀀텀 12g", price: 5390.0 }, { name: "무무스가드플러스(110ml)", price: 5800.0 },
+            { name: "국보 레전드 겔(시린지) 35g", price: 4000.0 }, { name: "실바니아 36W 유문등", price: 6380.0 },
+            { name: "15W 포충등 (U자형)", price: 6600.0 }, 
+            { name: "유선형 쥐 먹이상자", price: 1320.0 }, { name: "아임파인 피톤치드살균제 500ml", price: 5500.0 },
+            { name: "삼현소독용에탄올 83% 4L", price: 8800.0 }, { name: "새부리형 마스크 (퓨어화이트) 대형 1봉지*10매입", price: 88.0 },
+            { name: "더킬존 1L", price: 7920.0 }, { name: "쿠마펜펠렛 500g", price: 6500.0 },
+            { name: "싸이퍼킬 유제 1L", price: 15500.0 }, { name: "맥스포스 셀렉트 이지겔 230g", price: 19250.0 },
+            { name: "필립스 18W 유문등", price: 7150.0 }, { name: "킬파프 진드기싹 액제 290mL", price: 3135.0 },
+            { name: "마우스올킬 블럭 500g", price: 7700.0 }, { name: "잡스개미용과립 250g", price: 26400.0 },
+            { name: "벤주론 타블릿 10g (1g * 10)", price: 4400.0 }, { name: "무무스가드플러스(200ml)", price: 9000.0 },
+            { name: "프로텍 유제 500ml", price: 16500.0 }, { name: "피프로앤트겔(튜브) 30g", price: 3300.0 },
+            { name: "킬파프 리퀴드케이 (플러그형)", price: 4290.0 }, { name: "쿠마펜쥐킬(블록) 500g", price: 8800.0 },
+            { name: "제타킬(유성/고독성) 300ml", price: 5500.0 }, { name: "파워탈취제(캔) 280ml", price: 5500.0 },
+            { name: "크로바 압축 분무기 3L", price: 27500.0 }, { name: "애니스톱", price: 9350.0 },
+            { name: "크린베이트 앤트과립 100g", price: 9500.0 },
+            { name: "잡스울트라프라임겔 230g", price: 5500.0 }, { name: "롱다운플러스 1L", price: 24000.0 },
+            { name: "외곽용 쥐 박스", price: 3080.0 }, { name: "비오싸이퍼킬유제 1L", price: 13200.0 },
+            { name: "크로바 압축 분무기 5L", price: 29700.0 }, { name: "크로바 부속품 압축봉 3L,5L호환", price: 10450.0 },
+            { name: "마우스킹 산제 1kg", price: 17600.0 }, { name: "잡스화이트펜스플러스에어로솔 400ml", price: 3960.0 },
+            { name: "크로바 부속품 2단노즐대 98cm", price: 7700.0 }, { name: "람다킬 MC 1L", price: 35000.0 },
+            { name: "페스트델타 1L", price: 13200.0 }, { name: "잡스앤트올킬 30g", price: 4620.0 },
+            { name: "스카이F 카트리지 B", price: 594.0 }, { name: "5W 포충등 (LED)", price: 22000.0 },
+            { name: "피프로겔 프리미엄 250g", price: 7150.0 }, { name: "제타겔 250g", price: 6050.0 },
+            { name: "프로텍홈 290ml", price: 6000.0 }, { name: "더킬존 2.1L", price: 14080.0 },
+            { name: "잡스올킬스마트 1L", price: 18150.0 }, { name: "잡스버그킬유제 1L", price: 22550.0 },
+            { name: "비산방지램프 TL-D BL 18W [필립스]", price: 12100.0 }, { name: "페스트제로 1L", price: 14850.0 },
+            { name: "비산방지램프 필립스 actinic BL 15W [15W]", price: 11000.0 },
+            { name: "비오델타유제 1L", price: 16500.0 }, { name: "비오람다유제 1L", price: 16500.0 },
+            { name: "비오테메과립 1kg", price: 15400.0 }, { name: "비산방지BL램프 PL-L 24W [필립스]", price: 13200.0 },
+            { name: "비오테메유제 500ml", price: 18700.0 }, { name: "벅스존 개미과립 250g", price: 22000.0 },
+            { name: "비오피레트린유제 1L", price: 24200.0 }, { name: "실바니아 비산방지램프 BL PL-L [36W]", price: 14300.0 },
+            { name: "엠트랩 골드 포충기", price: 33000.0 }, { name: "킬라바트위스트 100g (5g x 10ea 2bag)", price: 24000.0 },
+            { name: "닥터크린 4L", price: 22000.0 }, { name: "스카이원 스카이트랩", price: 33000.0 },
+            { name: "더킬존 4.2L", price: 23100.0 }, { name: "에토파워킬 1L", price: 27500.0 },
+            { name: "비산방지 NEC BL20 [FL20SBL]", price: 16280.0 }, { name: "벤주론 타블릿 100g", price: 19800.0 },
+            { name: "스마트캐치 카트리지 A 1set (상,하)", price: 825.0 }, { name: "비오에토유제 1L", price: 29700.0 },
+            { name: "조은 소독용 에탄올 95% 18L", price: 36000.0 },
+            { name: "스카이원 스카이엠 포충기 BLB", price: 55000.0 },
+            { name: "스카이원 스카이엠 포충기 LED", price: 77000.0 }, { name: "비오샷(수성/저독성) 5L", price: 33000.0 },
+            { name: "비오페노킬유제 1L", price: 33000.0 },
+            { name: "스카이원 블랙키토 LED 포충기", price: 60500.0 }, { name: "삼현소독용에탄올 83% 18L", price: 35000.0 },
+            { name: "스카이원 블랙키토 BLB 포충기", price: 49500.0 }, { name: "비오킬 5L", price: 59000.0 },
+            { name: "아베이트200E유제 500ml", price: 2580.0 }, { name: "더킬존 20L", price: 96800.0 },
+            { name: "벌레싹(집먼지/새집증후군) 5L", price: 49500.0 }, { name: "크린케어액(희석액) 20L", price: 66000.0 },
+            { name: "쿠마펜쥐킬(블록) 5kg", price: 77000.0 }, { name: "아사바태화 인력분무기 QS-5(ST)", price: 85800.0 },
+            { name: "스카이에프 포충기", price: 66000.0 }, { name: "스마트캐치 포충기", price: 70000.0 },
+            { name: "스카이에프 플러스 포충기", price: 77000.0 }, { name: "벅스올킬 유제 18L", price: 80300.0 },
+            { name: "비오킬 18L", price: 179000.0 }, { name: "바이러건(민트)", price: 748000.0 }
+        ];
+        const uniqueProductData = productData.filter((product, index, self) =>
+            index === self.findIndex((p) => (
+                p.name === product.name // 이름이 같은 첫 번째 항목만 유지하여 중복 제거
+            ))
+        );
+
         const form = document.getElementById('marginForm');
         const salePriceInput = document.getElementById('salePrice');
-        const purchasePriceInput = document.getElementById('purchasePrice');
+        
+        const productSearchInput = document.getElementById('productSearchInput');
+        const productDropdown = document.getElementById('productDropdown');
+        const unitPurchasePriceInput = document.getElementById('unitPurchasePrice'); // 단가 필드
+        const quantityInput = document.getElementById('quantity'); // 수량 필드
+        const totalPurchasePriceInput = document.getElementById('totalPurchasePrice'); // 총 매입가 필드
+        const decreaseQuantityButton = document.getElementById('decreaseQuantity');
+        const increaseQuantityButton = document.getElementById('increaseQuantity');
+
+
         const customerShippingTypeRadios = document.querySelectorAll('input[name="customerShippingType"]');
         const customerShippingAmountGroup = document.getElementById('customerShippingAmountGroup');
         const advertisingRadios = document.querySelectorAll('input[name="advertising"]');
@@ -360,34 +554,127 @@
         const resultsDiv = document.getElementById('results');
         const errorMessageDiv = document.getElementById('errorMessage');
 
-        // 천단위 콤마 포맷 함수
         function formatNumberWithCommas(number) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            if (number === null || number === undefined || isNaN(parseFloat(number))) return '';
+            // 소수점 이하 자릿수를 유지하면서 포맷팅
+            const parts = number.toString().split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return parts.join('.');
         }
 
-        // 입력 값에서 콤마 제거 함수
+
         function unformatNumber(value) {
+            if (typeof value !== 'string') return '';
             return value.replace(/,/g, '');
         }
 
-        // 판매가격, 상품매입가 입력 시 천단위 콤마 추가
-        [salePriceInput, purchasePriceInput].forEach(input => {
-            input.addEventListener('input', function(e) {
-                let value = unformatNumber(e.target.value);
-                if (!isNaN(value) && value.length > 0) {
-                    e.target.value = formatNumberWithCommas(value);
-                } else if (value.length === 0) {
-                     e.target.value = '';
-                } else {
-                    // 숫자가 아닌 입력이 들어오면 마지막 유효한 값으로 되돌리거나, 입력 자체를 막을 수 있습니다.
-                    // 여기서는 일단 비워두거나, 이전 값으로 되돌리는 로직 추가 가능
-                    // 예시: e.target.value = e.target.value.slice(0, -1); // 마지막 글자 제거
-                }
-            });
+        function calculateAndUpdateTotalPurchasePrice() {
+            const unitPrice = parseFloat(unformatNumber(unitPurchasePriceInput.value));
+            const quantity = parseInt(quantityInput.value);
+
+            if (!isNaN(unitPrice) && !isNaN(quantity) && quantity > 0) {
+                const total = unitPrice * quantity;
+                totalPurchasePriceInput.value = formatNumberWithCommas(total.toFixed(2)); 
+            } else if (!isNaN(unitPrice) && (isNaN(quantity) || quantity <=0 )) { 
+                 totalPurchasePriceInput.value = formatNumberWithCommas(unitPrice.toFixed(2)); 
+            }
+             else {
+                totalPurchasePriceInput.value = '';
+            }
+        }
+        
+        quantityInput.addEventListener('input', calculateAndUpdateTotalPurchasePrice);
+        // unitPurchasePriceInput은 readonly이므로 직접 입력에 대한 이벤트 리스너는 불필요, 상품 선택 시 업데이트
+        
+        // 수량 조절 버튼 이벤트 리스너
+        decreaseQuantityButton.addEventListener('click', function() {
+            let currentQuantity = parseInt(quantityInput.value);
+            if (currentQuantity > 1) {
+                quantityInput.value = currentQuantity - 1;
+                calculateAndUpdateTotalPurchasePrice();
+            }
+        });
+
+        increaseQuantityButton.addEventListener('click', function() {
+            let currentQuantity = parseInt(quantityInput.value);
+            quantityInput.value = currentQuantity + 1;
+            calculateAndUpdateTotalPurchasePrice();
         });
 
 
-        // 고객부담 배송비 금액 입력란 보이기/숨기기
+        [salePriceInput].forEach(input => {
+            input.addEventListener('input', function(e) {
+                let value = unformatNumber(e.target.value);
+                if (!isNaN(parseFloat(value)) && isFinite(value) || value === "" || value === "-") { 
+                    if (value.endsWith('.') && (value.match(/\./g) || []).length <= 1) {
+                         e.target.value = value;
+                    } else if (value === "" || value === "-") {
+                        e.target.value = value;
+                    }
+                    else {
+                        const parts = value.split('.');
+                        parts[0] = formatNumberWithCommas(parts[0]);
+                        e.target.value = parts.join('.');
+                    }
+                } else if (e.target.value !== "") { 
+                     e.target.value = e.target.value.slice(0, -1);
+                }
+            });
+            input.addEventListener('blur', function(e) {
+                let value = unformatNumber(e.target.value);
+                if (value !== "" && !isNaN(parseFloat(value)) && isFinite(value)) {
+                     const parts = value.split('.');
+                     parts[0] = formatNumberWithCommas(parts[0]);
+                     e.target.value = parts.join('.');
+                }
+            });
+        });
+        
+        productSearchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            productDropdown.innerHTML = ''; 
+            if (searchTerm.length === 0) {
+                productDropdown.classList.add('hidden');
+                unitPurchasePriceInput.value = ''; // 검색어 없을 시 단가 초기화
+                quantityInput.value = 1; // 검색어 없을 시 수량 1로 초기화
+                calculateAndUpdateTotalPurchasePrice(); // 검색어 없을 시 총 매입가 초기화
+                return;
+            }
+
+            const filteredProducts = uniqueProductData.filter(product => 
+                product.name.toLowerCase().includes(searchTerm)
+            );
+
+            if (filteredProducts.length > 0) {
+                filteredProducts.forEach(product => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('product-dropdown-item');
+                    itemDiv.innerHTML = `${product.name} <span class="product-price">(${formatNumberWithCommas(product.price)}원)</span>`;
+                    itemDiv.addEventListener('click', function() {
+                        productSearchInput.value = product.name;
+                        unitPurchasePriceInput.value = formatNumberWithCommas(product.price); 
+                        quantityInput.value = 1; 
+                        calculateAndUpdateTotalPurchasePrice(); 
+                        productDropdown.classList.add('hidden');
+                    });
+                    productDropdown.appendChild(itemDiv);
+                });
+                productDropdown.classList.remove('hidden');
+            } else {
+                productDropdown.classList.add('hidden');
+                 unitPurchasePriceInput.value = ''; // 검색 결과 없을 시 단가 초기화
+                 quantityInput.value = 1; // 검색 결과 없을 시 수량 1로 초기화
+                 calculateAndUpdateTotalPurchasePrice(); // 검색 결과 없을 시 총 매입가 초기화
+            }
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!productSearchInput.contains(event.target) && !productDropdown.contains(event.target)) {
+                productDropdown.classList.add('hidden');
+            }
+        });
+
+
         customerShippingTypeRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.value === 'paid') {
@@ -400,7 +687,6 @@
             });
         });
 
-        // 광고비 입력란 보이기/숨기기
         advertisingRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.value === 'yes') {
@@ -429,9 +715,9 @@
             errorMessageDiv.textContent = '';
             resultsDiv.classList.remove('show');
 
-            // 입력 값 가져오기 (콤마 제거 후 숫자로 변환)
             const salePrice = parseFloat(unformatNumber(salePriceInput.value));
-            const purchasePrice = parseFloat(unformatNumber(purchasePriceInput.value));
+            const totalPurchasePrice = parseFloat(unformatNumber(totalPurchasePriceInput.value)); 
+
             const salesType = document.querySelector('input[name="salesType"]:checked').value;
             const customerShippingType = document.querySelector('input[name="customerShippingType"]:checked').value;
             const customerShippingAmountSelected = customerShippingType === 'paid' ? parseFloat(document.getElementById('customerShippingAmount').value) : 0;
@@ -441,51 +727,43 @@
             const advertisingRateInput = document.getElementById('advertisingRate');
             const advertisingRate = isAdvertising ? parseFloat(advertisingRateInput.value) : 0;
 
-            // 필수 입력 값 검증
             if (isNaN(salePrice) || salePrice <= 0) {
                 displayError("💰 판매가격을 올바르게 입력해주세요 (0보다 큰 숫자).");
                 return;
             }
-            if (isNaN(purchasePrice) || purchasePrice < 0) { 
-                displayError("🛒 상품매입가를 올바르게 입력해주세요 (0 이상).");
+            if (isNaN(totalPurchasePrice) || totalPurchasePrice < 0) { 
+                displayError("🛒 상품을 선택하고 유효한 수량을 입력하여 총 매입가를 확인해주세요.");
                 return;
             }
+            if (productSearchInput.value && unitPurchasePriceInput.value === "") { // 상품 검색은 했는데 단가가 비어있는 경우 (상품 선택 안하고 직접 검색어만 남긴 경우)
+                displayError("🔍 검색된 상품 목록에서 상품을 선택해주세요, 또는 검색어를 지워주세요.");
+                return;
+            }
+
+
             if (isAdvertising && (isNaN(advertisingRate) || advertisingRate < 0)) {
                 displayError("📊 광고비를 올바르게 입력해주세요 (0 이상).");
                 return;
             }
 
-            // 1. 채널 수수료율 결정
             let channelFeeRateValue;
             if (salesType === 'business' || salesType === 'member') {
                 channelFeeRateValue = 0.037;
-            } else { // general
+            } else { 
                 channelFeeRateValue = 0.13;
             }
 
-            // 2. 채널 수수료 계산
             const channelFee = salePrice * channelFeeRateValue;
-
-            // 3. 고객부담 배송비 실제 금액 (유료배송 시)
             const actualCustomerShippingAmount = customerShippingAmountSelected;
             const customerShippingSurchargeRate = 0.033; 
-
-            // 4. 고객부담 배송비에 대한 수수료 계산 (3.3%)
             const customerShippingSurcharge = actualCustomerShippingAmount * customerShippingSurchargeRate;
-
-            // 5. 판매채널 정산금액 계산
             const salesChannelSettlement = salePrice + actualCustomerShippingAmount - channelFee - customerShippingSurcharge;
-            
-            // 6. 포장비용 계산
             const packagingCost = salePrice * packagingCostRate;
-
-            // 7. 광고 전 판매 마진 계산
-            const marginBeforeAdvertising = salesChannelSettlement - purchasePrice - packagingCost - outgoingShippingCost;
+            const marginBeforeAdvertising = salesChannelSettlement - totalPurchasePrice - packagingCost - outgoingShippingCost;
             
             let finalMarginKRW = marginBeforeAdvertising;
             let advertisingCost = 0;
 
-            // 8. 광고비 계산 및 최종 마진 조정 (광고 집행 시)
             const advertisingCostItemDiv = document.getElementById('resAdvertisingCostItem');
             if (isAdvertising) {
                 advertisingCost = salePrice * (advertisingRate / 100);
@@ -495,21 +773,16 @@
                  advertisingCostItemDiv.classList.add('hidden');
             }
 
-            // 9. 최종 판매 마진율 계산
             const finalMarginPercentage = salePrice > 0 ? (finalMarginKRW / salePrice) * 100 : 0;
 
-            // 결과 표시 (상세 항목 추가)
             document.getElementById('resSalePrice').textContent = `${formatNumberWithCommas(Math.round(salePrice))} 원`;
             document.getElementById('resCustomerShippingAmount').textContent = `${formatNumberWithCommas(Math.round(actualCustomerShippingAmount))} 원`;
             document.getElementById('resChannelFee').textContent = `- ${formatNumberWithCommas(Math.round(channelFee))} 원 (${(channelFeeRateValue * 100).toFixed(1)}%)`;
             document.getElementById('resCustomerShippingSurcharge').textContent = `- ${formatNumberWithCommas(Math.round(customerShippingSurcharge))} 원 (${(customerShippingSurchargeRate * 100).toFixed(1)}%)`;
-            
             document.getElementById('salesChannelSettlementResult').textContent = `${formatNumberWithCommas(Math.round(salesChannelSettlement))} 원`;
-            
-            document.getElementById('resPurchasePrice').textContent = `- ${formatNumberWithCommas(Math.round(purchasePrice))} 원`;
+            document.getElementById('resPurchasePrice').textContent = `- ${formatNumberWithCommas(Math.round(totalPurchasePrice))} 원`; 
             document.getElementById('resPackagingCost').textContent = `- ${formatNumberWithCommas(Math.round(packagingCost))} 원 (${(packagingCostRate * 100).toFixed(0)}%)`;
             document.getElementById('resOutgoingShippingCost').textContent = `- ${formatNumberWithCommas(Math.round(outgoingShippingCost))} 원`;
-            
             document.getElementById('resMarginBeforeAdvertising').textContent = `${formatNumberWithCommas(Math.round(marginBeforeAdvertising))} 원`;
 
             if(isAdvertising) {
@@ -537,8 +810,6 @@
             setTimeout(() => { 
                  resultsDiv.classList.add('show');
             }, 50);
-
-
         });
 
         function displayError(message) {
@@ -547,6 +818,9 @@
             resultsDiv.classList.add('hidden'); 
             resultsDiv.classList.remove('show'); 
         }
+
+        // 초기 총 매입가 계산 (페이지 로드 시 수량이 1이므로)
+        calculateAndUpdateTotalPurchasePrice();
     </script>
 </body>
 </html>
