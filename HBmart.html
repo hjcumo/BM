@@ -178,28 +178,28 @@
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
-    <div class="bg-white p-6 sm:p-10 rounded-xl shadow-2xl w-full max-w-3xl calculator-container"> <!-- max-width 증가 -->
+    <div class="bg-white p-6 sm:p-10 rounded-xl shadow-2xl w-full max-w-3xl calculator-container">
         <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-8 sm:mb-10">
             <span class="emoji" role="img" aria-label="calculator">🐜</span> HB판매 마진 계산기
         </h1>
 
-        <form id="marginForm" class="space-y-8"> <!-- space-y 증가 -->
+        <form id="marginForm" class="space-y-8">
             <!-- 판매 정보 -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
                 <div class="input-group">
                     <label for="salePrice" class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="money bag">💰</span>판매가격 (원)</label>
-                    <input type="number" id="salePrice" name="salePrice" placeholder="예: 42980" required class="number-input mt-1 block w-full input-field">
+                    <input type="text" id="salePrice" name="salePrice" placeholder="예: 42,980" required class="number-input mt-1 block w-full input-field"> <!-- type="text"로 변경 -->
                 </div>
                 <div class="input-group">
                     <label for="purchasePrice" class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="shopping cart">🛒</span>상품매입가 (원)</label>
-                    <input type="number" id="purchasePrice" name="purchasePrice" placeholder="예: 33000" required class="number-input mt-1 block w-full input-field">
+                    <input type="text" id="purchasePrice" name="purchasePrice" placeholder="예: 33,000" required class="number-input mt-1 block w-full input-field"> <!-- type="text"로 변경 -->
                 </div>
             </div>
 
             <!-- 판매 타입 -->
             <div class="input-group">
                 <label class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="briefcase">🧑‍💼</span>판매타입 (*사업자,회원=>Cafe24 자사몰)</label>
-                <div class="mt-2 space-y-2 sm:space-y-0 sm:flex sm:space-x-6"> <!-- space-x 증가 -->
+                <div class="mt-2 space-y-2 sm:space-y-0 sm:flex sm:space-x-6">
                     <div class="flex items-center">
                         <input id="typeBusiness" name="salesType" type="radio" value="business" checked class="focus:ring-indigo-500 h-5 w-5 text-indigo-600 border-gray-300">
                         <label for="typeBusiness" class="ml-2 block text-sm radio-label">사업자 (3.7%)</label>
@@ -216,7 +216,7 @@
             </div>
 
             <!-- 고객 부담 배송비 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 items-start"> <!-- items-start 추가 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 items-start">
                 <div class="input-group">
                     <label class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="delivery truck">🚚</span>고객부담 배송비</label>
                     <div class="mt-2 space-y-2">
@@ -290,9 +290,9 @@
         </form>
 
         <!-- 결과 표시 -->
-        <div id="results" class="mt-10 results-card"> <!-- mt 증가 -->
-            <h2 class="text-2xl sm:text-3xl font-semibold results-title mb-6 p-6">계산 결과 상세</h2> <!-- 패딩 추가 -->
-            <div class="p-6 pt-0 space-y-0"> <!-- 내부 패딩 조정 -->
+        <div id="results" class="mt-10 results-card">
+            <h2 class="text-2xl sm:text-3xl font-semibold results-title mb-6 p-6">계산 결과 상세</h2>
+            <div class="p-6 pt-0 space-y-0">
                 <!-- 상세 항목 시작 -->
                 <div class="result-item flex justify-between items-center">
                     <strong class="text-sm"><span class="emoji" role="img" aria-label="price tag">🏷️</span>판매 가격:</strong>
@@ -334,7 +334,7 @@
                     <strong class="text-sm"><span class="emoji" role="img" aria-label="decreasing chart">📉</span>(-) 광고비:</strong>
                     <span id="resAdvertisingCost" class="text-sm font-medium">0 원 (0%)</span>
                 </div>
-                 <hr class="my-4 border-gray-300"> <!-- my 증가 -->
+                 <hr class="my-4 border-gray-300">
                 <div class="result-item flex justify-between items-center mt-4 final-summary-item">
                     <strong class="text-base"><span class="emoji" role="img" aria-label="check mark">✅</span>최종 판매 마진 (금액):</strong>
                     <span id="finalMarginKRWResult" class="font-bold">0 원</span>
@@ -346,11 +346,13 @@
                 <!-- 상세 항목 끝 -->
             </div>
         </div>
-         <div id="errorMessage" class="mt-6 error-message hidden"></div> <!-- mt 증가 및 스타일 클래스 적용 -->
+         <div id="errorMessage" class="mt-6 error-message hidden"></div>
     </div>
 
     <script>
         const form = document.getElementById('marginForm');
+        const salePriceInput = document.getElementById('salePrice');
+        const purchasePriceInput = document.getElementById('purchasePrice');
         const customerShippingTypeRadios = document.querySelectorAll('input[name="customerShippingType"]');
         const customerShippingAmountGroup = document.getElementById('customerShippingAmountGroup');
         const advertisingRadios = document.querySelectorAll('input[name="advertising"]');
@@ -358,12 +360,39 @@
         const resultsDiv = document.getElementById('results');
         const errorMessageDiv = document.getElementById('errorMessage');
 
+        // 천단위 콤마 포맷 함수
+        function formatNumberWithCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // 입력 값에서 콤마 제거 함수
+        function unformatNumber(value) {
+            return value.replace(/,/g, '');
+        }
+
+        // 판매가격, 상품매입가 입력 시 천단위 콤마 추가
+        [salePriceInput, purchasePriceInput].forEach(input => {
+            input.addEventListener('input', function(e) {
+                let value = unformatNumber(e.target.value);
+                if (!isNaN(value) && value.length > 0) {
+                    e.target.value = formatNumberWithCommas(value);
+                } else if (value.length === 0) {
+                     e.target.value = '';
+                } else {
+                    // 숫자가 아닌 입력이 들어오면 마지막 유효한 값으로 되돌리거나, 입력 자체를 막을 수 있습니다.
+                    // 여기서는 일단 비워두거나, 이전 값으로 되돌리는 로직 추가 가능
+                    // 예시: e.target.value = e.target.value.slice(0, -1); // 마지막 글자 제거
+                }
+            });
+        });
+
+
         // 고객부담 배송비 금액 입력란 보이기/숨기기
         customerShippingTypeRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.value === 'paid') {
                     customerShippingAmountGroup.classList.remove('hidden');
-                    customerShippingAmountGroup.classList.add('opacity-100', 'transform', 'translate-y-0'); // 애니메이션 효과
+                    customerShippingAmountGroup.classList.add('opacity-100', 'transform', 'translate-y-0'); 
                 } else {
                     customerShippingAmountGroup.classList.add('hidden');
                     customerShippingAmountGroup.classList.remove('opacity-100', 'transform', 'translate-y-0');
@@ -386,7 +415,7 @@
                 }
             });
         });
-        // 초기 hidden 클래스가 있는 요소에 애니메이션을 위한 클래스 추가
+        
         [customerShippingAmountGroup, advertisingCostGroup].forEach(el => {
             if(el.classList.contains('hidden')) {
                 el.classList.add('opacity-0', 'transform', '-translate-y-2', 'transition-all', 'duration-300', 'ease-out');
@@ -396,15 +425,13 @@
 
         form.addEventListener('submit', function(event) {
             event.preventDefault();
-            errorMessageDiv.classList.add('hidden'); // 이전 에러 메시지 숨김
+            errorMessageDiv.classList.add('hidden'); 
             errorMessageDiv.textContent = '';
-             // 결과 카드 숨겼다가 다시 보이게 해서 애니메이션 트리거
             resultsDiv.classList.remove('show');
 
-
-            // 입력 값 가져오기
-            const salePrice = parseFloat(document.getElementById('salePrice').value);
-            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
+            // 입력 값 가져오기 (콤마 제거 후 숫자로 변환)
+            const salePrice = parseFloat(unformatNumber(salePriceInput.value));
+            const purchasePrice = parseFloat(unformatNumber(purchasePriceInput.value));
             const salesType = document.querySelector('input[name="salesType"]:checked').value;
             const customerShippingType = document.querySelector('input[name="customerShippingType"]:checked').value;
             const customerShippingAmountSelected = customerShippingType === 'paid' ? parseFloat(document.getElementById('customerShippingAmount').value) : 0;
@@ -419,7 +446,7 @@
                 displayError("💰 판매가격을 올바르게 입력해주세요 (0보다 큰 숫자).");
                 return;
             }
-            if (isNaN(purchasePrice) || purchasePrice < 0) { // 매입가는 0일 수도 있음
+            if (isNaN(purchasePrice) || purchasePrice < 0) { 
                 displayError("🛒 상품매입가를 올바르게 입력해주세요 (0 이상).");
                 return;
             }
@@ -441,7 +468,7 @@
 
             // 3. 고객부담 배송비 실제 금액 (유료배송 시)
             const actualCustomerShippingAmount = customerShippingAmountSelected;
-            const customerShippingSurchargeRate = 0.033; // 고정 배송비 수수료율
+            const customerShippingSurchargeRate = 0.033; 
 
             // 4. 고객부담 배송비에 대한 수수료 계산 (3.3%)
             const customerShippingSurcharge = actualCustomerShippingAmount * customerShippingSurchargeRate;
@@ -472,27 +499,27 @@
             const finalMarginPercentage = salePrice > 0 ? (finalMarginKRW / salePrice) * 100 : 0;
 
             // 결과 표시 (상세 항목 추가)
-            document.getElementById('resSalePrice').textContent = `${Math.round(salePrice).toLocaleString()} 원`;
-            document.getElementById('resCustomerShippingAmount').textContent = `${Math.round(actualCustomerShippingAmount).toLocaleString()} 원`;
-            document.getElementById('resChannelFee').textContent = `- ${Math.round(channelFee).toLocaleString()} 원 (${(channelFeeRateValue * 100).toFixed(1)}%)`;
-            document.getElementById('resCustomerShippingSurcharge').textContent = `- ${Math.round(customerShippingSurcharge).toLocaleString()} 원 (${(customerShippingSurchargeRate * 100).toFixed(1)}%)`;
+            document.getElementById('resSalePrice').textContent = `${formatNumberWithCommas(Math.round(salePrice))} 원`;
+            document.getElementById('resCustomerShippingAmount').textContent = `${formatNumberWithCommas(Math.round(actualCustomerShippingAmount))} 원`;
+            document.getElementById('resChannelFee').textContent = `- ${formatNumberWithCommas(Math.round(channelFee))} 원 (${(channelFeeRateValue * 100).toFixed(1)}%)`;
+            document.getElementById('resCustomerShippingSurcharge').textContent = `- ${formatNumberWithCommas(Math.round(customerShippingSurcharge))} 원 (${(customerShippingSurchargeRate * 100).toFixed(1)}%)`;
             
-            document.getElementById('salesChannelSettlementResult').textContent = `${Math.round(salesChannelSettlement).toLocaleString()} 원`;
+            document.getElementById('salesChannelSettlementResult').textContent = `${formatNumberWithCommas(Math.round(salesChannelSettlement))} 원`;
             
-            document.getElementById('resPurchasePrice').textContent = `- ${Math.round(purchasePrice).toLocaleString()} 원`;
-            document.getElementById('resPackagingCost').textContent = `- ${Math.round(packagingCost).toLocaleString()} 원 (${(packagingCostRate * 100).toFixed(0)}%)`;
-            document.getElementById('resOutgoingShippingCost').textContent = `- ${Math.round(outgoingShippingCost).toLocaleString()} 원`;
+            document.getElementById('resPurchasePrice').textContent = `- ${formatNumberWithCommas(Math.round(purchasePrice))} 원`;
+            document.getElementById('resPackagingCost').textContent = `- ${formatNumberWithCommas(Math.round(packagingCost))} 원 (${(packagingCostRate * 100).toFixed(0)}%)`;
+            document.getElementById('resOutgoingShippingCost').textContent = `- ${formatNumberWithCommas(Math.round(outgoingShippingCost))} 원`;
             
-            document.getElementById('resMarginBeforeAdvertising').textContent = `${Math.round(marginBeforeAdvertising).toLocaleString()} 원`;
+            document.getElementById('resMarginBeforeAdvertising').textContent = `${formatNumberWithCommas(Math.round(marginBeforeAdvertising))} 원`;
 
             if(isAdvertising) {
-                document.getElementById('resAdvertisingCost').textContent = `- ${Math.round(advertisingCost).toLocaleString()} 원 (${advertisingRate.toFixed(0)}%)`;
+                document.getElementById('resAdvertisingCost').textContent = `- ${formatNumberWithCommas(Math.round(advertisingCost))} 원 (${advertisingRate.toFixed(0)}%)`;
             }
             
             const finalMarginKRWEl = document.getElementById('finalMarginKRWResult');
             const finalMarginPercentageEl = document.getElementById('finalMarginPercentageResult');
 
-            finalMarginKRWEl.textContent = `${Math.round(finalMarginKRW).toLocaleString()} 원 ${finalMarginKRW < 0 ? '(손실 😥)' : '(이익 �)'}`;
+            finalMarginKRWEl.textContent = `${formatNumberWithCommas(Math.round(finalMarginKRW))} 원 ${finalMarginKRW < 0 ? '(손실 😥)' : '(이익 😊)'}`;
             finalMarginPercentageEl.textContent = `${finalMarginPercentage.toFixed(2)} %`;
 
             finalMarginKRWEl.classList.remove('profit', 'loss');
@@ -506,8 +533,8 @@
                 finalMarginPercentageEl.classList.add('profit');
             }
             
-            resultsDiv.classList.remove('hidden'); // 먼저 hidden을 제거하고
-            setTimeout(() => { // 약간의 딜레이 후 show 클래스 추가하여 애니메이션 트리거
+            resultsDiv.classList.remove('hidden'); 
+            setTimeout(() => { 
                  resultsDiv.classList.add('show');
             }, 50);
 
@@ -517,8 +544,8 @@
         function displayError(message) {
             errorMessageDiv.textContent = message;
             errorMessageDiv.classList.remove('hidden');
-            resultsDiv.classList.add('hidden'); // 오류 발생 시 이전 결과 숨김
-            resultsDiv.classList.remove('show'); // 애니메이션 클래스도 제거
+            resultsDiv.classList.add('hidden'); 
+            resultsDiv.classList.remove('show'); 
         }
     </script>
 </body>
