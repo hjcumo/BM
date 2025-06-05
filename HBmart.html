@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            font-family: 'Inter', sans-serif; /* Tailwind's default sans-serif stack */
+            font-family: 'Inter', 'Noto Sans KR', sans-serif; /* Noto Sans KR 추가 */
         }
         .number-input::-webkit-outer-spin-button,
         .number-input::-webkit-inner-spin-button {
@@ -17,124 +17,222 @@
         .number-input {
             -moz-appearance: textfield;
         }
-        /* Custom styles for better visual appeal */
-        .input-group label {
-            color: #374151; /* gray-700 */
-            font-weight: 500; /* medium */
+        
+        /* 전체 컨테이너 */
+        .calculator-container {
+            transition: all 0.3s ease-in-out;
         }
+
+        /* 입력 그룹 */
+        .input-group label {
+            color: #4A5568; /* gray-700 (조금 더 부드럽게) */
+            font-weight: 500; 
+            display: flex; /* 이모지와 텍스트 정렬 */
+            align-items: center;
+        }
+        .input-group label .emoji {
+            margin-right: 0.5rem; /* 이모지와 텍스트 간격 */
+            font-size: 1.1em;
+        }
+
         .input-field, .select-field {
-            border-color: #D1D5DB; /* gray-300 */
-            border-radius: 0.375rem; /* rounded-md */
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+            border-color: #E2E8F0; /* gray-300 (조금 더 부드럽게) */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.75rem 1rem; /* p-3에서 p-4 정도로 키움 */
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px 0 rgba(0, 0, 0, 0.04); /* shadow-md */
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .input-field:focus, .select-field:focus {
-            border-color: #93C5FD; /* blue-300 */
-            box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.5); /* ring-blue-200 ring-opacity-50 */
+            border-color: #6366F1; /* indigo-500 */
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3); /* ring-indigo-300 ring-opacity-30 */
+            outline: none;
         }
+
         .radio-label {
-            color: #1F2937; /* gray-800 */
+            color: #2D3748; /* gray-800 (조금 더 진하게) */
+            transition: color 0.2s ease;
         }
+        input[type="radio"]:checked + .radio-label {
+            color: #4F46E5; /* indigo-600 */
+        }
+        input[type="radio"] {
+            transition: all 0.2s ease;
+        }
+        input[type="radio"]:focus {
+            ring-offset-color: white; /* 포커스 링 오프셋 색상 */
+        }
+
+
+        /* 버튼 */
         .calculate-button {
-            background-color: #3B82F6; /* blue-500 */
-            transition: background-color 0.3s ease;
+            background-color: #4F46E5; /* indigo-600 */
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600; /* semibold */
+            padding: 0.875rem 1.5rem; /* py-3.5 px-6 */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .calculate-button:hover {
-            background-color: #2563EB; /* blue-600 */
+            background-color: #4338CA; /* indigo-700 */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
+        .calculate-button:active {
+            transform: translateY(1px);
+            background-color: #3730A3; /* indigo-800 */
+        }
+
+        /* 결과 섹션 */
         .results-card {
-            background-color: #F9FAFB; /* gray-50 */
-            border: 1px solid #E5E7EB; /* gray-200 */
+            background-color: white;
+            border: 1px solid #E2E8F0; /* gray-200 */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03); /* shadow-lg */
+            opacity: 0; /* 초기에는 숨김 */
+            transform: translateY(20px); /* 아래에서 나타나는 효과 */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
+        .results-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .results-title {
-            color: #11182C; /* gray-900 */
-        }
-        .result-item strong {
-            color: #1F2937; /* gray-800 */
-            flex-shrink: 0; /* Prevent label from shrinking */
-            margin-right: 8px; /* Add some space between label and value */
-        }
-        .result-item span {
-            color: #4B5563; /* gray-600 */
-            text-align: right; /* Align value to the right */
-            word-break: keep-all; /* Prevent breaking numbers */
+            color: #1A202C; /* gray-900 */
+            border-bottom: 1px solid #E2E8F0;
+            padding-bottom: 0.75rem;
         }
         .result-item {
-             border-bottom: 1px solid #E5E7EB; /* gray-200 */
-             padding-bottom: 0.75rem; /* py-3 */
-             padding-top: 0.75rem; /* py-3 */
+             border-bottom: 1px dashed #E2E8F0; /* 구분선 점선으로 변경 */
+             padding: 1rem 0.5rem; /* 상하 패딩 증가, 좌우 패딩 약간 감소 */
+             transition: background-color 0.2s ease;
+        }
+        .result-item:hover {
+            background-color: #F7FAFC; /* gray-100 아주 연하게 */
+        }
+        .result-item strong {
+            color: #2D3748; /* gray-800 */
+            font-weight: 500; /* medium */
+            display: flex;
+            align-items: center;
+        }
+        .result-item strong .emoji {
+            margin-right: 0.5rem;
+            font-size: 1em;
+        }
+        .result-item span {
+            color: #4A5568; /* gray-700 */
+            font-weight: 500;
         }
         .result-item:last-child {
             border-bottom: none;
-            padding-bottom: 0;
         }
-         .result-item:first-child {
-            padding-top: 0;
+        .result-item:first-child {
+            padding-top: 0.5rem; /* 첫 항목 상단 패딩 조정 */
         }
+
+        /* 중간 합계 강조 */
         .summary-total {
-            background-color: #E0E7FF; /* indigo-100 for highlight */
-            padding: 0.75rem;
-            border-radius: 0.375rem; /* rounded-md */
+            background-color: #EEF2FF; /* indigo-50 */
+            padding: 1rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-top: 0.5rem !important;
+            margin-bottom: 0.5rem !important;
+            border-left: 4px solid #6366F1; /* indigo-500 */
         }
         .summary-total strong, .summary-total span {
             color: #3730A3; /* indigo-800 */
             font-weight: 600; /* semibold */
         }
+        
+        /* 최종 마진 강조 */
+        #finalMarginKRWResult.loss, #finalMarginPercentageResult.loss {
+            color: #E53E3E; /* red-600 */
+        }
+        #finalMarginKRWResult.profit, #finalMarginPercentageResult.profit {
+            color: #38A169; /* green-600 */
+        }
+
+        .final-summary-item strong{
+            font-size: 1.125rem; /* text-lg */
+        }
+        .final-summary-item span{
+            font-size: 1.25rem; /* text-xl */
+        }
+
+        /* 에러 메시지 */
+        .error-message {
+            background-color: #FFF5F5; /* red-50 */
+            color: #C53030; /* red-700 */
+            border: 1px solid #FC8181; /* red-300 */
+            border-left-width: 4px;
+            border-left-color: #E53E3E; /* red-600 */
+            padding: 1rem;
+            border-radius: 0.375rem; /* rounded-md */
+            transition: opacity 0.3s ease;
+        }
+         .hidden {
+            display: none !important; /* Tailwind hidden을 확실히 오버라이드 */
+        }
+
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
-    <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-2xl">
-        <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6 sm:mb-8">판매 마진 계산기</h1>
+    <div class="bg-white p-6 sm:p-10 rounded-xl shadow-2xl w-full max-w-3xl calculator-container"> <!-- max-width 증가 -->
+        <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-8 sm:mb-10">
+            <span class="emoji" role="img" aria-label="calculator">🐜</span> HB판매 마진 계산기
+        </h1>
 
-        <form id="marginForm" class="space-y-6">
+        <form id="marginForm" class="space-y-8"> <!-- space-y 증가 -->
             <!-- 판매 정보 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
                 <div class="input-group">
-                    <label for="salePrice" class="block text-sm font-medium text-gray-700 mb-1">판매가격 (원)</label>
-                    <input type="number" id="salePrice" name="salePrice" placeholder="예: 42980" required class="number-input mt-1 block w-full input-field p-2">
+                    <label for="salePrice" class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="money bag">💰</span>판매가격 (원)</label>
+                    <input type="number" id="salePrice" name="salePrice" placeholder="예: 42980" required class="number-input mt-1 block w-full input-field">
                 </div>
                 <div class="input-group">
-                    <label for="purchasePrice" class="block text-sm font-medium text-gray-700 mb-1">상품매입가 (원)</label>
-                    <input type="number" id="purchasePrice" name="purchasePrice" placeholder="예: 33000" required class="number-input mt-1 block w-full input-field p-2">
+                    <label for="purchasePrice" class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="shopping cart">🛒</span>상품매입가 (원)</label>
+                    <input type="number" id="purchasePrice" name="purchasePrice" placeholder="예: 33000" required class="number-input mt-1 block w-full input-field">
                 </div>
             </div>
 
             <!-- 판매 타입 -->
             <div class="input-group">
-                <label class="block text-sm font-medium text-gray-700 mb-1">판매타입 *사업자/회원 = Cafe(자사몰)</label>
-                <div class="mt-2 space-y-2 sm:space-y-0 sm:flex sm:space-x-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="briefcase">🧑‍💼</span>판매타입 (*사업자,회원=>Cafe24 자사몰)</label>
+                <div class="mt-2 space-y-2 sm:space-y-0 sm:flex sm:space-x-6"> <!-- space-x 증가 -->
                     <div class="flex items-center">
-                        <input id="typeBusiness" name="salesType" type="radio" value="business" checked class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
-                        <label for="typeBusiness" class="ml-2 block text-sm radio-label">사업자 (수수료 3.7%)</label>
+                        <input id="typeBusiness" name="salesType" type="radio" value="business" checked class="focus:ring-indigo-500 h-5 w-5 text-indigo-600 border-gray-300">
+                        <label for="typeBusiness" class="ml-2 block text-sm radio-label">사업자 (3.7%)</label>
                     </div>
                     <div class="flex items-center">
-                        <input id="typeMember" name="salesType" type="radio" value="member" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
-                        <label for="typeMember" class="ml-2 block text-sm radio-label">회원 (수수료 3.7%)</label>
+                        <input id="typeMember" name="salesType" type="radio" value="member" class="focus:ring-indigo-500 h-5 w-5 text-indigo-600 border-gray-300">
+                        <label for="typeMember" class="ml-2 block text-sm radio-label">회원 (3.7%)</label>
                     </div>
                     <div class="flex items-center">
-                        <input id="typeGeneral" name="salesType" type="radio" value="general" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
-                        <label for="typeGeneral" class="ml-2 block text-sm radio-label">일반 (수수료 13%)</label>
+                        <input id="typeGeneral" name="salesType" type="radio" value="general" class="focus:ring-indigo-500 h-5 w-5 text-indigo-600 border-gray-300">
+                        <label for="typeGeneral" class="ml-2 block text-sm radio-label">일반 (13%)</label>
                     </div>
                 </div>
             </div>
 
             <!-- 고객 부담 배송비 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 items-start"> <!-- items-start 추가 -->
                 <div class="input-group">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">고객부담 배송비</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="delivery truck">🚚</span>고객부담 배송비</label>
                     <div class="mt-2 space-y-2">
                         <div class="flex items-center">
-                            <input id="shippingFree" name="customerShippingType" type="radio" value="free" checked class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+                            <input id="shippingFree" name="customerShippingType" type="radio" value="free" checked class="focus:ring-indigo-500 h-5 w-5 text-indigo-600 border-gray-300">
                             <label for="shippingFree" class="ml-2 block text-sm radio-label">무료배송</label>
                         </div>
                         <div class="flex items-center">
-                            <input id="shippingPaid" name="customerShippingType" type="radio" value="paid" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+                            <input id="shippingPaid" name="customerShippingType" type="radio" value="paid" class="focus:ring-indigo-500 h-5 w-5 text-indigo-600 border-gray-300">
                             <label for="shippingPaid" class="ml-2 block text-sm radio-label">유료배송</label>
                         </div>
                     </div>
                 </div>
                 <div id="customerShippingAmountGroup" class="input-group hidden">
-                    <label for="customerShippingAmount" class="block text-sm font-medium text-gray-700 mb-1">고객부담 배송비 금액 (원)</label>
-                    <select id="customerShippingAmount" name="customerShippingAmount" class="mt-1 block w-full select-field p-2">
+                    <label for="customerShippingAmount" class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="package">📦</span>고객부담 배송비 금액 (원)</label>
+                    <select id="customerShippingAmount" name="customerShippingAmount" class="mt-1 block w-full select-field">
                         <option value="3000">3,000원</option>
                         <option value="5000">5,000원</option>
                     </select>
@@ -143,18 +241,18 @@
             </div>
 
             <!-- 판관비 항목 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
                 <div class="input-group">
-                    <label for="packagingCostRate" class="block text-sm font-medium text-gray-700 mb-1">포장비용 (인건비 포함)</label>
-                    <select id="packagingCostRate" name="packagingCostRate" class="mt-1 block w-full select-field p-2">
+                    <label for="packagingCostRate" class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="gift">🎁</span>포장비용 (인건비 포함)</label>
+                    <select id="packagingCostRate" name="packagingCostRate" class="mt-1 block w-full select-field">
                         <option value="0.02">상품판매가격 대비 2%</option>
                         <option value="0.03">상품판매가격 대비 3%</option>
                         <option value="0.04">상품판매가격 대비 4%</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label for="outgoingShippingCost" class="block text-sm font-medium text-gray-700 mb-1">출고배송비 (원)</label>
-                    <select id="outgoingShippingCost" name="outgoingShippingCost" class="mt-1 block w-full select-field p-2">
+                    <label for="outgoingShippingCost" class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="shipping box">🚛</span>출고배송비 (원)</label>
+                    <select id="outgoingShippingCost" name="outgoingShippingCost" class="mt-1 block w-full select-field">
                         <option value="2250">극소 - 2,250원</option>
                         <option value="2350">소1 - 2,350원</option>
                         <option value="2670">소2 - 2,670원</option>
@@ -167,88 +265,88 @@
 
             <!-- 광고비 항목 -->
             <div class="input-group">
-                <label class="block text-sm font-medium text-gray-700 mb-1">광고집행</label>
-                <div class="mt-2 space-y-2 sm:space-y-0 sm:flex sm:space-x-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="megaphone">📢</span>광고집행</label>
+                 <div class="mt-2 space-y-2 sm:space-y-0 sm:flex sm:space-x-6">
                     <div class="flex items-center">
-                        <input id="adNo" name="advertising" type="radio" value="no" checked class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+                        <input id="adNo" name="advertising" type="radio" value="no" checked class="focus:ring-indigo-500 h-5 w-5 text-indigo-600 border-gray-300">
                         <label for="adNo" class="ml-2 block text-sm radio-label">광고 안함</label>
                     </div>
                     <div class="flex items-center">
-                        <input id="adYes" name="advertising" type="radio" value="yes" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+                        <input id="adYes" name="advertising" type="radio" value="yes" class="focus:ring-indigo-500 h-5 w-5 text-indigo-600 border-gray-300">
                         <label for="adYes" class="ml-2 block text-sm radio-label">광고 함</label>
                     </div>
                 </div>
             </div>
             <div id="advertisingCostGroup" class="input-group hidden">
-                <label for="advertisingRate" class="block text-sm font-medium text-gray-700 mb-1">광고비 (%)</label>
-                <input type="number" id="advertisingRate" name="advertisingRate" placeholder="예: 25" class="number-input mt-1 block w-full input-field p-2">
+                <label for="advertisingRate" class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="bar chart">📊</span>광고비 (%)</label>
+                <input type="number" id="advertisingRate" name="advertisingRate" placeholder="예: 25" class="number-input mt-1 block w-full input-field">
                 <p class="mt-1 text-xs text-gray-500">판매가격 대비 광고비율(%) 입력</p>
             </div>
 
             <!-- 계산 버튼 -->
-            <button type="submit" class="w-full calculate-button text-white font-semibold py-3 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+            <button type="submit" class="w-full calculate-button text-white">
                 계산하기
             </button>
         </form>
 
         <!-- 결과 표시 -->
-        <div id="results" class="mt-8 hidden">
-            <h2 class="text-xl sm:text-2xl font-semibold results-title mb-4">계산 결과 상세</h2>
-            <div class="results-card p-6 rounded-lg space-y-0">
+        <div id="results" class="mt-10 results-card"> <!-- mt 증가 -->
+            <h2 class="text-2xl sm:text-3xl font-semibold results-title mb-6 p-6">계산 결과 상세</h2> <!-- 패딩 추가 -->
+            <div class="p-6 pt-0 space-y-0"> <!-- 내부 패딩 조정 -->
                 <!-- 상세 항목 시작 -->
                 <div class="result-item flex justify-between items-center">
-                    <strong class="text-sm">판매 가격:</strong>
+                    <strong class="text-sm"><span class="emoji" role="img" aria-label="price tag">🏷️</span>판매 가격:</strong>
                     <span id="resSalePrice" class="text-sm font-medium">0 원</span>
                 </div>
                 <div class="result-item flex justify-between items-center">
-                    <strong class="text-sm">고객 부담 배송비:</strong>
+                    <strong class="text-sm"><span class="emoji" role="img" aria-label="shipping parcel">📦</span>고객 부담 배송비:</strong>
                     <span id="resCustomerShippingAmount" class="text-sm font-medium">0 원</span>
                 </div>
                 <div class="result-item flex justify-between items-center">
-                    <strong class="text-sm">(-) 채널 수수료:</strong>
+                    <strong class="text-sm"><span class="emoji" role="img" aria-label="percentage">📉</span>(-) 채널 수수료:</strong>
                     <span id="resChannelFee" class="text-sm font-medium">0 원 (0%)</span>
                 </div>
                 <div class="result-item flex justify-between items-center">
-                    <strong class="text-sm">(-) 배송비 수수료:</strong>
+                    <strong class="text-sm"><span class="emoji" role="img" aria-label="percentage">📉</span>(-) 배송비 수수료:</strong>
                     <span id="resCustomerShippingSurcharge" class="text-sm font-medium">0 원 (0%)</span>
                 </div>
-                <div class="result-item flex justify-between items-center summary-total mt-2 mb-2">
-                    <strong class="text-sm">판매채널 정산금액:</strong>
+                <div class="result-item flex justify-between items-center summary-total">
+                    <strong class="text-sm"><span class="emoji" role="img" aria-label="credit card">💳</span>판매채널 정산금액:</strong>
                     <span id="salesChannelSettlementResult" class="text-base font-semibold">0 원</span>
                 </div>
                 <div class="result-item flex justify-between items-center">
-                    <strong class="text-sm">(-) 상품 매입가:</strong>
+                    <strong class="text-sm"><span class="emoji" role="img" aria-label="receipt">🧾</span>(-) 상품 매입가:</strong>
                     <span id="resPurchasePrice" class="text-sm font-medium">0 원</span>
                 </div>
                 <div class="result-item flex justify-between items-center">
-                    <strong class="text-sm">(-) 포장 비용:</strong>
+                    <strong class="text-sm"><span class="emoji" role="img" aria-label="wrapped gift">🎁</span>(-) 포장 비용:</strong>
                     <span id="resPackagingCost" class="text-sm font-medium">0 원 (0%)</span>
                 </div>
                 <div class="result-item flex justify-between items-center">
-                    <strong class="text-sm">(-) 출고 배송비:</strong>
+                    <strong class="text-sm"><span class="emoji" role="img" aria-label="delivery truck icon">🚚</span>(-) 출고 배송비:</strong>
                     <span id="resOutgoingShippingCost" class="text-sm font-medium">0 원</span>
                 </div>
-                <div class="result-item flex justify-between items-center summary-total mt-2 mb-2">
-                    <strong class="text-sm">광고비 반영 전 마진:</strong>
+                <div class="result-item flex justify-between items-center summary-total">
+                    <strong class="text-sm"><span class="emoji" role="img" aria-label="piggy bank">🐖</span>광고비 반영 전 마진:</strong>
                     <span id="resMarginBeforeAdvertising" class="text-base font-semibold">0 원</span>
                 </div>
                 <div id="resAdvertisingCostItem" class="result-item flex justify-between items-center">
-                    <strong class="text-sm">(-) 광고비:</strong>
+                    <strong class="text-sm"><span class="emoji" role="img" aria-label="decreasing chart">📉</span>(-) 광고비:</strong>
                     <span id="resAdvertisingCost" class="text-sm font-medium">0 원 (0%)</span>
                 </div>
-                 <hr class="my-3 border-gray-300">
-                <div class="result-item flex justify-between items-center mt-4">
-                    <strong class="text-base">최종 판매 마진 (금액):</strong>
-                    <span id="finalMarginKRWResult" class="text-lg font-bold">0 원</span>
+                 <hr class="my-4 border-gray-300"> <!-- my 증가 -->
+                <div class="result-item flex justify-between items-center mt-4 final-summary-item">
+                    <strong class="text-base"><span class="emoji" role="img" aria-label="check mark">✅</span>최종 판매 마진 (금액):</strong>
+                    <span id="finalMarginKRWResult" class="font-bold">0 원</span>
                 </div>
-                <div class="result-item flex justify-between items-center">
-                    <strong class="text-base">최종 판매 마진율 (%):</strong>
-                    <span id="finalMarginPercentageResult" class="text-lg font-bold">0 %</span>
+                <div class="result-item flex justify-between items-center final-summary-item">
+                    <strong class="text-base"><span class="emoji" role="img" aria-label="chart increasing">📈</span>최종 판매 마진율 (%):</strong>
+                    <span id="finalMarginPercentageResult" class="font-bold">0 %</span>
                 </div>
                 <!-- 상세 항목 끝 -->
             </div>
         </div>
-         <div id="errorMessage" class="mt-4 text-red-600 text-sm font-medium hidden"></div>
+         <div id="errorMessage" class="mt-6 error-message hidden"></div> <!-- mt 증가 및 스타일 클래스 적용 -->
     </div>
 
     <script>
@@ -265,8 +363,10 @@
             radio.addEventListener('change', function() {
                 if (this.value === 'paid') {
                     customerShippingAmountGroup.classList.remove('hidden');
+                    customerShippingAmountGroup.classList.add('opacity-100', 'transform', 'translate-y-0'); // 애니메이션 효과
                 } else {
                     customerShippingAmountGroup.classList.add('hidden');
+                    customerShippingAmountGroup.classList.remove('opacity-100', 'transform', 'translate-y-0');
                 }
             });
         });
@@ -276,19 +376,31 @@
             radio.addEventListener('change', function() {
                 if (this.value === 'yes') {
                     advertisingCostGroup.classList.remove('hidden');
+                    advertisingCostGroup.classList.add('opacity-100', 'transform', 'translate-y-0');
                     document.getElementById('advertisingRate').required = true;
                 } else {
                     advertisingCostGroup.classList.add('hidden');
+                    advertisingCostGroup.classList.remove('opacity-100', 'transform', 'translate-y-0');
                     document.getElementById('advertisingRate').required = false;
-                    document.getElementById('advertisingRate').value = ''; // 광고 안할 시 값 초기화
+                    document.getElementById('advertisingRate').value = '';
                 }
             });
         });
+        // 초기 hidden 클래스가 있는 요소에 애니메이션을 위한 클래스 추가
+        [customerShippingAmountGroup, advertisingCostGroup].forEach(el => {
+            if(el.classList.contains('hidden')) {
+                el.classList.add('opacity-0', 'transform', '-translate-y-2', 'transition-all', 'duration-300', 'ease-out');
+            }
+        });
+
 
         form.addEventListener('submit', function(event) {
             event.preventDefault();
-            errorMessageDiv.classList.add('hidden');
+            errorMessageDiv.classList.add('hidden'); // 이전 에러 메시지 숨김
             errorMessageDiv.textContent = '';
+             // 결과 카드 숨겼다가 다시 보이게 해서 애니메이션 트리거
+            resultsDiv.classList.remove('show');
+
 
             // 입력 값 가져오기
             const salePrice = parseFloat(document.getElementById('salePrice').value);
@@ -304,15 +416,15 @@
 
             // 필수 입력 값 검증
             if (isNaN(salePrice) || salePrice <= 0) {
-                displayError("판매가격을 올바르게 입력해주세요 (0보다 큰 숫자).");
+                displayError("💰 판매가격을 올바르게 입력해주세요 (0보다 큰 숫자).");
                 return;
             }
-            if (isNaN(purchasePrice) || purchasePrice < 0) {
-                displayError("상품매입가를 올바르게 입력해주세요 (0 이상).");
+            if (isNaN(purchasePrice) || purchasePrice < 0) { // 매입가는 0일 수도 있음
+                displayError("🛒 상품매입가를 올바르게 입력해주세요 (0 이상).");
                 return;
             }
             if (isAdvertising && (isNaN(advertisingRate) || advertisingRate < 0)) {
-                displayError("광고비를 올바르게 입력해주세요 (0 이상).");
+                displayError("📊 광고비를 올바르게 입력해주세요 (0 이상).");
                 return;
             }
 
@@ -335,14 +447,12 @@
             const customerShippingSurcharge = actualCustomerShippingAmount * customerShippingSurchargeRate;
 
             // 5. 판매채널 정산금액 계산
-            // 판매가격 + 고객부담배송비 - 채널수수료(판매가격) - 배송비수수료(고객부담배송비)
             const salesChannelSettlement = salePrice + actualCustomerShippingAmount - channelFee - customerShippingSurcharge;
             
             // 6. 포장비용 계산
             const packagingCost = salePrice * packagingCostRate;
 
             // 7. 광고 전 판매 마진 계산
-            // 판매채널정산금액 - 상품매입가 - 포장비용 - 출고배송비
             const marginBeforeAdvertising = salesChannelSettlement - purchasePrice - packagingCost - outgoingShippingCost;
             
             let finalMarginKRW = marginBeforeAdvertising;
@@ -364,32 +474,53 @@
             // 결과 표시 (상세 항목 추가)
             document.getElementById('resSalePrice').textContent = `${Math.round(salePrice).toLocaleString()} 원`;
             document.getElementById('resCustomerShippingAmount').textContent = `${Math.round(actualCustomerShippingAmount).toLocaleString()} 원`;
-            document.getElementById('resChannelFee').textContent = `${Math.round(channelFee).toLocaleString()} 원 (${(channelFeeRateValue * 100).toFixed(1)}%)`;
-            document.getElementById('resCustomerShippingSurcharge').textContent = `${Math.round(customerShippingSurcharge).toLocaleString()} 원 (${(customerShippingSurchargeRate * 100).toFixed(1)}%)`;
+            document.getElementById('resChannelFee').textContent = `- ${Math.round(channelFee).toLocaleString()} 원 (${(channelFeeRateValue * 100).toFixed(1)}%)`;
+            document.getElementById('resCustomerShippingSurcharge').textContent = `- ${Math.round(customerShippingSurcharge).toLocaleString()} 원 (${(customerShippingSurchargeRate * 100).toFixed(1)}%)`;
             
             document.getElementById('salesChannelSettlementResult').textContent = `${Math.round(salesChannelSettlement).toLocaleString()} 원`;
             
-            document.getElementById('resPurchasePrice').textContent = `${Math.round(purchasePrice).toLocaleString()} 원`;
-            document.getElementById('resPackagingCost').textContent = `${Math.round(packagingCost).toLocaleString()} 원 (${(packagingCostRate * 100).toFixed(0)}%)`;
-            document.getElementById('resOutgoingShippingCost').textContent = `${Math.round(outgoingShippingCost).toLocaleString()} 원`;
+            document.getElementById('resPurchasePrice').textContent = `- ${Math.round(purchasePrice).toLocaleString()} 원`;
+            document.getElementById('resPackagingCost').textContent = `- ${Math.round(packagingCost).toLocaleString()} 원 (${(packagingCostRate * 100).toFixed(0)}%)`;
+            document.getElementById('resOutgoingShippingCost').textContent = `- ${Math.round(outgoingShippingCost).toLocaleString()} 원`;
             
             document.getElementById('resMarginBeforeAdvertising').textContent = `${Math.round(marginBeforeAdvertising).toLocaleString()} 원`;
 
             if(isAdvertising) {
-                document.getElementById('resAdvertisingCost').textContent = `${Math.round(advertisingCost).toLocaleString()} 원 (${advertisingRate.toFixed(0)}%)`;
+                document.getElementById('resAdvertisingCost').textContent = `- ${Math.round(advertisingCost).toLocaleString()} 원 (${advertisingRate.toFixed(0)}%)`;
             }
             
-            document.getElementById('finalMarginKRWResult').textContent = `${Math.round(finalMarginKRW).toLocaleString()} 원 ${finalMarginKRW < 0 ? '(손실)' : ''}`;
-            document.getElementById('finalMarginPercentageResult').textContent = `${finalMarginPercentage.toFixed(2)} %`;
+            const finalMarginKRWEl = document.getElementById('finalMarginKRWResult');
+            const finalMarginPercentageEl = document.getElementById('finalMarginPercentageResult');
+
+            finalMarginKRWEl.textContent = `${Math.round(finalMarginKRW).toLocaleString()} 원 ${finalMarginKRW < 0 ? '(손실 😥)' : '(이익 �)'}`;
+            finalMarginPercentageEl.textContent = `${finalMarginPercentage.toFixed(2)} %`;
+
+            finalMarginKRWEl.classList.remove('profit', 'loss');
+            finalMarginPercentageEl.classList.remove('profit', 'loss');
+
+            if (finalMarginKRW < 0) {
+                finalMarginKRWEl.classList.add('loss');
+                finalMarginPercentageEl.classList.add('loss');
+            } else {
+                finalMarginKRWEl.classList.add('profit');
+                finalMarginPercentageEl.classList.add('profit');
+            }
             
-            resultsDiv.classList.remove('hidden');
+            resultsDiv.classList.remove('hidden'); // 먼저 hidden을 제거하고
+            setTimeout(() => { // 약간의 딜레이 후 show 클래스 추가하여 애니메이션 트리거
+                 resultsDiv.classList.add('show');
+            }, 50);
+
+
         });
 
         function displayError(message) {
             errorMessageDiv.textContent = message;
             errorMessageDiv.classList.remove('hidden');
             resultsDiv.classList.add('hidden'); // 오류 발생 시 이전 결과 숨김
+            resultsDiv.classList.remove('show'); // 애니메이션 클래스도 제거
         }
     </script>
 </body>
 </html>
+�
