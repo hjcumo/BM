@@ -23,73 +23,79 @@
         }
 
         .input-group label {
-            color: #4A5568; 
-            font-weight: 500; 
-            display: flex; 
+            color: #4A5568; /* gray-700 */
+            font-weight: 500; /* medium */
+            display: flex; /* For aligning emoji */
             align-items: center;
         }
         .input-group label .emoji {
-            margin-right: 0.5rem; 
-            font-size: 1.1em;
+            margin-right: 0.5rem; /* space between emoji and text */
+            font-size: 1.1em; /* slightly larger emoji */
         }
 
         .input-field, .select-field {
-            border-color: #E2E8F0; 
-            border-radius: 0.5rem; 
-            padding: 0.75rem 1rem; 
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px 0 rgba(0, 0, 0, 0.04); 
+            border: 1px solid #E2E8F0; /* gray-300 - ensuring border is explicitly set */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.75rem 1rem; /* py-3 px-4 */
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px 0 rgba(0, 0, 0, 0.04); /* shadow-sm equivalent */
             transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            background-color: #fff; /* Ensuring background is white */
         }
         .input-field:focus, .select-field:focus {
-            border-color: #6366F1; 
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3); 
+            border-color: #6366F1; /* indigo-500 */
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3); /* ring-indigo-500 ring-opacity-30 */
             outline: none;
         }
         .input-field[readonly] {
             background-color: #F3F4F6; /* Tailwind gray-100 */
             cursor: not-allowed;
         }
+        .input-field.subtotal-field { /* 소계 필드 스타일 */
+            background-color: #E9D5FF; /* purple-100 */
+            color: #5B21B6; /* purple-700 */
+            font-weight: 500;
+        }
 
 
         .radio-label {
-            color: #2D3748; 
+            color: #2D3748; /* gray-800 */
             transition: color 0.2s ease;
         }
         input[type="radio"]:checked + .radio-label {
-            color: #4F46E5; 
+            color: #4F46E5; /* indigo-600 */
         }
         input[type="radio"] {
             transition: all 0.2s ease;
         }
         input[type="radio"]:focus {
-            ring-offset-color: white; 
+            ring-offset-color: white; /* Tailwind ring-offset-white */
         }
 
         .calculate-button {
-            background-color: #4F46E5; 
-            font-size: 1.125rem; 
-            font-weight: 600; 
-            padding: 0.875rem 1.5rem; 
-            border-radius: 0.5rem; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            background-color: #4F46E5; /* indigo-600 */
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600; /* semibold */
+            padding: 0.875rem 1.5rem; /* py-3.5 px-6 */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
             transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .calculate-button:hover {
-            background-color: #4338CA; 
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            background-color: #4338CA; /* indigo-700 */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
         }
         .calculate-button:active {
             transform: translateY(1px);
-            background-color: #3730A3; 
+            background-color: #3730A3; /* indigo-800 */
         }
 
         .results-card {
             background-color: white;
-            border: 1px solid #E2E8F0; 
-            border-radius: 0.75rem; 
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03); 
-            opacity: 0; 
-            transform: translateY(20px); 
+            border: 1px solid #E2E8F0; /* gray-300 */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03); /* shadow-xl subtle */
+            opacity: 0; /* Start hidden for animation */
+            transform: translateY(20px); /* Start slightly lower for animation */
             transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
         .results-card.show {
@@ -98,21 +104,21 @@
         }
 
         .results-title {
-            color: #1A202C; 
-            border-bottom: 1px solid #E2E8F0;
-            padding-bottom: 0.75rem;
+            color: #1A202C; /* gray-900 */
+            border-bottom: 1px solid #E2E8F0; /* gray-300 */
+            padding-bottom: 0.75rem; /* pb-3 */
         }
         .result-item {
-             border-bottom: 1px dashed #E2E8F0; 
-             padding: 1rem 0.5rem; 
+             border-bottom: 1px dashed #E2E8F0; /* gray-300 */
+             padding: 1rem 0.5rem; /* py-4 px-2 */
              transition: background-color 0.2s ease;
         }
         .result-item:hover {
-            background-color: #F7FAFC; 
+            background-color: #F7FAFC; /* gray-50 */
         }
         .result-item strong {
-            color: #2D3748; 
-            font-weight: 500; 
+            color: #2D3748; /* gray-800 */
+            font-weight: 500; /* medium */
             display: flex;
             align-items: center;
         }
@@ -121,92 +127,92 @@
             font-size: 1em;
         }
         .result-item span {
-            color: #4A5568; 
-            font-weight: 500;
+            color: #4A5568; /* gray-700 */
+            font-weight: 500; /* medium */
         }
         .result-item:last-child {
             border-bottom: none;
         }
         .result-item:first-child {
-            padding-top: 0.5rem; 
+            padding-top: 0.5rem; /* pt-2, to align with title padding */
         }
 
         .summary-total {
-            background-color: #EEF2FF; 
+            background-color: #EEF2FF; /* indigo-50 */
             padding: 1rem;
-            border-radius: 0.5rem; 
+            border-radius: 0.5rem; /* rounded-lg */
             margin-top: 0.5rem !important;
             margin-bottom: 0.5rem !important;
-            border-left: 4px solid #6366F1; 
+            border-left: 4px solid #6366F1; /* indigo-500 */
         }
         .summary-total strong, .summary-total span {
-            color: #3730A3; 
-            font-weight: 600; 
+            color: #3730A3; /* indigo-800 */
+            font-weight: 600; /* semibold */
         }
         
         #finalMarginKRWResult.loss, #finalMarginPercentageResult.loss {
-            color: #E53E3E; 
+            color: #E53E3E; /* red-600 */
         }
         #finalMarginKRWResult.profit, #finalMarginPercentageResult.profit {
-            color: #38A169; 
+            color: #38A169; /* green-600 */
         }
 
         .final-summary-item strong{
-            font-size: 1.125rem; 
+            font-size: 1.125rem; /* text-lg */
         }
         .final-summary-item span{
-            font-size: 1.25rem; 
+            font-size: 1.25rem; /* text-xl */
         }
 
         .error-message {
-            background-color: #FFF5F5; 
-            color: #C53030; 
-            border: 1px solid #FC8181; 
+            background-color: #FFF5F5; /* red-50 */
+            color: #C53030; /* red-700 */
+            border: 1px solid #FC8181; /* red-400 */
             border-left-width: 4px;
-            border-left-color: #E53E3E; 
+            border-left-color: #E53E3E; /* red-600 */
             padding: 1rem;
-            border-radius: 0.375rem; 
+            border-radius: 0.375rem; /* rounded-md */
             transition: opacity 0.3s ease;
         }
         .hidden {
-            display: none !important; 
+            display: none !important; /* !important to override other display properties if animation classes interfere */
         }
         .product-dropdown {
             position: absolute;
             background-color: white;
-            border: 1px solid #E2E8F0;
+            border: 1px solid #E2E8F0; /* gray-300 */
             border-top: none;
-            border-radius: 0 0 0.5rem 0.5rem;
-            width: calc(100% - 2px); 
+            border-radius: 0 0 0.5rem 0.5rem; /* rounded-b-lg */
             max-height: 200px;
             overflow-y: auto;
             z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* shadow-md */
+            left:0; 
+            right:0; 
         }
         .product-dropdown-item {
-            padding: 0.75rem 1rem;
+            padding: 0.75rem 1rem; /* py-3 px-4 */
             cursor: pointer;
-            font-size: 0.875rem; 
+            font-size: 0.875rem; /* text-sm */
         }
         .product-dropdown-item:hover {
-            background-color: #F7FAFC; 
+            background-color: #F7FAFC; /* gray-50 */
         }
         .product-dropdown-item .product-price {
-            font-size: 0.75rem; 
-            color: #718096; 
+            font-size: 0.75rem; /* text-xs */
+            color: #718096; /* gray-500 */
             margin-left: 0.5rem;
         }
-        /* 수량 조절 버튼 스타일 */
         .quantity-control-button {
             background-color: #E0E7FF; /* indigo-200 */
             color: #4338CA; /* indigo-700 */
             border: 1px solid #C7D2FE; /* indigo-300 */
-            padding: 0.3rem 0.6rem; /* 더 작게 */
-            font-size: 0.8rem; /* 더 작게 */
+            padding: 0.3rem 0.6rem; /* Adjusted for smaller buttons */
+            font-size: 0.8rem; /* text-xs or similar */
             font-weight: bold;
             border-radius: 0.375rem; /* rounded-md */
             transition: background-color 0.2s ease, color 0.2s ease;
-            line-height: 1; /* 수직 정렬 개선 */
+            line-height: 1; /* To prevent extra space in button */
         }
         .quantity-control-button:hover {
             background-color: #C7D2FE; /* indigo-300 */
@@ -218,10 +224,18 @@
         }
         .quantity-input-wrapper input {
             text-align: center;
-            border-left: none;
-            border-right: none;
-            border-radius: 0; /* 중간 input의 radius 제거 */
-             flex-grow: 1;
+            border-left-width: 0;
+            border-right-width: 0;
+            border-top: 1px solid #E2E8F0; /* Tailwind gray-300 */
+            border-bottom: 1px solid #E2E8F0; /* Tailwind gray-300 */
+            border-radius: 0; /* Remove any rounding from .input-field */
+            flex-grow: 1;
+            padding-top: 0.3rem; /* Match button vertical padding */
+            padding-bottom: 0.3rem; /* Match button vertical padding */
+            padding-left: 0.5rem; /* Keep some horizontal padding */
+            padding-right: 0.5rem;
+            box-shadow: none; /* Remove box-shadow from .input-field for this specific input */
+            background-color: #fff; /* Ensure background is white */
         }
         .quantity-input-wrapper .quantity-control-button:first-child {
             border-top-right-radius: 0;
@@ -231,8 +245,26 @@
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
         }
-
-
+        .delete-product-line-button {
+            background-color: #FEE2E2; /* red-100 */
+            color: #B91C1C; /* red-700 */
+            border: 1px solid #FECACA; /* red-300 */
+            padding: 0.4rem 0.6rem; /* Adjusted for smaller button */
+            font-size: 0.75rem; /* text-xs */
+            border-radius: 0.375rem; /* rounded-md */
+            transition: background-color 0.2s;
+        }
+        .delete-product-line-button:hover {
+            background-color: #FECACA; /* red-300 */
+        }
+        .add-product-button {
+            background-color: #DBEAFE; /* blue-100 */
+            color: #1E40AF; /* blue-800 */
+            border: 1px solid #BFDBFE; /* blue-200 */
+        }
+        .add-product-button:hover {
+             background-color: #BFDBFE; /* blue-200 */
+        }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
@@ -248,30 +280,46 @@
                     <label for="salePrice" class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="money bag">💰</span>판매가격 (원)</label>
                     <input type="text" id="salePrice" name="salePrice" placeholder="예: 42,980" required class="number-input mt-1 block w-full input-field">
                 </div>
-                <!-- 상품 검색 및 매입가 표시 영역 -->
-                <div class="input-group">
-                    <label for="productSearchInput" class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="search">🔍</span>상품 검색</label>
-                    <div class="relative">
-                        <input type="text" id="productSearchInput" placeholder="상품명을 입력하여 검색하세요..." class="mt-1 block w-full input-field">
-                        <div id="productDropdown" class="product-dropdown hidden"></div>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-x-3 mt-2 items-end"> <!-- 수량 필드를 2개 컬럼으로 나누기 위함 -->
-                        <div >
-                            <label for="unitPurchasePrice" class="block text-xs font-medium text-gray-700 mb-1"><span class="emoji" role="img" aria-label="price tag">🏷️</span>상품 단가 (원)</label>
-                            <input type="text" id="unitPurchasePrice" name="unitPurchasePrice" placeholder="상품 선택 시 자동 입력" readonly class="number-input block w-full input-field text-sm">
-                        </div>
-                        <div>
-                            <label for="quantity" class="block text-xs font-medium text-gray-700 mb-1"><span class="emoji" role="img" aria-label="counter">🔢</span>수량</label>
-                            <div class="quantity-input-wrapper mt-0"> <!-- mt-0 추가 -->
-                                <button type="button" id="decreaseQuantity" class="quantity-control-button">-</button>
-                                <input type="number" id="quantity" name="quantity" value="1" min="1" class="number-input block w-full input-field text-sm h-full py-2.5"> <!-- h-full py-2.5 추가-->
-                                <button type="button" id="increaseQuantity" class="quantity-control-button">+</button>
+                
+                <!-- 상품 매입가 구성 영역 -->
+                <div class="input-group border border-gray-200 p-4 rounded-lg">
+                    <label class="block text-base font-semibold text-gray-700 mb-3"><span class="emoji" role="img" aria-label="package">📦</span>상품 매입 구성</label>
+                    <div id="productLinesContainer" class="space-y-4">
+                        <!-- 첫 번째 상품 라인 (기본) -->
+                        <div class="product-line-item border-b border-dashed border-gray-300 pb-4" data-line-id="1">
+                            <div class="relative mb-2">
+                                <label for="productSearchInput-1" class="block text-xs font-medium text-gray-600 mb-1">상품 검색 1</label>
+                                <input type="text" id="productSearchInput-1" placeholder="상품명 검색..." class="product-search-input mt-1 block w-full input-field text-sm">
+                                <div class="product-dropdown hidden"></div>
+                            </div>
+                            <div class="grid grid-cols-10 gap-x-2 items-end">
+                                <div class="col-span-4">
+                                    <label for="unitPurchasePrice-1" class="block text-xs font-medium text-gray-600 mb-1">단가</label>
+                                    <input type="text" id="unitPurchasePrice-1" readonly class="unit-purchase-price-input number-input block w-full input-field text-sm">
+                                </div>
+                                <div class="col-span-3">
+                                    <label for="quantity-1" class="block text-xs font-medium text-gray-600 mb-1">수량</label>
+                                    <div class="quantity-input-wrapper mt-0">
+                                        <button type="button" class="decrease-quantity quantity-control-button">-</button>
+                                        <input type="number" id="quantity-1" value="1" min="1" class="quantity-input number-input block w-full input-field text-sm">
+                                        <button type="button" class="increase-quantity quantity-control-button">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-span-3">
+                                    <label for="lineSubtotal-1" class="block text-xs font-medium text-gray-600 mb-1">소계</label>
+                                    <input type="text" id="lineSubtotal-1" readonly class="line-subtotal-display number-input block w-full input-field text-sm subtotal-field">
+                                </div>
+                                <!-- 첫번째 라인은 삭제 버튼 없음 또는 비활성화 처리 가능 -->
                             </div>
                         </div>
                     </div>
-                     <label for="totalPurchasePrice" class="block text-sm font-medium text-gray-700 mb-1 mt-3"><span class="emoji" role="img" aria-label="shopping cart">🛒</span>총 매입가 (원)</label>
-                    <input type="text" id="totalPurchasePrice" name="totalPurchasePrice" placeholder="자동 계산" readonly required class="number-input block w-full input-field bg-gray-100 cursor-not-allowed">
+                    <button type="button" id="addProductLineButton" class="mt-4 text-sm add-product-button font-medium py-2 px-4 rounded-md w-full">
+                        <span class="emoji" role="img" aria-label="plus">➕</span> 구성 상품 추가 (최대 4개)
+                    </button>
+                    
+                    <hr class="my-4">
+                    <label for="totalPurchasePrice" class="block text-sm font-medium text-gray-700 mb-1 mt-3"><span class="emoji" role="img" aria-label="shopping cart">🛒</span>총 매입가 (원)</label>
+                    <input type="text" id="totalPurchasePrice" name="totalPurchasePrice" placeholder="자동 계산" readonly required class="number-input block w-full input-field bg-gray-100 cursor-not-allowed text-lg font-semibold">
                 </div>
             </div>
 
@@ -372,7 +420,6 @@
         <div id="results" class="mt-10 results-card">
             <h2 class="text-2xl sm:text-3xl font-semibold results-title mb-6 p-6">계산 결과 상세</h2>
             <div class="p-6 pt-0 space-y-0">
-                <!-- 상세 항목 시작 -->
                 <div class="result-item flex justify-between items-center">
                     <strong class="text-sm"><span class="emoji" role="img" aria-label="price tag">🏷️</span>판매 가격:</strong>
                     <span id="resSalePrice" class="text-sm font-medium">0 원</span>
@@ -422,13 +469,13 @@
                     <strong class="text-base"><span class="emoji" role="img" aria-label="chart increasing">📈</span>최종 판매 마진율 (%):</strong>
                     <span id="finalMarginPercentageResult" class="font-bold">0 %</span>
                 </div>
-                <!-- 상세 항목 끝 -->
             </div>
         </div>
          <div id="errorMessage" class="mt-6 error-message hidden"></div>
     </div>
 
     <script>
+        // Raw product data (can be fetched from an API in a real application)
         const productData = [
             { name: "제작*원터치캡 1캡", price: 13.2 }, { name: "바퀴트랩거치대 양면테이프형", price: 275.0 },
             { name: "국보 레전드 겔 220g", price: 14500.0 }, { name: "바퀴벌레 사각 먹이캡 6캡", price: 33.0 },
@@ -529,22 +576,20 @@
             { name: "스카이에프 플러스 포충기", price: 77000.0 }, { name: "벅스올킬 유제 18L", price: 80300.0 },
             { name: "비오킬 18L", price: 179000.0 }, { name: "바이러건(민트)", price: 748000.0 }
         ];
+        // Filter out duplicate product names to ensure uniqueProductData has unique names
         const uniqueProductData = productData.filter((product, index, self) =>
             index === self.findIndex((p) => (
-                p.name === product.name // 이름이 같은 첫 번째 항목만 유지하여 중복 제거
+                p.name === product.name // Keep only the first occurrence of each product name
             ))
         );
 
+        // DOM Elements
         const form = document.getElementById('marginForm');
         const salePriceInput = document.getElementById('salePrice');
         
-        const productSearchInput = document.getElementById('productSearchInput');
-        const productDropdown = document.getElementById('productDropdown');
-        const unitPurchasePriceInput = document.getElementById('unitPurchasePrice'); // 단가 필드
-        const quantityInput = document.getElementById('quantity'); // 수량 필드
-        const totalPurchasePriceInput = document.getElementById('totalPurchasePrice'); // 총 매입가 필드
-        const decreaseQuantityButton = document.getElementById('decreaseQuantity');
-        const increaseQuantityButton = document.getElementById('increaseQuantity');
+        const productLinesContainer = document.getElementById('productLinesContainer');
+        const addProductLineButton = document.getElementById('addProductLineButton');
+        const totalPurchasePriceInput = document.getElementById('totalPurchasePrice'); // This is where the total purchase price will be displayed
 
 
         const customerShippingTypeRadios = document.querySelectorAll('input[name="customerShippingType"]');
@@ -553,91 +598,145 @@
         const advertisingCostGroup = document.getElementById('advertisingCostGroup');
         const resultsDiv = document.getElementById('results');
         const errorMessageDiv = document.getElementById('errorMessage');
+        let productLineIdCounter = 1; // Counter for generating unique IDs for product lines
 
+        // Helper function to format numbers with commas
         function formatNumberWithCommas(number) {
             if (number === null || number === undefined || isNaN(parseFloat(number))) return '';
-            // 소수점 이하 자릿수를 유지하면서 포맷팅
             const parts = number.toString().split('.');
             parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             return parts.join('.');
         }
 
-
+        // Helper function to remove commas from a formatted number string
         function unformatNumber(value) {
             if (typeof value !== 'string') return '';
             return value.replace(/,/g, '');
         }
+        
+        // Function to calculate and update the subtotal for a single product line
+        function calculateAndUpdateLineSubtotal(lineElement) {
+            const unitPriceInput = lineElement.querySelector('.unit-purchase-price-input');
+            const quantityInput = lineElement.querySelector('.quantity-input');
+            const lineSubtotalDisplay = lineElement.querySelector('.line-subtotal-display');
 
-        function calculateAndUpdateTotalPurchasePrice() {
-            const unitPrice = parseFloat(unformatNumber(unitPurchasePriceInput.value));
-            const quantity = parseInt(quantityInput.value);
+            const unitPrice = parseFloat(unformatNumber(unitPriceInput.value)) || 0;
+            const quantity = parseInt(quantityInput.value) || 0;
+            let lineSubtotal = 0;
 
-            if (!isNaN(unitPrice) && !isNaN(quantity) && quantity > 0) {
-                const total = unitPrice * quantity;
-                totalPurchasePriceInput.value = formatNumberWithCommas(total.toFixed(2)); 
-            } else if (!isNaN(unitPrice) && (isNaN(quantity) || quantity <=0 )) { 
-                 totalPurchasePriceInput.value = formatNumberWithCommas(unitPrice.toFixed(2)); 
+            if (unitPrice > 0 && quantity > 0) {
+                lineSubtotal = unitPrice * quantity;
             }
-             else {
-                totalPurchasePriceInput.value = '';
-            }
+            // Display the subtotal formatted with commas and fixed to 1 decimal place
+            lineSubtotalDisplay.value = formatNumberWithCommas(lineSubtotal.toFixed(1));
+            calculateAndDisplayOverallTotalPurchasePrice(); // Update the overall total purchase price
+        }
+
+        // Function to calculate and display the overall total purchase price from all product lines
+        function calculateAndDisplayOverallTotalPurchasePrice() {
+            let overallTotalPrice = 0;
+            const productLines = productLinesContainer.querySelectorAll('.product-line-item');
+
+            productLines.forEach(line => {
+                const lineSubtotalDisplay = line.querySelector('.line-subtotal-display');
+                const subtotalValue = parseFloat(unformatNumber(lineSubtotalDisplay.value)) || 0;
+                overallTotalPrice += subtotalValue;
+            });
+            // Display the overall total formatted with commas and fixed to 1 decimal place
+            totalPurchasePriceInput.value = formatNumberWithCommas(overallTotalPrice.toFixed(1));
         }
         
-        quantityInput.addEventListener('input', calculateAndUpdateTotalPurchasePrice);
-        // unitPurchasePriceInput은 readonly이므로 직접 입력에 대한 이벤트 리스너는 불필요, 상품 선택 시 업데이트
-        
-        // 수량 조절 버튼 이벤트 리스너
-        decreaseQuantityButton.addEventListener('click', function() {
-            let currentQuantity = parseInt(quantityInput.value);
-            if (currentQuantity > 1) {
-                quantityInput.value = currentQuantity - 1;
-                calculateAndUpdateTotalPurchasePrice();
+        // Function to create a new product line item
+        function createProductLine(id) {
+            const lineDiv = document.createElement('div');
+            lineDiv.classList.add('product-line-item', 'border-b', 'border-dashed', 'border-gray-300', 'pb-4', 'mb-4');
+            lineDiv.setAttribute('data-line-id', id);
+            lineDiv.innerHTML = `
+                <div class="flex justify-between items-center mb-2">
+                    <label for="productSearchInput-${id}" class="block text-xs font-medium text-gray-600">상품 검색 ${id}</label>
+                    ${id > 1 ? '<button type="button" class="delete-product-line-button text-xs">삭제</button>' : ''}
+                </div>
+                <div class="relative mb-2">
+                    <input type="text" id="productSearchInput-${id}" placeholder="상품명 검색..." class="product-search-input mt-1 block w-full input-field text-sm">
+                    <div class="product-dropdown hidden"></div>
+                </div>
+                <div class="grid grid-cols-10 gap-x-2 items-end">
+                    <div class="col-span-4">
+                        <label for="unitPurchasePrice-${id}" class="block text-xs font-medium text-gray-600 mb-1">단가</label>
+                        <input type="text" id="unitPurchasePrice-${id}" readonly class="unit-purchase-price-input number-input block w-full input-field text-sm">
+                    </div>
+                    <div class="col-span-3">
+                        <label for="quantity-${id}" class="block text-xs font-medium text-gray-600 mb-1">수량</label>
+                        <div class="quantity-input-wrapper mt-0">
+                            <button type="button" class="decrease-quantity quantity-control-button">-</button>
+                            <input type="number" id="quantity-${id}" value="1" min="1" class="quantity-input number-input block w-full input-field text-sm">
+                            <button type="button" class="increase-quantity quantity-control-button">+</button>
+                        </div>
+                    </div>
+                    <div class="col-span-3">
+                        <label for="lineSubtotal-${id}" class="block text-xs font-medium text-gray-600 mb-1">소계</label>
+                        <input type="text" id="lineSubtotal-${id}" readonly class="line-subtotal-display number-input block w-full input-field text-sm subtotal-field">
+                    </div>
+                </div>
+            `;
+            
+            // Attach event listeners to the new line's elements
+            const searchInput = lineDiv.querySelector('.product-search-input');
+            const unitPriceInput = lineDiv.querySelector('.unit-purchase-price-input');
+            const quantityInput = lineDiv.querySelector('.quantity-input');
+            const decreaseBtn = lineDiv.querySelector('.decrease-quantity');
+            const increaseBtn = lineDiv.querySelector('.increase-quantity');
+            const deleteBtn = lineDiv.querySelector('.delete-product-line-button');
+            const dropdown = lineDiv.querySelector('.product-dropdown');
+
+            searchInput.addEventListener('input', function() {
+                handleProductSearch(this, dropdown, unitPriceInput, quantityInput, lineDiv);
+            });
+            
+            quantityInput.addEventListener('input', () => calculateAndUpdateLineSubtotal(lineDiv));
+            decreaseBtn.addEventListener('click', () => {
+                let currentQuantity = parseInt(quantityInput.value);
+                if (currentQuantity > 1) {
+                    quantityInput.value = currentQuantity - 1;
+                    calculateAndUpdateLineSubtotal(lineDiv);
+                }
+            });
+            increaseBtn.addEventListener('click', () => {
+                let currentQuantity = parseInt(quantityInput.value);
+                quantityInput.value = currentQuantity + 1; // Directly set the input value
+                calculateAndUpdateLineSubtotal(lineDiv);
+            });
+
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', () => {
+                    lineDiv.remove();
+                    calculateAndDisplayOverallTotalPurchasePrice();
+                    addProductLineButton.disabled = false; // Re-enable the add product button
+                });
             }
-        });
-
-        increaseQuantityButton.addEventListener('click', function() {
-            let currentQuantity = parseInt(quantityInput.value);
-            quantityInput.value = currentQuantity + 1;
-            calculateAndUpdateTotalPurchasePrice();
-        });
-
-
-        [salePriceInput].forEach(input => {
-            input.addEventListener('input', function(e) {
-                let value = unformatNumber(e.target.value);
-                if (!isNaN(parseFloat(value)) && isFinite(value) || value === "" || value === "-") { 
-                    if (value.endsWith('.') && (value.match(/\./g) || []).length <= 1) {
-                         e.target.value = value;
-                    } else if (value === "" || value === "-") {
-                        e.target.value = value;
-                    }
-                    else {
-                        const parts = value.split('.');
-                        parts[0] = formatNumberWithCommas(parts[0]);
-                        e.target.value = parts.join('.');
-                    }
-                } else if (e.target.value !== "") { 
-                     e.target.value = e.target.value.slice(0, -1);
+            
+             // Hide dropdown when clicking outside
+             document.addEventListener('click', function(event) {
+                const isClickInsideSearch = searchInput.contains(event.target);
+                const isClickInsideDropdown = dropdown.contains(event.target);
+                if (!isClickInsideSearch && !isClickInsideDropdown) {
+                    dropdown.classList.add('hidden');
                 }
             });
-            input.addEventListener('blur', function(e) {
-                let value = unformatNumber(e.target.value);
-                if (value !== "" && !isNaN(parseFloat(value)) && isFinite(value)) {
-                     const parts = value.split('.');
-                     parts[0] = formatNumberWithCommas(parts[0]);
-                     e.target.value = parts.join('.');
-                }
-            });
-        });
-        
-        productSearchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            productDropdown.innerHTML = ''; 
+
+
+            return lineDiv;
+        }
+
+        // Function to handle product search and display dropdown
+        function handleProductSearch(searchInput, dropdownElement, unitPriceInputElement, quantityInputElement, lineElement) {
+            const searchTerm = searchInput.value.toLowerCase();
+            dropdownElement.innerHTML = ''; // Clear previous results
             if (searchTerm.length === 0) {
-                productDropdown.classList.add('hidden');
-                unitPurchasePriceInput.value = ''; // 검색어 없을 시 단가 초기화
-                quantityInput.value = 1; // 검색어 없을 시 수량 1로 초기화
-                calculateAndUpdateTotalPurchasePrice(); // 검색어 없을 시 총 매입가 초기화
+                dropdownElement.classList.add('hidden');
+                unitPriceInputElement.value = ''; // Clear unit price if search is empty
+                quantityInputElement.value = 1; // Reset quantity
+                calculateAndUpdateLineSubtotal(lineElement); // Recalculate
                 return;
             }
 
@@ -651,57 +750,128 @@
                     itemDiv.classList.add('product-dropdown-item');
                     itemDiv.innerHTML = `${product.name} <span class="product-price">(${formatNumberWithCommas(product.price)}원)</span>`;
                     itemDiv.addEventListener('click', function() {
-                        productSearchInput.value = product.name;
-                        unitPurchasePriceInput.value = formatNumberWithCommas(product.price); 
-                        quantityInput.value = 1; 
-                        calculateAndUpdateTotalPurchasePrice(); 
-                        productDropdown.classList.add('hidden');
+                        searchInput.value = product.name;
+                        unitPriceInputElement.value = formatNumberWithCommas(product.price);
+                        quantityInputElement.value = 1; // Reset quantity on product selection
+                        calculateAndUpdateLineSubtotal(lineElement); // Recalculate with new product
+                        dropdownElement.classList.add('hidden');
                     });
-                    productDropdown.appendChild(itemDiv);
+                    dropdownElement.appendChild(itemDiv);
                 });
-                productDropdown.classList.remove('hidden');
+                dropdownElement.classList.remove('hidden');
             } else {
-                productDropdown.classList.add('hidden');
-                 unitPurchasePriceInput.value = ''; // 검색 결과 없을 시 단가 초기화
-                 quantityInput.value = 1; // 검색 결과 없을 시 수량 1로 초기화
-                 calculateAndUpdateTotalPurchasePrice(); // 검색 결과 없을 시 총 매입가 초기화
+                dropdownElement.classList.add('hidden');
+                unitPriceInputElement.value = ''; // Clear unit price if no product found
+                quantityInputElement.value = 1; // Reset quantity
+                calculateAndUpdateLineSubtotal(lineElement); // Recalculate
+            }
+        }
+        
+        // Event listener for adding a new product line
+        addProductLineButton.addEventListener('click', () => {
+            if (productLinesContainer.children.length < 4) { // Limit to 4 product lines
+                productLineIdCounter++;
+                const newLine = createProductLine(productLineIdCounter);
+                productLinesContainer.appendChild(newLine);
+                if (productLinesContainer.children.length >= 4) {
+                    addProductLineButton.disabled = true; // Disable button if max lines reached
+                }
             }
         });
 
-        document.addEventListener('click', function(event) {
-            if (!productSearchInput.contains(event.target) && !productDropdown.contains(event.target)) {
-                productDropdown.classList.add('hidden');
-            }
+        // Initial setup for the first product line's event listeners
+        const initialLine = productLinesContainer.querySelector('.product-line-item');
+        if (initialLine) {
+            const searchInput = initialLine.querySelector('.product-search-input');
+            const unitPriceInput = initialLine.querySelector('.unit-purchase-price-input');
+            const quantityInput = initialLine.querySelector('.quantity-input');
+            const decreaseBtn = initialLine.querySelector('.decrease-quantity');
+            const increaseBtn = initialLine.querySelector('.increase-quantity');
+            const dropdown = initialLine.querySelector('.product-dropdown');
+
+            searchInput.addEventListener('input', function() {
+                handleProductSearch(this, dropdown, unitPriceInput, quantityInput, initialLine);
+            });
+            quantityInput.addEventListener('input', () => calculateAndUpdateLineSubtotal(initialLine));
+            decreaseBtn.addEventListener('click', () => {
+                let currentQuantity = parseInt(quantityInput.value);
+                if (currentQuantity > 1) {
+                    quantityInput.value = currentQuantity - 1;
+                    calculateAndUpdateLineSubtotal(initialLine);
+                }
+            });
+            increaseBtn.addEventListener('click', () => {
+                let currentQuantity = parseInt(quantityInput.value);
+                quantityInput.value = currentQuantity + 1; 
+                calculateAndUpdateLineSubtotal(initialLine);
+            });
+        }
+
+
+        // Add input formatting for number fields (like salePrice)
+        [salePriceInput].forEach(input => {
+            input.addEventListener('input', function(e) {
+                let value = unformatNumber(e.target.value);
+                // Allow numbers, a single decimal point, or an empty string or just a minus sign
+                if (!isNaN(parseFloat(value)) && isFinite(value) || value === "" || value === "-") { 
+                    if (value.endsWith('.') && (value.match(/\./g) || []).length <= 1) {
+                         // If the user is typing a decimal point, allow it
+                         e.target.value = value;
+                    } else if (value === "" || value === "-") {
+                        e.target.value = value;
+                    }
+                    else {
+                        // Format the integer part with commas
+                        const parts = value.split('.');
+                        parts[0] = formatNumberWithCommas(parts[0]);
+                        e.target.value = parts.join('.');
+                    }
+                } else if (e.target.value !== "") { // If not a valid number character, remove the last character
+                     e.target.value = e.target.value.slice(0, -1);
+                }
+            });
+            // Format on blur to ensure correct comma placement if user leaves field
+             input.addEventListener('blur', function(e) {
+                let value = unformatNumber(e.target.value);
+                if (value !== "" && !isNaN(parseFloat(value)) && isFinite(value)) {
+                     const parts = value.split('.');
+                     parts[0] = formatNumberWithCommas(parts[0]); // Format integer part
+                     e.target.value = parts.join('.');
+                }
+            });
         });
+        
 
-
+        // Toggle visibility of customer shipping amount based on selection
         customerShippingTypeRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.value === 'paid') {
-                    customerShippingAmountGroup.classList.remove('hidden');
+                    customerShippingAmountGroup.classList.remove('hidden', 'opacity-0', '-translate-y-2');
                     customerShippingAmountGroup.classList.add('opacity-100', 'transform', 'translate-y-0'); 
                 } else {
-                    customerShippingAmountGroup.classList.add('hidden');
+                    customerShippingAmountGroup.classList.add('hidden','opacity-0', '-translate-y-2');
                     customerShippingAmountGroup.classList.remove('opacity-100', 'transform', 'translate-y-0');
                 }
             });
         });
 
+        // Toggle visibility of advertising cost input based on selection
         advertisingRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.value === 'yes') {
-                    advertisingCostGroup.classList.remove('hidden');
+                    advertisingCostGroup.classList.remove('hidden', 'opacity-0', '-translate-y-2');
                     advertisingCostGroup.classList.add('opacity-100', 'transform', 'translate-y-0');
                     document.getElementById('advertisingRate').required = true;
                 } else {
-                    advertisingCostGroup.classList.add('hidden');
+                    advertisingCostGroup.classList.add('hidden', 'opacity-0', '-translate-y-2');
                     advertisingCostGroup.classList.remove('opacity-100', 'transform', 'translate-y-0');
                     document.getElementById('advertisingRate').required = false;
-                    document.getElementById('advertisingRate').value = '';
+                    document.getElementById('advertisingRate').value = ''; // Clear value when hidden
                 }
             });
         });
         
+        // Set initial state for animated visibility groups
         [customerShippingAmountGroup, advertisingCostGroup].forEach(el => {
             if(el.classList.contains('hidden')) {
                 el.classList.add('opacity-0', 'transform', '-translate-y-2', 'transition-all', 'duration-300', 'ease-out');
@@ -709,14 +879,16 @@
         });
 
 
+        // Form submission event listener
         form.addEventListener('submit', function(event) {
-            event.preventDefault();
-            errorMessageDiv.classList.add('hidden'); 
+            event.preventDefault(); // Prevent default form submission
+            errorMessageDiv.classList.add('hidden'); // Hide any previous error messages
             errorMessageDiv.textContent = '';
-            resultsDiv.classList.remove('show');
+            resultsDiv.classList.remove('show'); // Hide results initially for animation
 
+            // Retrieve and parse form values
             const salePrice = parseFloat(unformatNumber(salePriceInput.value));
-            const totalPurchasePrice = parseFloat(unformatNumber(totalPurchasePriceInput.value)); 
+            const totalPurchasePriceVal = parseFloat(unformatNumber(totalPurchasePriceInput.value)); 
 
             const salesType = document.querySelector('input[name="salesType"]:checked').value;
             const customerShippingType = document.querySelector('input[name="customerShippingType"]:checked').value;
@@ -727,17 +899,54 @@
             const advertisingRateInput = document.getElementById('advertisingRate');
             const advertisingRate = isAdvertising ? parseFloat(advertisingRateInput.value) : 0;
 
+            // --- Input Validations ---
             if (isNaN(salePrice) || salePrice <= 0) {
                 displayError("💰 판매가격을 올바르게 입력해주세요 (0보다 큰 숫자).");
                 return;
             }
-            if (isNaN(totalPurchasePrice) || totalPurchasePrice < 0) { 
-                displayError("🛒 상품을 선택하고 유효한 수량을 입력하여 총 매입가를 확인해주세요.");
+            
+            let isValidPurchaseSetup = false;
+            const productLines = productLinesContainer.querySelectorAll('.product-line-item');
+            let firstInvalidLineMessage = "";
+
+            // Check if there are any product lines defined
+            if (productLines.length === 0 && (isNaN(totalPurchasePriceVal) || totalPurchasePriceVal <=0) ){ 
+                 displayError("🛒 최소 하나의 상품을 구성하고 유효한 단가와 수량을 입력해주세요.");
+                 return;
+            }
+
+            // Validate each product line
+             productLines.forEach(line => {
+                if (isValidPurchaseSetup && firstInvalidLineMessage) return; // If a valid line found, and error was for a subsequent empty line, it's okay.
+
+                const unitPrice = parseFloat(unformatNumber(line.querySelector('.unit-purchase-price-input').value)) || 0;
+                const quantity = parseInt(line.querySelector('.quantity-input').value) || 0;
+                const productName = line.querySelector('.product-search-input').value.trim();
+
+                if(productName !== "" && unitPrice > 0 && quantity > 0) { // A product is searched and has valid price/qty
+                    isValidPurchaseSetup = true; 
+                    firstInvalidLineMessage = ""; // Clear any previous error message if a valid line is found
+                } else if (productName !== "" && (unitPrice <= 0 || quantity <= 0)) {
+                    // Product searched but invalid price/qty
+                    if (!firstInvalidLineMessage) { // Store only the first error encountered
+                        firstInvalidLineMessage = `🔍 상품 "${productName}"의 단가 또는 수량이 유효하지 않습니다. 상품명을 지우거나 유효한 값을 입력해주세요.`;
+                    }
+                    isValidPurchaseSetup = false; // Mark as invalid until a valid line is confirmed or this error is resolved
+                } else if (productName === "" && (unitPrice > 0 || quantity > 0 || quantityInput.value.trim() !== "1")) {
+                     // No product name, but other fields have data or quantity is not default
+                    if(!isValidPurchaseSetup && !firstInvalidLineMessage){ // If no valid line yet, and no specific error, this is an issue
+                        firstInvalidLineMessage = `🛒 상품 검색 필드가 비어있으나 단가/수량이 입력된 라인이 있습니다. 상품을 검색하거나 해당 라인을 삭제해주세요.`;
+                    }
+                }
+            });
+            
+            if (firstInvalidLineMessage) { // If there was any specific error message generated
+                displayError(firstInvalidLineMessage);
                 return;
             }
-            if (productSearchInput.value && unitPurchasePriceInput.value === "") { // 상품 검색은 했는데 단가가 비어있는 경우 (상품 선택 안하고 직접 검색어만 남긴 경우)
-                displayError("🔍 검색된 상품 목록에서 상품을 선택해주세요, 또는 검색어를 지워주세요.");
-                return;
+            if(!isValidPurchaseSetup && productLines.length > 0) { // If still no valid setup after checking all lines (e.g. all lines are blank)
+                 displayError("🛒 최소 하나의 상품에 대해 상품명을 검색하고 유효한 단가와 수량을 입력해주세요.");
+                 return;
             }
 
 
@@ -746,27 +955,28 @@
                 return;
             }
 
+            // --- Calculations ---
             let channelFeeRateValue;
             if (salesType === 'business' || salesType === 'member') {
-                channelFeeRateValue = 0.037;
-            } else { 
-                channelFeeRateValue = 0.13;
+                channelFeeRateValue = 0.037; // 3.7%
+            } else { // general
+                channelFeeRateValue = 0.13;  // 13%
             }
 
             const channelFee = salePrice * channelFeeRateValue;
-            const actualCustomerShippingAmount = customerShippingAmountSelected;
-            const customerShippingSurchargeRate = 0.033; 
+            const actualCustomerShippingAmount = customerShippingAmountSelected; // Already 0 if 'free'
+            const customerShippingSurchargeRate = 0.033; // 3.3% for customer paid shipping
             const customerShippingSurcharge = actualCustomerShippingAmount * customerShippingSurchargeRate;
             const salesChannelSettlement = salePrice + actualCustomerShippingAmount - channelFee - customerShippingSurcharge;
-            const packagingCost = salePrice * packagingCostRate;
-            const marginBeforeAdvertising = salesChannelSettlement - totalPurchasePrice - packagingCost - outgoingShippingCost;
+            const packagingCost = salePrice * packagingCostRate; // Based on sale price
+            const marginBeforeAdvertising = salesChannelSettlement - totalPurchasePriceVal - packagingCost - outgoingShippingCost;
             
             let finalMarginKRW = marginBeforeAdvertising;
             let advertisingCost = 0;
 
             const advertisingCostItemDiv = document.getElementById('resAdvertisingCostItem');
             if (isAdvertising) {
-                advertisingCost = salePrice * (advertisingRate / 100);
+                advertisingCost = salePrice * (advertisingRate / 100); // Advertising cost based on sale price
                 finalMarginKRW = marginBeforeAdvertising - advertisingCost;
                 advertisingCostItemDiv.classList.remove('hidden');
             } else {
@@ -775,12 +985,13 @@
 
             const finalMarginPercentage = salePrice > 0 ? (finalMarginKRW / salePrice) * 100 : 0;
 
+            // --- Display Results (Rounding to nearest whole number for currency) ---
             document.getElementById('resSalePrice').textContent = `${formatNumberWithCommas(Math.round(salePrice))} 원`;
             document.getElementById('resCustomerShippingAmount').textContent = `${formatNumberWithCommas(Math.round(actualCustomerShippingAmount))} 원`;
             document.getElementById('resChannelFee').textContent = `- ${formatNumberWithCommas(Math.round(channelFee))} 원 (${(channelFeeRateValue * 100).toFixed(1)}%)`;
             document.getElementById('resCustomerShippingSurcharge').textContent = `- ${formatNumberWithCommas(Math.round(customerShippingSurcharge))} 원 (${(customerShippingSurchargeRate * 100).toFixed(1)}%)`;
             document.getElementById('salesChannelSettlementResult').textContent = `${formatNumberWithCommas(Math.round(salesChannelSettlement))} 원`;
-            document.getElementById('resPurchasePrice').textContent = `- ${formatNumberWithCommas(Math.round(totalPurchasePrice))} 원`; 
+            document.getElementById('resPurchasePrice').textContent = `- ${formatNumberWithCommas(Math.round(totalPurchasePriceVal))} 원`; 
             document.getElementById('resPackagingCost').textContent = `- ${formatNumberWithCommas(Math.round(packagingCost))} 원 (${(packagingCostRate * 100).toFixed(0)}%)`;
             document.getElementById('resOutgoingShippingCost').textContent = `- ${formatNumberWithCommas(Math.round(outgoingShippingCost))} 원`;
             document.getElementById('resMarginBeforeAdvertising').textContent = `${formatNumberWithCommas(Math.round(marginBeforeAdvertising))} 원`;
@@ -795,6 +1006,7 @@
             finalMarginKRWEl.textContent = `${formatNumberWithCommas(Math.round(finalMarginKRW))} 원 ${finalMarginKRW < 0 ? '(손실 😥)' : '(이익 😊)'}`;
             finalMarginPercentageEl.textContent = `${finalMarginPercentage.toFixed(2)} %`;
 
+            // Apply profit/loss styling
             finalMarginKRWEl.classList.remove('profit', 'loss');
             finalMarginPercentageEl.classList.remove('profit', 'loss');
 
@@ -806,21 +1018,23 @@
                 finalMarginPercentageEl.classList.add('profit');
             }
             
+            // Show results card with animation
             resultsDiv.classList.remove('hidden'); 
-            setTimeout(() => { 
+            setTimeout(() => { // Timeout to allow CSS transition to take effect
                  resultsDiv.classList.add('show');
-            }, 50);
+            }, 50); // Small delay
         });
 
+        // Function to display error messages
         function displayError(message) {
             errorMessageDiv.textContent = message;
             errorMessageDiv.classList.remove('hidden');
-            resultsDiv.classList.add('hidden'); 
-            resultsDiv.classList.remove('show'); 
+            resultsDiv.classList.add('hidden'); // Hide results when error occurs
+            resultsDiv.classList.remove('show'); // Ensure animation class is also removed
         }
 
-        // 초기 총 매입가 계산 (페이지 로드 시 수량이 1이므로)
-        calculateAndUpdateTotalPurchasePrice();
+        // Initial calculation for total purchase price (e.g., if there are default values)
+        calculateAndDisplayOverallTotalPurchasePrice();
     </script>
 </body>
 </html>
