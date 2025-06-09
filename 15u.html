@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>법인 대표이사 주소변경 인터랙티브 가이드</title>
+    <title>법인 대표이사 주소변경 인터랙티브 가이드 (모바일 최적화)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Harmony -->
-    <!-- Application Structure Plan: 사용자의 핵심 의사결정인 '셀프 처리 vs. 전문가 위임'을 중심으로 설계된 태스크 중심의 대시보드 구조입니다. 사용자가 이 두 가지 옵션 중 하나를 선택하면, 비용, 절차, 필요 서류 등 관련된 모든 정보가 동적으로 필터링되어 제공됩니다. 이는 보고서의 방대한 텍스트를 나열하는 대신, 사용자가 자신의 상황에 맞는 정보만 집중적으로 탐색할 수 있도록 유도하여 사용성을 극대화하기 위함입니다. 핵심 정보(기한, 과태료)를 상단에 배치하여 중요도를 강조하고, 인터랙티브 차트와 체크리스트로 정보 습득의 효율과 재미를 더했습니다. -->
-    <!-- Visualization & Content Choices: 1. 비용 비교: Bar Chart (Chart.js)를 사용하여 '셀프'와 '위임'의 총비용을 시각적으로 즉시 비교합니다. 이는 사용자의 가장 큰 관심사 중 하나인 비용을 직관적으로 전달하기 위함입니다. 2. 업무 절차도: HTML/CSS Flexbox로 구현한 시각적 플로우차트를 통해 복잡한 등기 절차를 단계별로 쉽게 이해하도록 돕습니다. 선택에 따라 관련 단계가 하이라이트되어 사용자 맞춤형 가이드를 제공합니다. 3. 필요 서류: 인터랙티브 체크리스트를 제공하여 실무자가 실제 업무에 바로 활용할 수 있도록 했습니다. 4. 리스크 분석: 아이콘과 카드를 활용하여 자칫 딱딱할 수 있는 법적 리스크 정보를 시각적으로 부드럽게 전달하고 가독성을 높였습니다. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body { font-family: 'Noto Sans KR', sans-serif; }
         .chart-container {
@@ -22,7 +18,6 @@
             margin-left: auto;
             margin-right: auto;
             height: 350px;
-            max-height: 50vh;
         }
         @media (max-width: 640px) {
             .chart-container {
@@ -55,432 +50,438 @@
 </head>
 <body class="bg-stone-50 text-gray-800">
 
-    <div class="container mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
-        
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-3">법인 대표이사 주소변경</h1>
-            <h2 class="text-xl md:text-2xl font-semibold text-blue-700">실무 완벽 가이드 & 리스크 분석</h2>
-            <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">대표이사 주소 변경, 복잡하게 느껴지시나요? 이 인터랙티브 가이드를 통해 핵심 절차부터 비용, 법적 리스크까지 한눈에 파악하고 최적의 실행 방안을 선택하세요.</p>
-        </header>
+<div class="container mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
+    
+    <header class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-3">법인 대표이사 주소변경</h1>
+        <h2 class="text-xl md:text-2xl font-semibold text-blue-700">실무 완벽 가이드 & 리스크 분석</h2>
+        <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">대표이사 주소 변경, 복잡하게 느껴지시나요? 이 인터랙티브 가이드를 통해 핵심 절차부터 비용, 법적 리스크까지 한눈에 파악하고 최적의 실행 방안을 선택하세요.</p>
+    </header>
 
-        <section id="key-alert" class="mb-12">
-             <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-6 rounded-r-lg grid md:grid-cols-2 gap-6 items-center shadow-lg">
-                <div class="text-center">
-                    <p class="text-lg font-semibold">⚠️ 절대 놓치면 안 될 핵심!</p>
-                    <p class="text-3xl font-bold my-2">변경 후 <span class="text-red-600">14일</span> 이내</p>
-                    <p class="text-gray-700">대표이사 전입신고일 기준, 등기 완료 필수</p>
-                </div>
-                <div class="text-center border-t md:border-t-0 md:border-l border-red-300 pt-4 md:pt-0 md:pl-6">
-                     <p class="text-lg font-semibold">🚨 등기 지연 시 리스크</p>
-                    <p class="text-3xl font-bold my-2">최대 <span class="text-red-600">500만원</span> 이하</p>
-                    <p class="text-gray-700">과태료 부과 (상법 제635조)</p>
-                </div>
+    <section id="key-alert" class="mb-12">
+         <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-6 rounded-r-lg grid md:grid-cols-2 gap-6 items-center shadow-lg">
+            <div class="text-center">
+                <p class="text-lg font-semibold">⚠️ 절대 놓치면 안 될 핵심!</p>
+                <p class="text-3xl font-bold my-2">변경 후 <span class="text-red-600">14일</span> 이내</p>
+                <p class="text-gray-700">대표이사 전입신고일 기준, 등기 완료 필수</p>
+            </div>
+            <div class="text-center border-t md:border-t-0 md:border-l border-red-300 pt-4 md:pt-0 md:pl-6">
+                 <p class="text-lg font-semibold">🚨 등기 지연 시 리스크</p>
+                <p class="text-3xl font-bold my-2">최대 <span class="text-red-600">500만원</span> 이하</p>
+                <p class="text-gray-700">과태료 부과 (상법 제635조)</p>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <section id="decision-hub" class="text-center mb-12">
+            <h3 class="text-3xl font-bold text-gray-900 mb-2">어떻게 진행하시겠어요?</h3>
+            <p class="text-lg text-gray-600 mb-6">선택에 따라 맞춤형 가이드를 제공합니다.</p>
+            <div id="method-selector" class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button data-method="self" class="tab-button w-48 sm:w-40 py-3 px-6 border-2 border-gray-300 rounded-lg text-lg font-semibold transition-all duration-200">셀프 등기</button>
+                <button data-method="pro" class="tab-button w-48 sm:w-40 py-3 px-6 border-2 border-gray-300 rounded-lg text-lg font-semibold transition-all duration-200">법무사 위임</button>
             </div>
         </section>
 
-        <main>
-            <section id="decision-hub" class="text-center mb-12">
-                <h3 class="text-3xl font-bold text-gray-900 mb-2">어떻게 진행하시겠어요?</h3>
-                <p class="text-lg text-gray-600 mb-6">선택에 따라 맞춤형 가이드를 제공합니다.</p>
-                <div id="method-selector" class="flex justify-center gap-4">
-                    <button data-method="self" class="tab-button w-40 py-3 px-6 border-2 border-gray-300 rounded-lg text-lg font-semibold transition-all duration-200">셀프 등기</button>
-                    <button data-method="pro" class="tab-button w-40 py-3 px-6 border-2 border-gray-300 rounded-lg text-lg font-semibold transition-all duration-200">법무사 위임</button>
+        <div id="guide-content" class="space-y-16">
+            
+            <section id="process-flow">
+                <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">핵심 절차 한눈에 보기</h3>
+                <p class="text-lg text-center text-gray-600 mb-10">대표이사 주소변경 등기는 아래와 같은 순서로 진행됩니다.</p>
+                <div id="flow-container" class="relative flex flex-col items-start w-full max-w-2xl mx-auto">
+                    <!-- Process flow will be dynamically generated here -->
                 </div>
             </section>
 
-            <div id="guide-content" class="space-y-16">
-                
-                <section id="process-flow">
-                    <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">핵심 절차 한눈에 보기</h3>
-                    <p class="text-lg text-center text-gray-600 mb-10">대표이사 주소변경 등기는 아래와 같은 순서로 진행됩니다.</p>
-                    <div id="flow-container" class="relative flex flex-col items-center">
-                        <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-300 transform -translate-x-1/2"></div>
+            <section id="cost-comparison">
+                <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">상세 비용 비교</h3>
+                <p class="text-lg text-center text-gray-600 mb-10">예상되는 총 비용을 시각적으로 비교하고, 상세 내역을 확인하여 합리적인 예산을 계획하세요.</p>
+                <div class="grid md:grid-cols-5 gap-8 items-start">
+                    <div class="md:col-span-3">
+                       <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
+                            <div class="chart-container">
+                                <canvas id="costChart"></canvas>
+                            </div>
+                       </div>
                     </div>
-                </section>
-
-                <section id="cost-comparison">
-                    <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">상세 비용 비교</h3>
-                    <p class="text-lg text-center text-gray-600 mb-10">예상되는 총 비용을 시각적으로 비교하고, 상세 내역을 확인하여 합리적인 예산을 계획하세요.</p>
-                    <div class="grid md:grid-cols-5 gap-8 items-start">
-                        <div class="md:col-span-3">
-                           <div class="bg-white p-6 rounded-xl shadow-lg">
-                                <div class="chart-container">
-                                    <canvas id="costChart"></canvas>
-                                </div>
-                           </div>
-                        </div>
-                        <div id="cost-details" class="md:col-span-2 bg-white p-6 rounded-xl shadow-lg">
-                           <h4 class="text-xl font-bold mb-4 border-b pb-2">상세 비용 내역</h4>
-                           <div class="space-y-3"></div>
-                        </div>
+                    <div id="cost-details" class="md:col-span-2 bg-white p-6 rounded-xl shadow-lg">
+                       <h4 class="text-xl font-bold mb-4 border-b pb-2">상세 비용 내역</h4>
+                       <div class="space-y-3"></div>
                     </div>
-                </section>
+                </div>
+            </section>
 
-                <section id="documents-checklist">
-                    <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">필요 서류 체크리스트</h3>
-                    <p class="text-lg text-center text-gray-600 mb-10">등기 신청에 필요한 서류 목록입니다. 빠짐없이 준비하여 업무를 원활하게 진행하세요.</p>
-                    <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
-                        <div id="checklist-container" class="space-y-4"></div>
-                        <p id="pro-doc-note" class="hidden mt-6 text-center text-blue-700 bg-blue-50 p-4 rounded-lg">
-                            <strong>법무사 위임 시:</strong> 대표님 <span class="font-bold">주민등록초본</span>과 <span class="font-bold">법인인감도장</span>만 준비해주시면, 나머지는 법무사가 알아서 처리합니다.
-                        </p>
-                    </div>
-                </section>
-                
-                <section id="follow-up-actions">
-                    <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">등기 완료 후 필수 후속조치</h3>
-                    <p class="text-lg text-center text-gray-600 mb-10">변경 등기가 끝이 아닙니다. 아래 조치들을 이행해야 불필요한 문제를 예방할 수 있습니다.</p>
-                    <div id="follow-up-container" class="grid md:grid-cols-3 gap-8">
-                    </div>
-                </section>
-
-                <section id="risk-analysis">
-                    <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">놓치면 안 될 리스크 분석</h3>
-                    <p class="text-lg text-center text-gray-600 mb-10">단순한 과태료를 넘어, 등기 지연이 초래할 수 있는 다양한 법적·행정적 문제를 미리 파악하고 대비하세요.</p>
-                    <div id="risk-cards-container" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    </div>
-                </section>
-
-                <section id="final-recommendation">
-                     <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">최종 제언</h3>
-                     <p class="text-lg text-center text-gray-600 mb-10">귀사의 상황과 우선순위에 맞는 최적의 선택은 무엇일까요?</p>
-                     <div class="grid md:grid-cols-3 gap-8 text-center">
-                        <div class="bg-white p-8 rounded-xl shadow-lg">
-                            <h4 class="text-xl font-bold text-green-700 mb-3">💰 비용 최소화 우선</h4>
-                            <p class="text-gray-600">시간적 여유가 있고 행정 업무에 자신 있다면, '셀프 등기'로 비용을 크게 절약할 수 있습니다. 특히 인터넷 전자등기 방식이 가장 저렴합니다.</p>
-                        </div>
-                         <div class="bg-white p-8 rounded-xl shadow-lg">
-                            <h4 class="text-xl font-bold text-orange-700 mb-3">⏱️ 시간 효율성 우선</h4>
-                            <p class="text-gray-600">핵심 인력의 시간을 절약하고 다른 중요 업무에 집중하고 싶다면, '법무사 위임'이 합리적인 투자입니다. 절차의 번거로움에서 해방될 수 있습니다.</p>
-                        </div>
-                         <div class="bg-white p-8 rounded-xl shadow-lg">
-                            <h4 class="text-xl font-bold text-red-700 mb-3">🛡️ 법적 안정성 우선</h4>
-                            <p class="text-gray-600">실수 가능성을 원천 차단하고 과태료 등 법적 리스크를 완벽하게 피하고 싶다면, 전문가인 '법무사 위임'이 가장 안전하고 확실한 선택입니다.</p>
-                        </div>
-                     </div>
-                </section>
-
-            </div>
-        </main>
-
-        <footer class="mt-20 pt-8 border-t text-center text-gray-500">
-             <p>본 정보는 2025년 6월 9일 기준이며, 법규 개정 등에 따라 변경될 수 있습니다.</p>
-             <p>실제 업무 처리 시에는 관련 기관에 최신 정보를 재확인하시기 바랍니다.</p>
-             <div class="mt-4 space-x-4">
-                <a href="http://www.iros.go.kr" target="_blank" class="hover:text-blue-600">인터넷등기소</a>
-                <a href="https://www.hometax.go.kr" target="_blank" class="hover:text-blue-600">홈택스</a>
-                <a href="https://www.4insure.or.kr" target="_blank" class="hover:text-blue-600">4대사회보험 정보연계센터</a>
-             </div>
-        </footer>
-
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+            <section id="documents-checklist">
+                <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">필요 서류 체크리스트</h3>
+                <p class="text-lg text-center text-gray-600 mb-10">등기 신청에 필요한 서류 목록입니다. 빠짐없이 준비하여 업무를 원활하게 진행하세요.</p>
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
+                    <div id="checklist-container" class="space-y-4"></div>
+                    <p id="pro-doc-note" class="hidden mt-6 text-center text-blue-700 bg-blue-50 p-4 rounded-lg">
+                        <strong>법무사 위임 시:</strong> 대표님 <span class="font-bold">주민등록초본</span>과 <span class="font-bold">법인인감도장</span>만 준비해주시면, 나머지는 법무사가 알아서 처리합니다.
+                    </p>
+                </div>
+            </section>
             
-            const data = {
-                costs: {
-                    self: {
-                        registrationTax: 40200,
-                        educationTax: 8040,
-                        applicationFee: { min: 2000, max: 6000 },
-                        etcFee: 500,
-                    },
-                    pro: {
-                        registrationTax: 40200,
-                        educationTax: 8040,
-                        applicationFee: { min: 2000, max: 6000 },
-                        proFee: { min: 100000, max: 200000 },
-                        etcFee: 500,
-                    }
+            <section id="follow-up-actions">
+                <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">등기 완료 후 필수 후속조치</h3>
+                <p class="text-lg text-center text-gray-600 mb-10">변경 등기가 끝이 아닙니다. 아래 조치들을 이행해야 불필요한 문제를 예방할 수 있습니다.</p>
+                <div id="follow-up-container" class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                </div>
+            </section>
+
+            <section id="risk-analysis">
+                <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">놓치면 안 될 리스크 분석</h3>
+                <p class="text-lg text-center text-gray-600 mb-10">단순한 과태료를 넘어, 등기 지연이 초래할 수 있는 다양한 법적·행정적 문제를 미리 파악하고 대비하세요.</p>
+                <div id="risk-cards-container" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+            </section>
+
+            <section id="final-recommendation">
+                 <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">최종 제언</h3>
+                 <p class="text-lg text-center text-gray-600 mb-10">귀사의 상황과 우선순위에 맞는 최적의 선택은 무엇일까요?</p>
+                 <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <div class="bg-white p-8 rounded-xl shadow-lg">
+                        <h4 class="text-xl font-bold text-green-700 mb-3">💰 비용 최소화 우선</h4>
+                        <p class="text-gray-600">시간적 여유가 있고 행정 업무에 자신 있다면, '셀프 등기'로 비용을 크게 절약할 수 있습니다. 특히 인터넷 전자등기 방식이 가장 저렴합니다.</p>
+                    </div>
+                     <div class="bg-white p-8 rounded-xl shadow-lg">
+                        <h4 class="text-xl font-bold text-orange-700 mb-3">⏱️ 시간 효율성 우선</h4>
+                        <p class="text-gray-600">핵심 인력의 시간을 절약하고 다른 중요 업무에 집중하고 싶다면, '법무사 위임'이 합리적인 투자입니다. 절차의 번거로움에서 해방될 수 있습니다.</p>
+                    </div>
+                     <div class="bg-white p-8 rounded-xl shadow-lg">
+                        <h4 class="text-xl font-bold text-red-700 mb-3">🛡️ 법적 안정성 우선</h4>
+                        <p class="text-gray-600">실수 가능성을 원천 차단하고 과태료 등 법적 리스크를 완벽하게 피하고 싶다면, 전문가인 '법무사 위임'이 가장 안전하고 확실한 선택입니다.</p>
+                    </div>
+                 </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="mt-20 pt-8 border-t text-center text-gray-500">
+         <p>본 정보는 2025년 6월 9일 기준이며, 법규 개정 등에 따라 변경될 수 있습니다.</p>
+         <p>실제 업무 처리 시에는 관련 기관에 최신 정보를 재확인하시기 바랍니다.</p>
+         <div class="mt-4 space-x-4">
+            <a href="http://www.iros.go.kr" target="_blank" class="hover:text-blue-600">인터넷등기소</a>
+            <a href="https://www.hometax.go.kr" target="_blank" class="hover:text-blue-600">홈택스</a>
+            <a href="https://www.4insure.or.kr" target="_blank" class="hover:text-blue-600">4대사회보험 정보연계센터</a>
+         </div>
+    </footer>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        const data = {
+            costs: {
+                self: {
+                    registrationTax: 40200,
+                    educationTax: 8040,
+                    applicationFee: { min: 2000, max: 6000 },
+                    etcFee: 5000, // Corrected from 500 for more realistic costs like certificate issuance
                 },
-                process: [
-                    { step: 1, title: '대표이사 전입신고', detail: '대표이사가 새로운 주소지로 전입신고를 완료합니다. 이 날짜로부터 14일의 법정기한이 시작됩니다.', for: ['self', 'pro'] },
-                    { step: 2, title: '필요 서류 준비', detail: '대표이사 주민등록초본 등 등기에 필요한 서류를 발급받고 준비합니다. 초본은 주소 변동 내역이 모두 포함되어야 합니다.', for: ['self'] },
-                    { step: 3, title: '등록면허세 납부', detail: '관할 구청 세무과에 등록면허세(40,200원)와 지방교육세(8,040원)를 납부합니다. 위택스/이택스에서 온라인 납부가 가능합니다.', for: ['self'] },
-                    { step: 4, title: '등기신청서 작성 및 수수료 납부', detail: '인터넷등기소(온라인) 또는 등기소(오프라인)에서 변경등기신청서를 작성하고, 방식에 따라 등기신청수수료(2,000원~6,000원)를 납부합니다.', for: ['self'] },
-                    { step: 5, title: '법인 변경 등기 신청', detail: '준비된 모든 서류를 첨부하여 관할 등기소에 변경 등기를 신청합니다. (전자/서면/e-Form 방식 중 선택)', for: ['self'] },
-                    { step: 6, title: '법무사 서류 전달 및 위임', detail: '법무사에게 대표이사 주민등록초본, 법인인감도장 등 필요 서류를 전달하고 업무를 위임합니다.', for: ['pro'] },
-                    { step: 7, title: '법무사가 등기 업무 대행', detail: '법무사가 모든 서류 작성, 세금 납부, 등기 신청 및 완료까지 전 과정을 책임지고 처리합니다.', for: ['pro'] }
-                ],
-                documents: [
-                    { name: '대표이사 주민등록초본', detail: '과거 주소 변동내역 전체 포함, 주민번호 전체 공개, 3개월 내 발급분' },
-                    { name: '등록면허세 납부확인서', detail: '총 48,240원 (비과밀억제권역 기준)' },
-                    { name: '등기신청수수료 납부 영수증', detail: '전자 2,000원, e-Form 4,000원, 서면 6,000원' },
-                    { name: '주식회사변경등기신청서', detail: '인터넷등기소에서 작성 또는 다운로드' },
-                    { name: '법인인감도장', detail: '신청서 날인 시 필요' },
-                    { name: '위임장 (대리인 신청 시)', detail: '법인인감 날인' },
-                    { name: '법인 전자증명서 (전자등기 시)', detail: '인터넷등기소 로그인 및 전자서명용 USB' }
-                ],
-                followUp: [
-                    { icon: '🏦', title: '주거래 은행 정보 변경', description: '은행의 고객확인(KYC) 의무에 따라 반드시 변경해야 합니다. 미변경 시 대출, 중요 금융거래에 제한이 생길 수 있습니다. 변경된 등기부등본과 신분증을 지참하여 은행에 방문하세요.', mandatory: true },
-                    { icon: '🏢', title: '4대 사회보험 정보 변경', description: '등기 정보가 자동 연계되지만, 누락/지연 방지를 위해 4대보험 정보연계센터에서 직접 사업장 내역 변경 신고를 하는 것이 가장 확실합니다. 특히 건강보험 고지서 등 중요 우편물 수령을 위해 필수적입니다.', mandatory: true },
-                    { icon: '🤝', title: '주요 거래처 및 계약 통지', description: '계약서에 대표자 정보 변경 통지 의무가 있는지 확인하세요. 의무가 없더라도, 원활한 업무 협력과 신뢰 유지를 위해 주요 거래처에는 변경 사실을 알리는 것이 좋습니다.', mandatory: false }
-                ],
-                risks: [
-                    { icon: '⚖️', title: '법적 분쟁 발생', description: '중요 서류가 과거 주소로 송달되어 소송 대응 기회를 놓치거나, 계약 시 상대방에게 혼란을 줄 수 있습니다.' },
-                    { icon: '🏦', title: '금융 거래 제한', description: '은행의 고객확인(KYC) 절차에 따라 대출, 중요 거래 시 제한이 발생하거나 법인 신용도에 부정적 영향을 줄 수 있습니다.' },
-                    { icon: '📄', title: '공공입찰 참여 문제', description: '입찰 참가 자격 등록/갱신 시 제출 서류의 정확성 문제로 심사가 지연되거나 기업 신뢰도에 문제가 생길 수 있습니다.' },
-                    { icon: '📉', title: '대외 신뢰도 저하', description: '기본적인 법규를 준수하지 않는다는 인상을 주어 거래처, 투자자 등에게 기업의 신뢰도를 떨어뜨릴 수 있습니다.' },
-                    { icon: '🏢', title: '행정기관의 시정 요구', description: '과태료 부과 외에도 등기 사항을 시정하라는 행정 명령을 받아 추가적인 업무 부담이 발생할 수 있습니다.' },
-                    { icon: '💸', title: '과태료 (최대 500만원)', description: '가장 직접적인 리스크로, 등기 해태 기간에 따라 금액이 가중되어 상당한 금전적 손실을 야기합니다.' }
-                ]
-            };
-
-            let currentMethod = 'pro';
-            let costChart;
-
-            const methodSelector = document.getElementById('method-selector');
-            const costDetailsContainer = document.querySelector('#cost-details .space-y-3');
-            const checklistContainer = document.getElementById('checklist-container');
-            const proDocNote = document.getElementById('pro-doc-note');
-            const flowContainer = document.getElementById('flow-container');
-            const riskCardsContainer = document.getElementById('risk-cards-container');
-            const followUpContainer = document.getElementById('follow-up-container');
-
-            function formatCurrency(num) {
-                return `${num.toLocaleString('ko-KR')}원`;
-            }
-
-            function renderProcessFlow() {
-                flowContainer.innerHTML = '';
-                const relevantSteps = data.process.filter(p => p.for.includes(currentMethod));
-                relevantSteps.forEach((p, index) => {
-                    const stepDiv = document.createElement('div');
-                    stepDiv.className = `flow-step relative w-full flex items-start mb-8 ${p.for.includes(currentMethod) ? 'highlight' : ''}`;
-                    
-                    const sideClass = index % 2 === 0 ? 'flex-row-reverse text-right' : 'text-left';
-                    const marginClass = index % 2 === 0 ? 'mr-10' : 'ml-10';
-
-                    stepDiv.innerHTML = `
-                        <div class="step-content w-5/12 ${marginClass}">
-                            <h4 class="step-title text-lg font-semibold text-gray-700">${p.title}</h4>
-                            <p class="text-sm text-gray-500">${p.detail}</p>
-                        </div>
-                        <div class="step-circle absolute left-1/2 top-0 transform -translate-x-1/2 w-10 h-10 bg-white border-2 border-gray-300 rounded-full flex items-center justify-center font-bold text-gray-500 text-lg transition-all duration-300">
-                           ${p.step}
-                        </div>
-                    `;
-                    flowContainer.appendChild(stepDiv);
-                });
-            }
-
-            function renderCostDetails() {
-                costDetailsContainer.innerHTML = '';
-                const costs = data.costs[currentMethod];
-                const totalMin = costs.registrationTax + costs.educationTax + costs.applicationFee.min + (costs.proFee ? costs.proFee.min : 0) + costs.etcFee;
-                const totalMax = costs.registrationTax + costs.educationTax + costs.applicationFee.max + (costs.proFee ? costs.proFee.max : 0) + costs.etcFee;
-
-                let detailsHtml = `
-                    <div class="flex justify-between items-center py-2"><span>등록면허세</span><span class="font-semibold">${formatCurrency(costs.registrationTax)}</span></div>
-                    <div class="flex justify-between items-center py-2"><span>지방교육세</span><span class="font-semibold">${formatCurrency(costs.educationTax)}</span></div>
-                    <div class="flex justify-between items-center py-2"><span>등기신청수수료</span><span class="font-semibold">${formatCurrency(costs.applicationFee.min)} ~ ${formatCurrency(costs.applicationFee.max)}</span></div>
-                     <div class="flex justify-between items-center py-2"><span>기타 비용 (증명서 발급 등)</span><span class="font-semibold">약 ${formatCurrency(costs.etcFee)}</span></div>
-                `;
-
-                if (currentMethod === 'pro') {
-                    detailsHtml += `<div class="flex justify-between items-center py-2 text-blue-600"><span>법무사 수수료 (VAT별도)</span><span class="font-bold">${formatCurrency(costs.proFee.min)} ~ ${formatCurrency(costs.proFee.max)}</span></div>`;
+                pro: {
+                    registrationTax: 40200,
+                    educationTax: 8040,
+                    applicationFee: { min: 2000, max: 6000 },
+                    proFee: { min: 100000, max: 200000 },
+                    etcFee: 5000,
                 }
+            },
+            process: [
+                { step: 1, title: '대표이사 전입신고', detail: '대표이사가 새로운 주소지로 전입신고를 완료합니다. 이 날짜로부터 14일의 법정기한이 시작됩니다.', for: ['self', 'pro'] },
+                { step: 2, title: '필요 서류 준비', detail: '대표이사 주민등록초본 등 등기에 필요한 서류를 발급받고 준비합니다. 초본은 주소 변동 내역이 모두 포함되어야 합니다.', for: ['self'] },
+                { step: 3, title: '등록면허세 납부', detail: '관할 구청 세무과에 등록면허세(40,200원)와 지방교육세(8,040원)를 납부합니다. 위택스/이택스에서 온라인 납부가 가능합니다.', for: ['self'] },
+                { step: 4, title: '등기신청서 작성 및 수수료 납부', detail: '인터넷등기소(온라인) 또는 등기소(오프라인)에서 변경등기신청서를 작성하고, 방식에 따라 등기신청수수료(2,000원~6,000원)를 납부합니다.', for: ['self'] },
+                { step: 5, title: '법인 변경 등기 신청', detail: '준비된 모든 서류를 첨부하여 관할 등기소에 변경 등기를 신청합니다. (전자/서면/e-Form 방식 중 선택)', for: ['self'] },
+                { step: 6, title: '법무사 서류 전달 및 위임', detail: '법무사에게 대표이사 주민등록초본, 법인인감도장 등 필요 서류를 전달하고 업무를 위임합니다.', for: ['pro'] },
+                { step: 7, title: '법무사가 등기 업무 대행', detail: '법무사가 모든 서류 작성, 세금 납부, 등기 신청 및 완료까지 전 과정을 책임지고 처리합니다.', for: ['pro'] }
+            ],
+            documents: [
+                { name: '대표이사 주민등록초본', detail: '과거 주소 변동내역 전체 포함, 주민번호 전체 공개, 3개월 내 발급분' },
+                { name: '등록면허세 납부확인서', detail: '총 48,240원 (비과밀억제권역 기준)' },
+                { name: '등기신청수수료 납부 영수증', detail: '전자 2,000원, e-Form 4,000원, 서면 6,000원' },
+                { name: '주식회사변경등기신청서', detail: '인터넷등기소에서 작성 또는 다운로드' },
+                { name: '법인인감도장', detail: '신청서 날인 시 필요' },
+                { name: '위임장 (대리인 신청 시)', detail: '법인인감 날인' },
+                { name: '법인 전자증명서 (전자등기 시)', detail: '인터넷등기소 로그인 및 전자서명용 USB' }
+            ],
+            // '주요 거래처 및 계약 통지' 항목이 삭제되었습니다.
+            followUp: [
+                { icon: '🏦', title: '주거래 은행 정보 변경', description: '은행의 고객확인(KYC) 의무에 따라 반드시 변경해야 합니다. 미변경 시 대출, 중요 금융거래에 제한이 생길 수 있습니다. 변경된 등기부등본과 신분증을 지참하여 은행에 방문하세요.', mandatory: true },
+                { icon: '🏢', title: '4대 사회보험 정보 변경', description: '등기 정보가 자동 연계되지만, 누락/지연 방지를 위해 4대보험 정보연계센터에서 직접 사업장 내역 변경 신고를 하는 것이 가장 확실합니다. 특히 건강보험 고지서 등 중요 우편물 수령을 위해 필수적입니다.', mandatory: true }
+            ],
+            risks: [
+                { icon: '⚖️', title: '법적 분쟁 발생', description: '중요 서류가 과거 주소로 송달되어 소송 대응 기회를 놓치거나, 계약 시 상대방에게 혼란을 줄 수 있습니다.' },
+                { icon: '🏦', title: '금융 거래 제한', description: '은행의 고객확인(KYC) 절차에 따라 대출, 중요 거래 시 제한이 발생하거나 법인 신용도에 부정적 영향을 줄 수 있습니다.' },
+                { icon: '📄', title: '공공입찰 참여 문제', description: '입찰 참가 자격 등록/갱신 시 제출 서류의 정확성 문제로 심사가 지연되거나 기업 신뢰도에 문제가 생길 수 있습니다.' },
+                { icon: '📉', title: '대외 신뢰도 저하', description: '기본적인 법규를 준수하지 않는다는 인상을 주어 거래처, 투자자 등에게 기업의 신뢰도를 떨어뜨릴 수 있습니다.' },
+                { icon: '🏢', title: '행정기관의 시정 요구', description: '과태료 부과 외에도 등기 사항을 시정하라는 행정 명령을 받아 추가적인 업무 부담이 발생할 수 있습니다.' },
+                { icon: '💸', title: '과태료 (최대 500만원)', description: '가장 직접적인 리스크로, 등기 해태 기간에 따라 금액이 가중되어 상당한 금전적 손실을 야기합니다.' }
+            ]
+        };
+
+        let currentMethod = 'pro';
+        let costChart;
+
+        const methodSelector = document.getElementById('method-selector');
+        const costDetailsContainer = document.querySelector('#cost-details .space-y-3');
+        const checklistContainer = document.getElementById('checklist-container');
+        const proDocNote = document.getElementById('pro-doc-note');
+        const flowContainer = document.getElementById('flow-container');
+        const riskCardsContainer = document.getElementById('risk-cards-container');
+        const followUpContainer = document.getElementById('follow-up-container');
+
+        function formatCurrency(num) {
+            return `${num.toLocaleString('ko-KR')}원`;
+        }
+        
+        // 모바일 친화적인 수직 타임라인 렌더링 함수
+        function renderProcessFlow() {
+            flowContainer.innerHTML = ''; // Clear previous content
+            const relevantSteps = data.process.filter(p => p.for.includes(currentMethod));
+
+            // Add the vertical timeline bar that connects the circles
+            const timelineBar = document.createElement('div');
+            timelineBar.className = 'absolute left-5 top-0 h-full w-0.5 bg-gray-300 transform -translate-x-1/2';
+            flowContainer.appendChild(timelineBar);
+
+            relevantSteps.forEach((p) => {
+                const stepDiv = document.createElement('div');
+                stepDiv.className = 'flow-step relative w-full flex items-start mb-8 highlight';
                 
-                detailsHtml += `
-                    <div class="border-t mt-3 pt-3">
-                         <div class="flex justify-between items-center text-lg font-bold">
-                            <span>예상 총계</span>
-                            <span>${formatCurrency(totalMin)} ~ ${formatCurrency(totalMax)}</span>
-                        </div>
+                stepDiv.innerHTML = `
+                    <div class="step-circle absolute left-5 top-1 transform -translate-x-1/2 w-10 h-10 bg-white border-2 border-gray-300 rounded-full flex items-center justify-center font-bold text-gray-500 text-lg transition-all duration-300 z-10">
+                       ${p.step}
+                    </div>
+                    <div class="step-content pl-14 sm:pl-16">
+                        <h4 class="step-title text-lg font-semibold text-gray-700">${p.title}</h4>
+                        <p class="text-gray-600">${p.detail}</p>
                     </div>
                 `;
+                flowContainer.appendChild(stepDiv);
+            });
+        }
 
-                costDetailsContainer.innerHTML = detailsHtml;
+
+        function renderCostDetails() {
+            costDetailsContainer.innerHTML = '';
+            const costs = data.costs[currentMethod];
+            const totalMin = costs.registrationTax + costs.educationTax + costs.applicationFee.min + (costs.proFee ? costs.proFee.min : 0) + costs.etcFee;
+            const totalMax = costs.registrationTax + costs.educationTax + costs.applicationFee.max + (costs.proFee ? costs.proFee.max : 0) + costs.etcFee;
+
+            let detailsHtml = `
+                <div class="flex justify-between items-center py-2"><span>등록면허세</span><span class="font-semibold">${formatCurrency(costs.registrationTax)}</span></div>
+                <div class="flex justify-between items-center py-2"><span>지방교육세</span><span class="font-semibold">${formatCurrency(costs.educationTax)}</span></div>
+                <div class="flex justify-between items-center py-2"><span>등기신청수수료</span><span class="font-semibold">${formatCurrency(costs.applicationFee.min)} ~ ${formatCurrency(costs.applicationFee.max)}</span></div>
+                 <div class="flex justify-between items-center py-2"><span>기타 비용 (증명서 발급 등)</span><span class="font-semibold">약 ${formatCurrency(costs.etcFee)}</span></div>
+            `;
+
+            if (currentMethod === 'pro') {
+                detailsHtml += `<div class="flex justify-between items-center py-2 text-blue-600"><span>법무사 수수료 (VAT별도)</span><span class="font-bold">${formatCurrency(costs.proFee.min)} ~ ${formatCurrency(costs.proFee.max)}</span></div>`;
             }
+            
+            detailsHtml += `
+                <div class="border-t mt-3 pt-3">
+                     <div class="flex justify-between items-center text-lg font-bold">
+                        <span>예상 총계</span>
+                        <span>${formatCurrency(totalMin)} ~ ${formatCurrency(totalMax)}</span>
+                    </div>
+                </div>
+            `;
 
-            function renderChecklist() {
-                checklistContainer.innerHTML = '';
-                data.documents.forEach(doc => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'flex items-start bg-gray-50 p-4 rounded-lg';
-                    itemDiv.innerHTML = `
-                        <input type="checkbox" id="doc-${doc.name}" class="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                        <label for="doc-${doc.name}" class="ml-3">
-                            <span class="font-semibold text-gray-800">${doc.name}</span>
-                            <p class="text-sm text-gray-500">${doc.detail}</p>
-                        </label>
-                    `;
-                    checklistContainer.appendChild(itemDiv);
-                });
+            costDetailsContainer.innerHTML = detailsHtml;
+        }
 
-                if (currentMethod === 'pro') {
-                    checklistContainer.classList.add('hidden');
-                    proDocNote.classList.remove('hidden');
-                } else {
-                    checklistContainer.classList.remove('hidden');
-                    proDocNote.classList.add('hidden');
+        function renderChecklist() {
+            checklistContainer.innerHTML = '';
+            data.documents.forEach(doc => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'flex items-start bg-gray-50 p-4 rounded-lg';
+                itemDiv.innerHTML = `
+                    <input type="checkbox" id="doc-${doc.name}" class="mt-1 h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 flex-shrink-0">
+                    <label for="doc-${doc.name}" class="ml-3">
+                        <span class="font-semibold text-gray-800">${doc.name}</span>
+                        <p class="text-sm text-gray-500">${doc.detail}</p>
+                    </label>
+                `;
+                checklistContainer.appendChild(itemDiv);
+            });
+
+            if (currentMethod === 'pro') {
+                checklistContainer.classList.add('hidden');
+                proDocNote.classList.remove('hidden');
+            } else {
+                checklistContainer.classList.remove('hidden');
+                proDocNote.classList.add('hidden');
+            }
+        }
+        
+        function renderFollowUpActions() {
+            followUpContainer.innerHTML = '';
+            data.followUp.forEach(action => {
+                const card = document.createElement('div');
+                card.className = 'follow-up-card bg-white p-6 rounded-xl shadow-lg';
+                
+                const mandatoryLabel = action.mandatory 
+                    ? `<span class="text-sm font-bold text-red-600 ml-2">(필수/강력권장)</span>`
+                    : `<span class="text-sm font-semibold text-gray-500 ml-2">(권장)</span>`;
+
+                card.innerHTML = `
+                    <div class="flex items-center mb-3">
+                       <span class="text-3xl">${action.icon}</span>
+                       <h4 class="text-lg font-bold text-gray-900 ml-3">${action.title}${mandatoryLabel}</h4>
+                    </div>
+                    <p class="text-gray-600">${action.description}</p>
+                `;
+                followUpContainer.appendChild(card);
+            });
+        }
+
+        function renderRisks() {
+            riskCardsContainer.innerHTML = '';
+             data.risks.forEach(risk => {
+                const card = document.createElement('div');
+                card.className = 'risk-card bg-white p-6 rounded-xl shadow-lg flex items-start space-x-4';
+                card.innerHTML = `
+                    <div class="text-3xl flex-shrink-0">${risk.icon}</div>
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-900 mb-1">${risk.title}</h4>
+                        <p class="text-gray-600">${risk.description}</p>
+                    </div>
+                `;
+                riskCardsContainer.appendChild(card);
+            });
+        }
+
+        function updateChart() {
+            const selfCosts = data.costs.self;
+            const proCosts = data.costs.pro;
+
+            const selfTotal = selfCosts.registrationTax + selfCosts.educationTax + selfCosts.applicationFee.min + selfCosts.etcFee;
+            const proTotalBase = proCosts.registrationTax + proCosts.educationTax + proCosts.applicationFee.min + proCosts.etcFee;
+            const proTotalFee = proCosts.proFee.min;
+            
+            const datasets = [
+                {
+                    label: '셀프 등기 (최소 비용)',
+                    data: [selfTotal, 0],
+                    backgroundColor: 'rgba(22, 163, 74, 0.6)',
+                    borderColor: 'rgba(22, 163, 74, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: '법무사 위임 (공과금)',
+                    data: [0, proTotalBase],
+                    backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1,
+                    stack: 'pro'
+                },
+                {
+                    label: '법무사 위임 (수수료)',
+                    data: [0, proTotalFee],
+                    backgroundColor: 'rgba(234, 88, 12, 0.6)',
+                    borderColor: 'rgba(234, 88, 12, 1)',
+                    borderWidth: 1,
+                    stack: 'pro'
                 }
-            }
+            ];
             
-            function renderFollowUpActions() {
-                followUpContainer.innerHTML = '';
-                data.followUp.forEach(action => {
-                    const card = document.createElement('div');
-                    card.className = 'follow-up-card bg-white p-6 rounded-xl shadow-lg';
-                    
-                    const mandatoryLabel = action.mandatory 
-                        ? `<span class="text-sm font-bold text-red-600 ml-2">(필수/강력권장)</span>`
-                        : `<span class="text-sm font-semibold text-gray-500 ml-2">(권장)</span>`;
-
-                    card.innerHTML = `
-                        <div class="flex items-center mb-3">
-                           <span class="text-3xl">${action.icon}</span>
-                           <h4 class="text-lg font-bold text-gray-900 ml-3">${action.title}${mandatoryLabel}</h4>
-                        </div>
-                        <p class="text-gray-600">${action.description}</p>
-                    `;
-                    followUpContainer.appendChild(card);
-                });
-            }
-
-            function renderRisks() {
-                riskCardsContainer.innerHTML = '';
-                 data.risks.forEach(risk => {
-                    const card = document.createElement('div');
-                    card.className = 'risk-card bg-white p-6 rounded-xl shadow-lg flex items-start space-x-4';
-                    card.innerHTML = `
-                        <div class="text-3xl">${risk.icon}</div>
-                        <div>
-                            <h4 class="text-lg font-bold text-gray-900 mb-1">${risk.title}</h4>
-                            <p class="text-gray-600">${risk.description}</p>
-                        </div>
-                    `;
-                    riskCardsContainer.appendChild(card);
-                });
-            }
-
-            function updateChart() {
-                const selfCosts = data.costs.self;
-                const proCosts = data.costs.pro;
-
-                const selfTotal = selfCosts.registrationTax + selfCosts.educationTax + selfCosts.applicationFee.min + selfCosts.etcFee;
-                const proTotalBase = proCosts.registrationTax + proCosts.educationTax + proCosts.applicationFee.min + proCosts.etcFee;
-                const proTotalFee = proCosts.proFee.min;
-                
-                const datasets = [
-                    {
-                        label: '셀프 등기 (최소 비용)',
-                        data: [selfTotal, 0],
-                        backgroundColor: 'rgba(22, 163, 74, 0.6)',
-                        borderColor: 'rgba(22, 163, 74, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: '법무사 위임 (공과금)',
-                        data: [0, proTotalBase],
-                        backgroundColor: 'rgba(59, 130, 246, 0.6)',
-                        borderColor: 'rgba(59, 130, 246, 1)',
-                        borderWidth: 1,
-                        stack: 'pro'
-                    },
-                    {
-                        label: '법무사 위임 (수수료)',
-                        data: [0, proTotalFee],
-                        backgroundColor: 'rgba(234, 88, 12, 0.6)',
-                        borderColor: 'rgba(234, 88, 12, 1)',
-                        borderWidth: 1,
-                        stack: 'pro'
-                    }
-                ];
-                
-                costChart.data.datasets = datasets;
-                
-                costChart.update();
-            }
+            costChart.data.datasets = datasets;
             
-            function initChart() {
-                const ctx = document.getElementById('costChart').getContext('2d');
-                costChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['셀프 등기', '법무사 위임'],
-                        datasets: []
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                stacked: true,
-                                ticks: {
-                                    callback: function(value) {
-                                        return formatCurrency(value);
-                                    }
+            costChart.update();
+        }
+        
+        function initChart() {
+            const ctx = document.getElementById('costChart').getContext('2d');
+            costChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['셀프 등기', '법무사 위임'],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            stacked: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
                                 }
-                            },
-                            x: {
-                                stacked: true,
                             }
                         },
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed.y !== null) {
-                                            label += formatCurrency(context.parsed.y);
-                                        }
-                                        return label;
+                        x: {
+                            stacked: true,
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
                                     }
+                                    if (context.parsed.y !== null) {
+                                        label += formatCurrency(context.parsed.y);
+                                    }
+                                    return label;
                                 }
-                            },
-                            legend: {
-                                display: true,
-                                position: 'bottom'
                             }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'bottom'
                         }
                     }
-                });
-            }
+                }
+            });
+        }
 
 
-            function selectMethod(method) {
-                currentMethod = method;
-                
-                document.querySelectorAll('.tab-button').forEach(btn => {
-                    if (btn.dataset.method === method) {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
-                });
-                
-                renderDynamicUI();
-            }
-
-            function renderDynamicUI() {
-                renderProcessFlow();
-                renderCostDetails();
-                renderChecklist();
-            }
+        function selectMethod(method) {
+            currentMethod = method;
             
-            function renderStaticUI() {
-                initChart();
-                updateChart();
-                renderFollowUpActions();
-                renderRisks();
-            }
-
-            methodSelector.addEventListener('click', function(e) {
-                if (e.target.tagName === 'BUTTON') {
-                    selectMethod(e.target.dataset.method);
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                if (btn.dataset.method === method) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
                 }
             });
             
-            // Initial render
-            renderStaticUI();
-            selectMethod('pro'); 
+            renderDynamicUI();
+        }
+
+        function renderDynamicUI() {
+            renderProcessFlow();
+            renderCostDetails();
+            renderChecklist();
+        }
+        
+        function renderStaticUI() {
+            initChart();
+            updateChart();
+            renderFollowUpActions();
+            renderRisks();
+        }
+
+        methodSelector.addEventListener('click', function(e) {
+            if (e.target.tagName === 'BUTTON') {
+                selectMethod(e.target.dataset.method);
+            }
         });
-    </script>
+        
+        // Initial render
+        renderStaticUI();
+        selectMethod('pro'); 
+    });
+</script>
+
 </body>
 </html>
