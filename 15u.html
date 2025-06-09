@@ -46,6 +46,25 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
+        /* Style for the details/summary element */
+        details > summary {
+            cursor: pointer;
+            font-weight: 600;
+            list-style: none; /* Remove default marker */
+        }
+        details > summary::-webkit-details-marker {
+            display: none; /* Remove default marker for Chrome */
+        }
+        details > summary::before {
+            content: '▶';
+            margin-right: 0.5rem;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        details[open] > summary::before {
+            transform: rotate(90deg);
+        }
+
     </style>
 </head>
 <body class="bg-stone-50 text-gray-800">
@@ -135,6 +154,38 @@
                 <div id="risk-cards-container" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 </div>
             </section>
+            
+            <section id="tax-info">
+                <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">세금 관련 추가 정보</h3>
+                <p class="text-lg text-center text-gray-600 mb-10">대표 주소 변경과 법인 본점 이전의 세금 이슈는 어떻게 다를까요?</p>
+                <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+                    <div class="bg-green-50 border border-green-200 p-6 rounded-xl">
+                        <h4 class="text-xl font-bold text-green-800 mb-3">✅ 대표이사 주소지 변경 (현재 가이드의 주제)</h4>
+                        <p class="text-gray-700">
+                            대표이사 개인의 거주지 변경은 법인의 세금 부담에 **직접적인 영향을 주지 않습니다.**
+                        </p>
+                        <ul class="mt-4 space-y-2 list-disc list-inside text-gray-600">
+                            <li><strong>세금 이슈 없음:</strong> 법인세, 부가가치세 등 법인의 주요 세금에 아무런 변동이 없습니다.</li>
+                            <li><strong>등록면허세의 의미:</strong> 이 가이드에서 언급된 등록면허세(48,240원)는 주소 변경 '등기'라는 행정 절차에 대한 수수료 성격의 세금일 뿐, 이사 자체에 대한 세금이 아닙니다.</li>
+                            <li><strong>결론:</strong> 과태료 외에 세금적인 불이익이나 추가 신고 의무는 걱정하지 않으셔도 됩니다.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-red-50 border border-red-200 p-6 rounded-xl">
+                        <h4 class="text-xl font-bold text-red-800 mb-3">🚨 법인 본점 이전 (별개의 사안)</h4>
+                        <p class="text-gray-700">
+                            법인의 주사무소(본점)를 이전하는 것은 **중요한 세금 이슈를 발생**시킬 수 있습니다.
+                        </p>
+                         <ul class="mt-4 space-y-2 list-disc list-inside text-gray-600">
+                            <li><strong>핵심 키워드: <span class="font-bold">과밀억제권역</span></strong><br>수도권 등 인구와 산업이 밀집된 지역을 의미합니다.</li>
+                            <li><strong>세금 중과세:</strong> 과밀억제권역 밖에서 안으로 본점을 이전할 경우, <span class="font-bold text-red-600">등록면허세가 3배 중과세</span>됩니다. 또한, 5년 내 부동산 취득 시 <span class="font-bold text-red-600">취득세도 중과세</span>될 수 있습니다.</li>
+                            <li><strong>결론:</strong> 법인 본점 이전은 반드시 세무 전문가와 상담 후 진행해야 하는 중대 사안입니다.</li>
+                        </ul>
+                    </div>
+                </div>
+                 <div class="mt-8 text-center bg-blue-100 max-w-4xl mx-auto p-4 rounded-lg text-blue-800">
+                    <p class="font-semibold">요약: 세금 문제는 '법인 본점'의 위치가 기준이며, '대표이사 개인'의 주소지는 법인 세금과 무관합니다.</p>
+                </div>
+            </section>
 
             <section id="final-recommendation">
                  <h3 class="text-3xl font-bold text-center mb-2 text-gray-900">최종 제언</h3>
@@ -157,15 +208,51 @@
 
         </div>
     </main>
+    
+    <!-- New Data Source Section -->
+    <div class="max-w-4xl mx-auto mt-20">
+        <details class="bg-gray-100 p-4 rounded-lg">
+            <summary class="text-lg text-gray-800">자료 출처 (Data Sources)</summary>
+            <div class="mt-4 pt-4 border-t border-gray-300 text-gray-600">
+                <p class="mb-4">본 가이드의 내용은 아래의 공신력 있는 기관의 정보와 법령을 기반으로 작성되었습니다.</p>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <span class="font-semibold w-32 flex-shrink-0">등기/법령</span>
+                        <div>
+                            <a href="http://www.iros.go.kr" target="_blank" class="text-blue-600 hover:underline">대한민국 법원 인터넷등기소</a>
+                            <p class="text-sm">법인 등기 절차, 수수료, 신청서 양식 관련 정보</p>
+                        </div>
+                    </li>
+                     <li class="flex items-start">
+                        <span class="font-semibold w-32 flex-shrink-0"></span>
+                        <div>
+                            <a href="https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=205943&efYd=20200204#0000" target="_blank" class="text-blue-600 hover:underline">국가법령정보센터 (상법 제635조)</a>
+                            <p class="text-sm">등기 해태 시 과태료 부과 법적 근거</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="font-semibold w-32 flex-shrink-0">세금</span>
+                        <div>
+                           <a href="https://www.wetax.go.kr" target="_blank" class="text-blue-600 hover:underline">위택스 (Wetax)</a>
+                            <p class="text-sm">등록면허세(지방세) 신고 및 납부 정보</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="font-semibold w-32 flex-shrink-0">4대 보험</span>
+                        <div>
+                            <a href="https://www.4insure.or.kr" target="_blank" class="text-blue-600 hover:underline">4대사회보험 정보연계센터</a>
+                            <p class="text-sm">사업장 정보 변경 신고 관련 정보</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
 
-    <footer class="mt-20 pt-8 border-t text-center text-gray-500">
+
+    <footer class="mt-12 pt-8 border-t text-center text-gray-500">
          <p>본 정보는 2025년 6월 9일 기준이며, 법규 개정 등에 따라 변경될 수 있습니다.</p>
          <p>실제 업무 처리 시에는 관련 기관에 최신 정보를 재확인하시기 바랍니다.</p>
-         <div class="mt-4 space-x-4">
-            <a href="http://www.iros.go.kr" target="_blank" class="hover:text-blue-600">인터넷등기소</a>
-            <a href="https://www.hometax.go.kr" target="_blank" class="hover:text-blue-600">홈택스</a>
-            <a href="https://www.4insure.or.kr" target="_blank" class="hover:text-blue-600">4대사회보험 정보연계센터</a>
-         </div>
     </footer>
 
 </div>
@@ -179,7 +266,7 @@
                     registrationTax: 40200,
                     educationTax: 8040,
                     applicationFee: { min: 2000, max: 6000 },
-                    etcFee: 5000, // Corrected from 500 for more realistic costs like certificate issuance
+                    etcFee: 5000, 
                 },
                 pro: {
                     registrationTax: 40200,
@@ -207,7 +294,6 @@
                 { name: '위임장 (대리인 신청 시)', detail: '법인인감 날인' },
                 { name: '법인 전자증명서 (전자등기 시)', detail: '인터넷등기소 로그인 및 전자서명용 USB' }
             ],
-            // '주요 거래처 및 계약 통지' 항목이 삭제되었습니다.
             followUp: [
                 { icon: '🏦', title: '주거래 은행 정보 변경', description: '은행의 고객확인(KYC) 의무에 따라 반드시 변경해야 합니다. 미변경 시 대출, 중요 금융거래에 제한이 생길 수 있습니다. 변경된 등기부등본과 신분증을 지참하여 은행에 방문하세요.', mandatory: true },
                 { icon: '🏢', title: '4대 사회보험 정보 변경', description: '등기 정보가 자동 연계되지만, 누락/지연 방지를 위해 4대보험 정보연계센터에서 직접 사업장 내역 변경 신고를 하는 것이 가장 확실합니다. 특히 건강보험 고지서 등 중요 우편물 수령을 위해 필수적입니다.', mandatory: true }
@@ -237,12 +323,10 @@
             return `${num.toLocaleString('ko-KR')}원`;
         }
         
-        // 모바일 친화적인 수직 타임라인 렌더링 함수
         function renderProcessFlow() {
-            flowContainer.innerHTML = ''; // Clear previous content
+            flowContainer.innerHTML = ''; 
             const relevantSteps = data.process.filter(p => p.for.includes(currentMethod));
 
-            // Add the vertical timeline bar that connects the circles
             const timelineBar = document.createElement('div');
             timelineBar.className = 'absolute left-5 top-0 h-full w-0.5 bg-gray-300 transform -translate-x-1/2';
             flowContainer.appendChild(timelineBar);
@@ -389,9 +473,10 @@
                 }
             ];
             
-            costChart.data.datasets = datasets;
-            
-            costChart.update();
+            if (costChart) {
+                costChart.data.datasets = datasets;
+                costChart.update();
+            }
         }
         
         function initChart() {
