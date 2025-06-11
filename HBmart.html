@@ -174,8 +174,8 @@
             border-radius: 0.375rem; /* rounded-md */
             transition: opacity 0.3s ease;
         }
-        .hidden {
-            display: none !important; /* !important to override other display properties if animation classes interfere */
+        .hidden-element { /* Use this for display:none; for elements that should not take up space */
+            display: none;
         }
         .product-dropdown {
             position: absolute;
@@ -263,7 +263,20 @@
             border: 1px solid #BFDBFE; /* blue-200 */
         }
         .add-product-button:hover {
-             background-color: #BFDBFE; /* blue-200 */
+            background-color: #BFDBFE; /* blue-200 */
+        }
+        /* Styles for the new "Purchase Type" radio buttons */
+        .purchase-type-options {
+            display: flex;
+            gap: 1.5rem; /* Equivalent to sm:space-x-6 */
+            margin-bottom: 1rem;
+        }
+        .purchase-type-option {
+            display: flex;
+            align-items: center;
+        }
+        .purchase-type-option input[type="radio"] {
+            margin-right: 0.5rem; /* Space between radio and label */
         }
     </style>
 </head>
@@ -284,33 +297,78 @@
                 <!-- 상품 매입가 구성 영역 -->
                 <div class="input-group border border-gray-200 p-4 rounded-lg">
                     <label class="block text-base font-semibold text-gray-700 mb-3"><span class="emoji" role="img" aria-label="package">📦</span>상품 매입 구성</label>
+                    
                     <div id="productLinesContainer" class="space-y-4">
                         <!-- 첫 번째 상품 라인 (기본) -->
                         <div class="product-line-item border-b border-dashed border-gray-300 pb-4" data-line-id="1">
-                            <div class="relative mb-2">
-                                <label for="productSearchInput-1" class="block text-xs font-medium text-gray-600 mb-1">상품 검색 1</label>
-                                <input type="text" id="productSearchInput-1" placeholder="상품명 검색..." class="product-search-input mt-1 block w-full input-field text-sm">
-                                <div class="product-dropdown hidden"></div>
-                            </div>
-                            <div class="grid grid-cols-10 gap-x-2 items-end">
-                                <div class="col-span-4">
-                                    <label for="unitPurchasePrice-1" class="block text-xs font-medium text-gray-600 mb-1">단가</label>
-                                    <input type="text" id="unitPurchasePrice-1" readonly class="unit-purchase-price-input number-input block w-full input-field text-sm">
-                                </div>
-                                <div class="col-span-3">
-                                    <label for="quantity-1" class="block text-xs font-medium text-gray-600 mb-1">수량</label>
-                                    <div class="quantity-input-wrapper mt-0">
-                                        <button type="button" class="decrease-quantity quantity-control-button">-</button>
-                                        <input type="number" id="quantity-1" value="1" min="1" class="quantity-input number-input block w-full input-field text-sm">
-                                        <button type="button" class="increase-quantity quantity-control-button">+</button>
+                             <!-- 매입 단가 타입 선택 -->
+                            <div class="input-group mb-4 mt-0">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">매입 단가 타입</label>
+                                <div class="purchase-type-options">
+                                    <div class="purchase-type-option">
+                                        <input type="radio" id="purchaseTypeRegistered-1" name="purchaseType-1" value="registered" checked class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                        <label for="purchaseTypeRegistered-1" class="radio-label">등록 상품</label>
+                                    </div>
+                                    <div class="purchase-type-option">
+                                        <input type="radio" id="purchaseTypeUnregistered-1" name="purchaseType-1" value="unregistered" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                        <label for="purchaseTypeUnregistered-1" class="radio-label">미등록 상품</label>
                                     </div>
                                 </div>
-                                <div class="col-span-3">
-                                    <label for="lineSubtotal-1" class="block text-xs font-medium text-gray-600 mb-1">소계</label>
-                                    <input type="text" id="lineSubtotal-1" readonly class="line-subtotal-display number-input block w-full input-field text-sm subtotal-field">
-                                </div>
-                                <!-- 첫번째 라인은 삭제 버튼 없음 또는 비활성화 처리 가능 -->
                             </div>
+
+                            <!-- Registered Product Section -->
+                            <div class="registered-product-section">
+                                <div class="relative mb-2">
+                                    <label for="productSearchInput-1" class="block text-xs font-medium text-gray-600 mb-1">상품 검색 1</label>
+                                    <input type="text" id="productSearchInput-1" placeholder="상품명 검색..." class="product-search-input mt-1 block w-full input-field text-sm">
+                                    <div class="product-dropdown hidden"></div>
+                                </div>
+                                <div class="grid grid-cols-10 gap-x-2 items-end">
+                                    <div class="col-span-4">
+                                        <label for="unitPurchasePrice-1" class="block text-xs font-medium text-gray-600 mb-1">단가</label>
+                                        <input type="text" id="unitPurchasePrice-1" readonly class="unit-purchase-price-input number-input block w-full input-field text-sm">
+                                    </div>
+                                    <div class="col-span-3">
+                                        <label for="quantity-1" class="block text-xs font-medium text-gray-600 mb-1">수량</label>
+                                        <div class="quantity-input-wrapper mt-0">
+                                            <button type="button" class="decrease-quantity quantity-control-button">-</button>
+                                            <input type="number" id="quantity-1" value="1" min="1" class="quantity-input number-input block w-full input-field text-sm">
+                                            <button type="button" class="increase-quantity quantity-control-button">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        <label for="lineSubtotal-1" class="block text-xs font-medium text-gray-600 mb-1">소계</label>
+                                        <input type="text" id="lineSubtotal-1" readonly class="line-subtotal-display number-input block w-full input-field text-sm subtotal-field">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Unregistered Product Section -->
+                            <div class="unregistered-product-section hidden-element">
+                                <div class="relative mb-2">
+                                    <label for="unregisteredProductName-1" class="block text-xs font-medium text-gray-600 mb-1">상품명 (선택 사항) 1</label>
+                                    <input type="text" id="unregisteredProductName-1" placeholder="미등록 상품명..." class="unregistered-product-name-input mt-1 block w-full input-field text-sm">
+                                </div>
+                                <div class="grid grid-cols-10 gap-x-2 items-end">
+                                    <div class="col-span-4">
+                                        <label for="unregisteredUnitPrice-1" class="block text-xs font-medium text-gray-600 mb-1">단가</label>
+                                        <input type="text" id="unregisteredUnitPrice-1" placeholder="예: 15,000" class="unregistered-unit-price-input number-input block w-full input-field text-sm">
+                                    </div>
+                                    <div class="col-span-3">
+                                        <label for="unregisteredQuantity-1" class="block text-xs font-medium text-gray-600 mb-1">수량</label>
+                                        <div class="quantity-input-wrapper mt-0">
+                                            <button type="button" class="decrease-quantity quantity-control-button">-</button>
+                                            <input type="number" id="unregisteredQuantity-1" value="1" min="1" class="unregistered-quantity-input number-input block w-full input-field text-sm">
+                                            <button type="button" class="increase-quantity quantity-control-button">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        <label for="unregisteredLineSubtotal-1" class="block text-xs font-medium text-gray-600 mb-1">소계</label>
+                                        <input type="text" id="unregisteredLineSubtotal-1" readonly class="line-subtotal-display number-input block w-full input-field text-sm subtotal-field">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 첫번째 라인은 삭제 버튼 없음 -->
                         </div>
                     </div>
                     <button type="button" id="addProductLineButton" class="mt-4 text-sm add-product-button font-medium py-2 px-4 rounded-md w-full">
@@ -393,7 +451,7 @@
             <!-- 광고비 항목 -->
             <div class="input-group">
                 <label class="block text-sm font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="megaphone">📢</span>광고집행</label>
-                 <div class="mt-2 space-y-2 sm:space-y-0 sm:flex sm:space-x-6">
+                   <div class="mt-2 space-y-2 sm:space-y-0 sm:flex sm:space-x-6">
                     <div class="flex items-center">
                         <input id="adNo" name="advertising" type="radio" value="no" checked class="focus:ring-indigo-500 h-5 w-5 text-indigo-600 border-gray-300">
                         <label for="adNo" class="ml-2 block text-sm radio-label">광고 안함</label>
@@ -460,7 +518,7 @@
                     <strong class="text-sm"><span class="emoji" role="img" aria-label="decreasing chart">📉</span>(-) 광고비:</strong>
                     <span id="resAdvertisingCost" class="text-sm font-medium">0 원 (0%)</span>
                 </div>
-                 <hr class="my-4 border-gray-300">
+                   <hr class="my-4 border-gray-300">
                 <div class="result-item flex justify-between items-center mt-4 final-summary-item">
                     <strong class="text-base"><span class="emoji" role="img" aria-label="check mark">✅</span>최종 판매 마진 (금액):</strong>
                     <span id="finalMarginKRWResult" class="font-bold">0 원</span>
@@ -471,7 +529,7 @@
                 </div>
             </div>
         </div>
-         <div id="errorMessage" class="mt-6 error-message hidden"></div>
+           <div id="errorMessage" class="mt-6 error-message hidden"></div>
     </div>
 
     <script>
@@ -533,7 +591,7 @@
             { name: "유선형 쥐 먹이상자", price: 1320.0 }, { name: "아임파인 피톤치드살균제 500ml", price: 5500.0 },
             { name: "삼현소독용에탄올 83% 4L", price: 8800.0 }, { name: "새부리형 마스크 (퓨어화이트) 대형 1봉지*10매입", price: 88.0 },
             { name: "더킬존 1L", price: 7920.0 }, { name: "쿠마펜펠렛 500g", price: 6500.0 },
-            { name: "싸이퍼킬 유제 1L", price: 15500.0 }, { name: "맥스포스 셀렉트 이지겔 230g", price: 19250.0 },
+            { name: "싸이퍼킬 유제 1L", price: 15500.0 }, { name: "맥스포스 셀렉트 이지겔 230g", price: 19800.0 },
             { name: "필립스 18W 유문등", price: 7150.0 }, { name: "킬파프 진드기싹 액제 290mL", price: 3135.0 },
             { name: "마우스올킬 블럭 500g", price: 7700.0 }, { name: "잡스개미용과립 250g", price: 26400.0 },
             { name: "벤주론 타블릿 10g (1g * 10)", price: 4400.0 }, { name: "무무스가드플러스(200ml)", price: 9000.0 },
@@ -618,19 +676,34 @@
         
         // Function to calculate and update the subtotal for a single product line
         function calculateAndUpdateLineSubtotal(lineElement) {
-            const unitPriceInput = lineElement.querySelector('.unit-purchase-price-input');
-            const quantityInput = lineElement.querySelector('.quantity-input');
-            const lineSubtotalDisplay = lineElement.querySelector('.line-subtotal-display');
+            const purchaseType = lineElement.querySelector(`input[name="purchaseType-${lineElement.dataset.lineId}"]:checked`).value;
+            let unitPrice = 0;
+            let quantity = 0;
+            let lineSubtotalDisplay; // Declare here to assign the correct one
 
-            const unitPrice = parseFloat(unformatNumber(unitPriceInput.value)) || 0;
-            const quantity = parseInt(quantityInput.value) || 0;
+            if (purchaseType === 'registered') {
+                const unitPriceInput = lineElement.querySelector('.unit-purchase-price-input');
+                const quantityInput = lineElement.querySelector('.quantity-input');
+                lineSubtotalDisplay = lineElement.querySelector('.registered-product-section .line-subtotal-display'); // Target specific subtotal
+                unitPrice = parseFloat(unformatNumber(unitPriceInput.value)) || 0;
+                quantity = parseInt(quantityInput.value) || 0;
+            } else { // unregistered
+                const unregisteredUnitPriceInput = lineElement.querySelector('.unregistered-unit-price-input');
+                const unregisteredQuantityInput = lineElement.querySelector('.unregistered-quantity-input');
+                lineSubtotalDisplay = lineElement.querySelector('.unregistered-product-section .line-subtotal-display'); // Target specific subtotal
+                unitPrice = parseFloat(unformatNumber(unregisteredUnitPriceInput.value)) || 0;
+                quantity = parseInt(unregisteredQuantityInput.value) || 0;
+            }
+            
             let lineSubtotal = 0;
 
             if (unitPrice > 0 && quantity > 0) {
                 lineSubtotal = unitPrice * quantity;
             }
             // Display the subtotal formatted with commas and fixed to 1 decimal place
-            lineSubtotalDisplay.value = formatNumberWithCommas(lineSubtotal.toFixed(1));
+            if (lineSubtotalDisplay) { // Safety check
+                lineSubtotalDisplay.value = formatNumberWithCommas(lineSubtotal.toFixed(1));
+            }
             calculateAndDisplayOverallTotalPurchasePrice(); // Update the overall total purchase price
         }
 
@@ -640,7 +713,9 @@
             const productLines = productLinesContainer.querySelectorAll('.product-line-item');
 
             productLines.forEach(line => {
-                const lineSubtotalDisplay = line.querySelector('.line-subtotal-display');
+                const lineSubtotalDisplay = line.querySelector(`input[name="purchaseType-${line.dataset.lineId}"]:checked`).value === 'registered' ?
+                                             line.querySelector('.registered-product-section .line-subtotal-display') :
+                                             line.querySelector('.unregistered-product-section .line-subtotal-display');
                 const subtotalValue = parseFloat(unformatNumber(lineSubtotalDisplay.value)) || 0;
                 overallTotalPrice += subtotalValue;
             });
@@ -655,79 +730,242 @@
             lineDiv.setAttribute('data-line-id', id);
             lineDiv.innerHTML = `
                 <div class="flex justify-between items-center mb-2">
-                    <label for="productSearchInput-${id}" class="block text-xs font-medium text-gray-600">상품 검색 ${id}</label>
-                    ${id > 1 ? '<button type="button" class="delete-product-line-button text-xs">삭제</button>' : ''}
-                </div>
-                <div class="relative mb-2">
-                    <input type="text" id="productSearchInput-${id}" placeholder="상품명 검색..." class="product-search-input mt-1 block w-full input-field text-sm">
-                    <div class="product-dropdown hidden"></div>
-                </div>
-                <div class="grid grid-cols-10 gap-x-2 items-end">
-                    <div class="col-span-4">
-                        <label for="unitPurchasePrice-${id}" class="block text-xs font-medium text-gray-600 mb-1">단가</label>
-                        <input type="text" id="unitPurchasePrice-${id}" readonly class="unit-purchase-price-input number-input block w-full input-field text-sm">
-                    </div>
-                    <div class="col-span-3">
-                        <label for="quantity-${id}" class="block text-xs font-medium text-gray-600 mb-1">수량</label>
-                        <div class="quantity-input-wrapper mt-0">
-                            <button type="button" class="decrease-quantity quantity-control-button">-</button>
-                            <input type="number" id="quantity-${id}" value="1" min="1" class="quantity-input number-input block w-full input-field text-sm">
-                            <button type="button" class="increase-quantity quantity-control-button">+</button>
+                    <label class="block text-sm font-medium text-gray-700">매입 단가 타입</label>
+                    <div class="purchase-type-options">
+                        <div class="purchase-type-option">
+                            <input type="radio" id="purchaseTypeRegistered-${id}" name="purchaseType-${id}" value="registered" checked class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                            <label for="purchaseTypeRegistered-${id}" class="radio-label">등록 상품</label>
+                        </div>
+                        <div class="purchase-type-option">
+                            <input type="radio" id="purchaseTypeUnregistered-${id}" name="purchaseType-${id}" value="unregistered" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                            <label for="purchaseTypeUnregistered-${id}" class="radio-label">미등록 상품</label>
                         </div>
                     </div>
-                    <div class="col-span-3">
-                        <label for="lineSubtotal-${id}" class="block text-xs font-medium text-gray-600 mb-1">소계</label>
-                        <input type="text" id="lineSubtotal-${id}" readonly class="line-subtotal-display number-input block w-full input-field text-sm subtotal-field">
+                    ${id > 1 ? '<button type="button" class="delete-product-line-button text-xs">삭제</button>' : ''}
+                </div>
+                
+                <!-- Registered Product Section -->
+                <div class="registered-product-section">
+                    <div class="relative mb-2">
+                        <label for="productSearchInput-${id}" class="block text-xs font-medium text-gray-600 mb-1">상품 검색 ${id}</label>
+                        <input type="text" id="productSearchInput-${id}" placeholder="상품명 검색..." class="product-search-input mt-1 block w-full input-field text-sm">
+                        <div class="product-dropdown hidden"></div>
+                    </div>
+                    <div class="grid grid-cols-10 gap-x-2 items-end">
+                        <div class="col-span-4">
+                            <label for="unitPurchasePrice-${id}" class="block text-xs font-medium text-gray-600 mb-1">단가</label>
+                            <input type="text" id="unitPurchasePrice-${id}" readonly class="unit-purchase-price-input number-input block w-full input-field text-sm">
+                        </div>
+                        <div class="col-span-3">
+                            <label for="quantity-${id}" class="block text-xs font-medium text-gray-600 mb-1">수량</label>
+                            <div class="quantity-input-wrapper mt-0">
+                                <button type="button" class="decrease-quantity quantity-control-button">-</button>
+                                <input type="number" id="quantity-${id}" value="1" min="1" class="quantity-input number-input block w-full input-field text-sm">
+                                <button type="button" class="increase-quantity quantity-control-button">+</button>
+                            </div>
+                        </div>
+                        <div class="col-span-3">
+                            <label for="lineSubtotal-${id}" class="block text-xs font-medium text-gray-600 mb-1">소계</label>
+                            <input type="text" id="lineSubtotal-${id}" readonly class="line-subtotal-display number-input block w-full input-field text-sm subtotal-field">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unregistered Product Section -->
+                <div class="unregistered-product-section hidden-element">
+                    <div class="relative mb-2">
+                        <label for="unregisteredProductName-${id}" class="block text-xs font-medium text-gray-600 mb-1">상품명 (선택 사항) ${id}</label>
+                        <input type="text" id="unregisteredProductName-${id}" placeholder="미등록 상품명..." class="unregistered-product-name-input mt-1 block w-full input-field text-sm">
+                    </div>
+                    <div class="grid grid-cols-10 gap-x-2 items-end">
+                        <div class="col-span-4">
+                            <label for="unregisteredUnitPrice-${id}" class="block text-xs font-medium text-gray-600 mb-1">단가</label>
+                            <input type="text" id="unregisteredUnitPrice-${id}" placeholder="예: 15,000" class="unregistered-unit-price-input number-input block w-full input-field text-sm">
+                        </div>
+                        <div class="col-span-3">
+                            <label for="unregisteredQuantity-${id}" class="block text-xs font-medium text-gray-600 mb-1">수량</label>
+                            <div class="quantity-input-wrapper mt-0">
+                                <button type="button" class="decrease-quantity quantity-control-button">-</button>
+                                <input type="number" id="unregisteredQuantity-${id}" value="1" min="1" class="unregistered-quantity-input number-input block w-full input-field text-sm">
+                                <button type="button" class="increase-quantity quantity-control-button">+</button>
+                            </div>
+                        </div>
+                        <div class="col-span-3">
+                            <label for="unregisteredLineSubtotal-${id}" class="block text-xs font-medium text-gray-600 mb-1">소계</label>
+                            <input type="text" id="unregisteredLineSubtotal-${id}" readonly class="line-subtotal-display number-input block w-full input-field text-sm subtotal-field">
+                        </div>
                     </div>
                 </div>
             `;
             
             // Attach event listeners to the new line's elements
-            const searchInput = lineDiv.querySelector('.product-search-input');
-            const unitPriceInput = lineDiv.querySelector('.unit-purchase-price-input');
-            const quantityInput = lineDiv.querySelector('.quantity-input');
-            const decreaseBtn = lineDiv.querySelector('.decrease-quantity');
-            const increaseBtn = lineDiv.querySelector('.increase-quantity');
-            const deleteBtn = lineDiv.querySelector('.delete-product-line-button');
-            const dropdown = lineDiv.querySelector('.product-dropdown');
+            setupProductLineEventListeners(lineDiv, id);
 
-            searchInput.addEventListener('input', function() {
-                handleProductSearch(this, dropdown, unitPriceInput, quantityInput, lineDiv);
+            return lineDiv;
+        }
+
+        // Function to setup event listeners for a product line (both initial and newly added)
+        function setupProductLineEventListeners(lineElement, id) {
+            const purchaseTypeRadiosForLine = lineElement.querySelectorAll(`input[name="purchaseType-${id}"]`);
+            const registeredSection = lineElement.querySelector('.registered-product-section');
+            const unregisteredSection = lineElement.querySelector('.unregistered-product-section');
+
+            const searchInput = lineElement.querySelector('.product-search-input');
+            const unitPriceInput = lineElement.querySelector('.unit-purchase-price-input');
+            const quantityInput = lineElement.querySelector('.quantity-input');
+            const dropdown = lineElement.querySelector('.product-dropdown');
+
+            const unregisteredUnitPriceInput = lineElement.querySelector('.unregistered-unit-price-input');
+            const unregisteredQuantityInput = lineElement.querySelector('.unregistered-quantity-input');
+
+            // Note: There are two sets of quantity control buttons per line (one for registered, one for unregistered)
+            const registeredDecreaseBtn = registeredSection.querySelector('.decrease-quantity');
+            const registeredIncreaseBtn = registeredSection.querySelector('.increase-quantity');
+            const unregisteredDecreaseBtn = unregisteredSection.querySelector('.decrease-quantity');
+            const unregisteredIncreaseBtn = unregisteredSection.querySelector('.increase-quantity');
+
+            const deleteBtn = lineElement.querySelector('.delete-product-line-button');
+
+            // Initial state setup for the current line
+            const currentPurchaseType = lineElement.querySelector(`input[name="purchaseType-${id}"]:checked`).value;
+            if (currentPurchaseType === 'registered') {
+                registeredSection.classList.remove('hidden-element');
+                unregisteredSection.classList.add('hidden-element');
+            } else {
+                unregisteredSection.classList.remove('hidden-element');
+                registeredSection.classList.add('hidden-element');
+            }
+
+
+            // Handle purchase type change
+            purchaseTypeRadiosForLine.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'registered') {
+                        registeredSection.classList.remove('hidden-element');
+                        unregisteredSection.classList.add('hidden-element');
+                        // Clear unregistered inputs and set registered defaults
+                        unregisteredUnitPriceInput.value = '';
+                        unregisteredQuantityInput.value = 1;
+                        searchInput.focus(); // Focus on search input
+                    } else { // unregistered
+                        unregisteredSection.classList.remove('hidden-element');
+                        registeredSection.classList.add('hidden-element');
+                        // Clear registered inputs
+                        searchInput.value = '';
+                        unitPriceInput.value = '';
+                        quantityInput.value = 1;
+                        dropdown.classList.add('hidden'); // Hide dropdown
+                        unregisteredUnitPriceInput.focus(); // Focus on manual price input
+                    }
+                    calculateAndUpdateLineSubtotal(lineElement); // Recalculate after type change
+                });
             });
-            
-            quantityInput.addEventListener('input', () => calculateAndUpdateLineSubtotal(lineDiv));
-            decreaseBtn.addEventListener('click', () => {
-                let currentQuantity = parseInt(quantityInput.value);
-                if (currentQuantity > 1) {
-                    quantityInput.value = currentQuantity - 1;
-                    calculateAndUpdateLineSubtotal(lineDiv);
+
+            // Event listeners for registered product inputs
+            searchInput.addEventListener('input', function() {
+                // Only trigger search if "registered" type is selected for this line
+                if (lineElement.querySelector(`input[name="purchaseType-${id}"]:checked`).value === 'registered') {
+                    handleProductSearch(this, dropdown, unitPriceInput, quantityInput, lineElement);
                 }
             });
-            increaseBtn.addEventListener('click', () => {
-                let currentQuantity = parseInt(quantityInput.value);
-                quantityInput.value = currentQuantity + 1; // Directly set the input value
-                calculateAndUpdateLineSubtotal(lineDiv);
+            // Format number input for registered unit price field
+            unitPriceInput.addEventListener('input', function(e) {
+                if (lineElement.querySelector(`input[name="purchaseType-${id}"]:checked`).value === 'registered') {
+                    handleNumberInputFormatting(e.target);
+                    calculateAndUpdateLineSubtotal(lineElement);
+                }
             });
+            unitPriceInput.addEventListener('blur', function(e) {
+                if (lineElement.querySelector(`input[name="purchaseType-${id}"]:checked`).value === 'registered') {
+                    applyNumberInputFormatting(e.target);
+                    calculateAndUpdateLineSubtotal(lineElement);
+                }
+            });
+
+
+            quantityInput.addEventListener('input', () => {
+                if (lineElement.querySelector(`input[name="purchaseType-${id}"]:checked`).value === 'registered') {
+                    calculateAndUpdateLineSubtotal(lineElement);
+                }
+            });
+            if (registeredDecreaseBtn) { // Ensure button exists before adding listener
+                registeredDecreaseBtn.addEventListener('click', () => { 
+                    if (lineElement.querySelector(`input[name="purchaseType-${id}"]:checked`).value === 'registered') {
+                        let currentQuantity = parseInt(quantityInput.value);
+                        if (currentQuantity > 1) {
+                            quantityInput.value = currentQuantity - 1;
+                            calculateAndUpdateLineSubtotal(lineElement);
+                        }
+                    }
+                });
+            }
+            if (registeredIncreaseBtn) { // Ensure button exists before adding listener
+                registeredIncreaseBtn.addEventListener('click', () => { 
+                    if (lineElement.querySelector(`input[name="purchaseType-${id}"]:checked`).value === 'registered') {
+                        let currentQuantity = parseInt(quantityInput.value);
+                        quantityInput.value = currentQuantity + 1;
+                        calculateAndUpdateLineSubtotal(lineElement);
+                    }
+                });
+            }
+
+
+            // Event listeners for unregistered product inputs
+            unregisteredUnitPriceInput.addEventListener('input', function(e) {
+                if (lineElement.querySelector(`input[name="purchaseType-${id}"]:checked`).value === 'unregistered') {
+                    handleNumberInputFormatting(e.target);
+                    calculateAndUpdateLineSubtotal(lineElement);
+                }
+            });
+            unregisteredUnitPriceInput.addEventListener('blur', function(e) {
+                if (lineElement.querySelector(`input[name="purchaseType-${id}"]:checked`).value === 'unregistered') {
+                    applyNumberInputFormatting(e.target);
+                    calculateAndUpdateLineSubtotal(lineElement);
+                }
+            });
+
+            unregisteredQuantityInput.addEventListener('input', () => {
+                if (lineElement.querySelector(`input[name="purchaseType-${id}"]:checked`).value === 'unregistered') {
+                    calculateAndUpdateLineSubtotal(lineElement);
+                }
+            });
+            if (unregisteredDecreaseBtn) { // Ensure button exists before adding listener
+                unregisteredDecreaseBtn.addEventListener('click', () => { 
+                    if (lineElement.querySelector(`input[name="purchaseType-${id}"]:checked`).value === 'unregistered') {
+                        let currentQuantity = parseInt(unregisteredQuantityInput.value);
+                        if (currentQuantity > 1) {
+                            unregisteredQuantityInput.value = currentQuantity - 1;
+                            calculateAndUpdateLineSubtotal(lineElement);
+                        }
+                    }
+                });
+            }
+            if (unregisteredIncreaseBtn) { // Ensure button exists before adding listener
+                unregisteredIncreaseBtn.addEventListener('click', () => { 
+                    if (lineElement.querySelector(`input[name="purchaseType-${id}"]:checked`).value === 'unregistered') {
+                        let currentQuantity = parseInt(unregisteredQuantityInput.value);
+                        unregisteredQuantityInput.value = currentQuantity + 1;
+                        calculateAndUpdateLineSubtotal(lineElement);
+                    }
+                });
+            }
 
             if (deleteBtn) {
                 deleteBtn.addEventListener('click', () => {
-                    lineDiv.remove();
+                    lineElement.remove();
                     calculateAndDisplayOverallTotalPurchasePrice();
                     addProductLineButton.disabled = false; // Re-enable the add product button
                 });
             }
             
-             // Hide dropdown when clicking outside
-             document.addEventListener('click', function(event) {
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', function(event) {
                 const isClickInsideSearch = searchInput.contains(event.target);
                 const isClickInsideDropdown = dropdown.contains(event.target);
                 if (!isClickInsideSearch && !isClickInsideDropdown) {
                     dropdown.classList.add('hidden');
                 }
             });
-
-
-            return lineDiv;
         }
 
         // Function to handle product search and display dropdown
@@ -775,6 +1013,12 @@
                 productLineIdCounter++;
                 const newLine = createProductLine(productLineIdCounter);
                 productLinesContainer.appendChild(newLine);
+                // After adding a new line, ensure its visibility is correctly set based on default radio button (registered)
+                const newRegisteredSection = newLine.querySelector('.registered-product-section');
+                const newUnregisteredSection = newLine.querySelector('.unregistered-product-section');
+                newRegisteredSection.classList.remove('hidden-element'); // Default to registered
+                newUnregisteredSection.classList.add('hidden-element');
+
                 if (productLinesContainer.children.length >= 4) {
                     addProductLineButton.disabled = true; // Disable button if max lines reached
                 }
@@ -784,66 +1028,49 @@
         // Initial setup for the first product line's event listeners
         const initialLine = productLinesContainer.querySelector('.product-line-item');
         if (initialLine) {
-            const searchInput = initialLine.querySelector('.product-search-input');
-            const unitPriceInput = initialLine.querySelector('.unit-purchase-price-input');
-            const quantityInput = initialLine.querySelector('.quantity-input');
-            const decreaseBtn = initialLine.querySelector('.decrease-quantity');
-            const increaseBtn = initialLine.querySelector('.increase-quantity');
-            const dropdown = initialLine.querySelector('.product-dropdown');
-
-            searchInput.addEventListener('input', function() {
-                handleProductSearch(this, dropdown, unitPriceInput, quantityInput, initialLine);
-            });
-            quantityInput.addEventListener('input', () => calculateAndUpdateLineSubtotal(initialLine));
-            decreaseBtn.addEventListener('click', () => {
-                let currentQuantity = parseInt(quantityInput.value);
-                if (currentQuantity > 1) {
-                    quantityInput.value = currentQuantity - 1;
-                    calculateAndUpdateLineSubtotal(initialLine);
-                }
-            });
-            increaseBtn.addEventListener('click', () => {
-                let currentQuantity = parseInt(quantityInput.value);
-                quantityInput.value = currentQuantity + 1; 
-                calculateAndUpdateLineSubtotal(initialLine);
-            });
+            setupProductLineEventListeners(initialLine, 1);
         }
 
+        // Function to handle number input formatting (e.g., adding commas as user types)
+        function handleNumberInputFormatting(inputElement) {
+            let value = unformatNumber(inputElement.value);
+            // Allow numbers, a single decimal point, or an empty string or just a minus sign
+            if (!isNaN(parseFloat(value)) && isFinite(value) || value === "" || value === "-") { 
+                if (value.endsWith('.') && (value.match(/\./g) || []).length <= 1) {
+                    // If the user is typing a decimal point, allow it
+                    inputElement.value = value;
+                } else if (value === "" || value === "-") {
+                    inputElement.value = value;
+                }
+                else {
+                    // Format the integer part with commas
+                    const parts = value.split('.');
+                    parts[0] = formatNumberWithCommas(parts[0]);
+                    inputElement.value = parts.join('.');
+                }
+            } else if (inputElement.value !== "") { // If not a valid number character, remove the last character
+                inputElement.value = inputElement.value.slice(0, -1);
+            }
+        }
 
-        // Add input formatting for number fields (like salePrice)
-        [salePriceInput].forEach(input => {
-            input.addEventListener('input', function(e) {
-                let value = unformatNumber(e.target.value);
-                // Allow numbers, a single decimal point, or an empty string or just a minus sign
-                if (!isNaN(parseFloat(value)) && isFinite(value) || value === "" || value === "-") { 
-                    if (value.endsWith('.') && (value.match(/\./g) || []).length <= 1) {
-                         // If the user is typing a decimal point, allow it
-                         e.target.value = value;
-                    } else if (value === "" || value === "-") {
-                        e.target.value = value;
-                    }
-                    else {
-                        // Format the integer part with commas
-                        const parts = value.split('.');
-                        parts[0] = formatNumberWithCommas(parts[0]);
-                        e.target.value = parts.join('.');
-                    }
-                } else if (e.target.value !== "") { // If not a valid number character, remove the last character
-                     e.target.value = e.target.value.slice(0, -1);
-                }
-            });
-            // Format on blur to ensure correct comma placement if user leaves field
-             input.addEventListener('blur', function(e) {
-                let value = unformatNumber(e.target.value);
-                if (value !== "" && !isNaN(parseFloat(value)) && isFinite(value)) {
-                     const parts = value.split('.');
-                     parts[0] = formatNumberWithCommas(parts[0]); // Format integer part
-                     e.target.value = parts.join('.');
-                }
-            });
+        // Function to apply number input formatting on blur (e.g., ensure correct comma placement)
+        function applyNumberInputFormatting(inputElement) {
+            let value = unformatNumber(inputElement.value);
+            if (value !== "" && !isNaN(parseFloat(value)) && isFinite(value)) {
+                const parts = value.split('.');
+                parts[0] = formatNumberWithCommas(parts[0]); // Format integer part
+                inputElement.value = parts.join('.');
+            }
+        }
+
+        // Add input formatting for salePrice
+        salePriceInput.addEventListener('input', function(e) {
+            handleNumberInputFormatting(e.target);
+        });
+        salePriceInput.addEventListener('blur', function(e) {
+            applyNumberInputFormatting(e.target);
         });
         
-
         // Toggle visibility of customer shipping amount based on selection
         customerShippingTypeRadios.forEach(radio => {
             radio.addEventListener('change', function() {
@@ -890,8 +1117,7 @@
 
             // Retrieve and parse form values
             const salePrice = parseFloat(unformatNumber(salePriceInput.value));
-            const totalPurchasePriceVal = parseFloat(unformatNumber(totalPurchasePriceInput.value)); 
-
+            // totalPurchasePriceVal will be calculated dynamically from product lines
             const salesType = document.querySelector('input[name="salesType"]:checked').value;
             const customerShippingType = document.querySelector('input[name="customerShippingType"]:checked').value;
             const customerShippingAmountSelected = customerShippingType === 'paid' ? parseFloat(document.getElementById('customerShippingAmount').value) : 0;
@@ -907,51 +1133,74 @@
                 return;
             }
             
+            let totalPurchasePriceVal = 0;
             let isValidPurchaseSetup = false;
             const productLines = productLinesContainer.querySelectorAll('.product-line-item');
             let firstInvalidLineMessage = "";
 
-            // Check if there are any product lines defined
-            if (productLines.length === 0 && (isNaN(totalPurchasePriceVal) || totalPurchasePriceVal <=0) ){ 
-                 displayError("🛒 최소 하나의 상품을 구성하고 유효한 단가와 수량을 입력해주세요.");
-                 return;
-            }
+            // Validate each product line and calculate totalPurchasePriceVal
+            productLines.forEach(line => {
+                const lineId = line.getAttribute('data-line-id');
+                const purchaseTypeForLine = line.querySelector(`input[name="purchaseType-${lineId}"]:checked`).value;
+                
+                let unitPrice = 0;
+                let quantity = 0;
+                let productName = "";
+                let currentLineIsValid = false; // Flag for the current line's validity
 
-            // Validate each product line
-             productLines.forEach(line => {
-                if (isValidPurchaseSetup && firstInvalidLineMessage) return; // If a valid line found, and error was for a subsequent empty line, it's okay.
+                if (purchaseTypeForLine === 'registered') {
+                    const searchInput = line.querySelector('.product-search-input');
+                    const unitPriceInput = line.querySelector('.unit-purchase-price-input');
+                    const quantityInput = line.querySelector('.quantity-input');
+                    productName = searchInput.value.trim();
+                    unitPrice = parseFloat(unformatNumber(unitPriceInput.value)) || 0;
+                    quantity = parseInt(quantityInput.value) || 0;
 
-                const unitPrice = parseFloat(unformatNumber(line.querySelector('.unit-purchase-price-input').value)) || 0;
-                const quantity = parseInt(line.querySelector('.quantity-input').value) || 0;
-                const productName = line.querySelector('.product-search-input').value.trim();
-
-                if(productName !== "" && unitPrice > 0 && quantity > 0) { // A product is searched and has valid price/qty
-                    isValidPurchaseSetup = true; 
-                    firstInvalidLineMessage = ""; // Clear any previous error message if a valid line is found
-                } else if (productName !== "" && (unitPrice <= 0 || quantity <= 0)) {
-                    // Product searched but invalid price/qty
-                    if (!firstInvalidLineMessage) { // Store only the first error encountered
-                        firstInvalidLineMessage = `🔍 상품 "${productName}"의 단가 또는 수량이 유효하지 않습니다. 상품명을 지우거나 유효한 값을 입력해주세요.`;
+                    if (productName !== "" && unitPrice > 0 && quantity > 0) {
+                        currentLineIsValid = true;
+                    } else if (productName !== "" && (unitPrice <= 0 || quantity <= 0)) {
+                        if (!firstInvalidLineMessage) { // Only set if no other error
+                            firstInvalidLineMessage = `🔍 상품 "${productName}"의 단가 또는 수량이 유효하지 않습니다. 상품명을 지우거나 유효한 값을 입력해주세요.`;
+                        }
+                    } else if (productName === "" && (unitPrice > 0 || quantity > 0 || (quantityInput.value.trim() !== "1" && quantityInput.value.trim() !== ""))) {
+                        // This case handles partially filled registered fields without a product name
+                        if (!firstInvalidLineMessage) { // Only set if no other error
+                            firstInvalidLineMessage = `🛒 상품 검색 필드가 비어있으나 단가/수량이 입력된 라인이 있습니다. 상품을 검색하거나 해당 라인을 삭제해주세요.`;
+                        }
                     }
-                    isValidPurchaseSetup = false; // Mark as invalid until a valid line is confirmed or this error is resolved
-                } else if (productName === "" && (unitPrice > 0 || quantity > 0 || quantityInput.value.trim() !== "1")) {
-                     // No product name, but other fields have data or quantity is not default
-                    if(!isValidPurchaseSetup && !firstInvalidLineMessage){ // If no valid line yet, and no specific error, this is an issue
-                        firstInvalidLineMessage = `🛒 상품 검색 필드가 비어있으나 단가/수량이 입력된 라인이 있습니다. 상품을 검색하거나 해당 라인을 삭제해주세요.`;
+                } else { // unregistered
+                    const unregisteredProductNameInput = line.querySelector('.unregistered-product-name-input');
+                    const unregisteredUnitPriceInput = line.querySelector('.unregistered-unit-price-input');
+                    const unregisteredQuantityInput = line.querySelector('.unregistered-quantity-input');
+                    productName = unregisteredProductNameInput.value.trim(); // Optional, but can be useful for error messages
+                    unitPrice = parseFloat(unformatNumber(unregisteredUnitPriceInput.value)) || 0;
+                    quantity = parseInt(unregisteredQuantityInput.value) || 0;
+
+                    if (unitPrice > 0 && quantity > 0) {
+                        currentLineIsValid = true;
+                    } else { // Invalid unregistered price or quantity
+                        if (!firstInvalidLineMessage) { // Only set if no other error
+                            firstInvalidLineMessage = `📝 미등록 상품의 단가 또는 수량이 유효하지 않습니다. 유효한 값을 입력해주세요.`;
+                        }
                     }
                 }
+
+                if (currentLineIsValid) {
+                    isValidPurchaseSetup = true; // Mark that at least one valid line exists
+                    totalPurchasePriceVal += (unitPrice * quantity);
+                }
             });
-            
-            if (firstInvalidLineMessage) { // If there was any specific error message generated
+
+            if (firstInvalidLineMessage) {
                 displayError(firstInvalidLineMessage);
                 return;
             }
-            if(!isValidPurchaseSetup && productLines.length > 0) { // If still no valid setup after checking all lines (e.g. all lines are blank)
-                 displayError("🛒 최소 하나의 상품에 대해 상품명을 검색하고 유효한 단가와 수량을 입력해주세요.");
+
+            if (!isValidPurchaseSetup) { // If after checking all lines, no valid purchase setup is found
+                 displayError("🛒 최소 하나의 상품에 대해 유효한 매입 단가와 수량을 입력해주세요.");
                  return;
             }
-
-
+            
             if (isAdvertising && (isNaN(advertisingRate) || advertisingRate < 0)) {
                 displayError("📊 광고비를 올바르게 입력해주세요 (0 이상).");
                 return;
@@ -982,7 +1231,7 @@
                 finalMarginKRW = marginBeforeAdvertising - advertisingCost;
                 advertisingCostItemDiv.classList.remove('hidden');
             } else {
-                 advertisingCostItemDiv.classList.add('hidden');
+                advertisingCostItemDiv.classList.add('hidden');
             }
 
             const finalMarginPercentage = salePrice > 0 ? (finalMarginKRW / salePrice) * 100 : 0;
@@ -1023,7 +1272,7 @@
             // Show results card with animation
             resultsDiv.classList.remove('hidden'); 
             setTimeout(() => { // Timeout to allow CSS transition to take effect
-                 resultsDiv.classList.add('show');
+                resultsDiv.classList.add('show');
             }, 50); // Small delay
         });
 
