@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>방역마트 마진계산.</title>
+    <title>판매 마진 계산기 (최종 완성본)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -172,6 +172,7 @@
         </h1>
 
         <form id="marginForm" class="space-y-8">
+            <!-- 핵심 요약 정보: 판매가 & 총 매입가 -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 bg-gray-50 p-6 rounded-lg border">
                 <div class="input-group">
                     <label for="salePrice" class="block text-base font-medium text-gray-700 mb-2"><span class="emoji" role="img" aria-label="money bag">💰</span>판매가격 (원)</label>
@@ -183,10 +184,12 @@
                 </div>
             </div>
 
+            <!-- 상품 매입가 구성 영역 -->
             <div class="input-group border border-gray-200 p-5 rounded-lg">
                 <label class="block text-base font-semibold text-gray-700 mb-4"><span class="emoji" role="img" aria-label="package">📦</span>상품 매입 구성</label>
                 
                 <div id="productLinesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                    <!-- 첫 번째 상품 라인 (기본) -->
                     <div class="product-line-item border border-gray-200 rounded-lg p-4" data-line-id="1">
                         <div class="flex justify-between items-start mb-4">
                             <div class="input-group">
@@ -218,6 +221,7 @@
                 <button type="button" id="addProductLineButton" class="mt-4 text-sm add-product-button font-medium py-2 px-4 rounded-md w-full"><span class="emoji" role="img" aria-label="plus">➕</span> 구성 상품 추가 (최대 4개)</button>
             </div>
 
+            <!-- 하단 설정 항목 -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8 pt-4 border-t">
                 <div class="input-group">
                     <label class="block text-sm font-medium mb-2"><span class="emoji" role="img" aria-label="briefcase">🧑‍💼</span>판매타입</label>
@@ -390,10 +394,241 @@
         const errorMessageDiv = document.getElementById('errorMessage');
         let productLineIdCounter = 1;
 
-        // --- All other JavaScript functions are here ---
-        // (Full script omitted for brevity but is identical to the previous version,
-        // with the exception of the displayResults function below)
+        function formatNumberWithCommas(number) {
+            if (number === null || number === undefined || isNaN(parseFloat(number))) return '';
+            const parts = number.toString().split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return parts.join('.');
+        }
 
+        function unformatNumber(value) {
+            if (typeof value !== 'string') return String(value || '');
+            return value.replace(/,/g, '');
+        }
+        
+        function calculateAndUpdateLineSubtotal(lineElement) {
+            const purchaseType = lineElement.querySelector(`input[name^="purchaseType-"]:checked`).value;
+            let unitPrice = 0, quantity = 0, lineSubtotalDisplay;
+            if (purchaseType === 'registered') {
+                lineSubtotalDisplay = lineElement.querySelector('.registered-product-section .line-subtotal-display');
+                unitPrice = parseFloat(unformatNumber(lineElement.querySelector('.unit-purchase-price-input').value)) || 0;
+                quantity = parseInt(lineElement.querySelector('.quantity-input').value) || 0;
+            } else {
+                lineSubtotalDisplay = lineElement.querySelector('.unregistered-product-section .line-subtotal-display');
+                unitPrice = parseFloat(unformatNumber(lineElement.querySelector('.unregistered-unit-price-input').value)) || 0;
+                quantity = parseInt(lineElement.querySelector('.unregistered-quantity-input').value) || 0;
+            }
+            const lineSubtotal = (unitPrice > 0 && quantity > 0) ? unitPrice * quantity : 0;
+            if (lineSubtotalDisplay) lineSubtotalDisplay.value = formatNumberWithCommas(lineSubtotal.toFixed(1));
+            calculateAndDisplayOverallTotalPurchasePrice();
+        }
+
+        function calculateAndDisplayOverallTotalPurchasePrice() {
+            let overallTotalPrice = 0;
+            productLinesContainer.querySelectorAll('.product-line-item').forEach(line => {
+                const purchaseType = line.querySelector(`input[name^="purchaseType-"]:checked`).value;
+                const sectionSelector = purchaseType === 'registered' ? '.registered-product-section' : '.unregistered-product-section';
+                const lineSubtotalDisplay = line.querySelector(`${sectionSelector} .line-subtotal-display`);
+                overallTotalPrice += parseFloat(unformatNumber(lineSubtotalDisplay.value)) || 0;
+            });
+            totalPurchasePriceInput.value = formatNumberWithCommas(overallTotalPrice.toFixed(1));
+        }
+        
+        function createProductLine(id) {
+            const lineDiv = document.createElement('div');
+            lineDiv.className = 'product-line-item border border-gray-200 rounded-lg p-4';
+            lineDiv.setAttribute('data-line-id', id);
+            lineDiv.innerHTML = `
+                <div class="flex justify-between items-start mb-4">
+                    <div class="input-group">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">매입 단가 타입 ${id}</label>
+                        <div class="flex space-x-4">
+                            <div class="flex items-center"><input type="radio" id="purchaseTypeRegistered-${id}" name="purchaseType-${id}" value="registered" checked class="h-4 w-4"><label for="purchaseTypeRegistered-${id}" class="ml-2 text-sm">등록</label></div>
+                            <div class="flex items-center"><input type="radio" id="purchaseTypeUnregistered-${id}" name="purchaseType-${id}" value="unregistered" class="h-4 w-4"><label for="purchaseTypeUnregistered-${id}" class="ml-2 text-sm">미등록</label></div>
+                        </div>
+                    </div>
+                    <button type="button" class="delete-product-line-button text-xs ml-2">삭제</button>
+                </div>
+                <div class="registered-product-section">
+                    <div class="relative mb-2"><input type="text" id="productSearchInput-${id}" placeholder="상품명 검색..." class="product-search-input mt-1 block w-full input-field text-sm"><div class="product-dropdown hidden"></div></div>
+                    <div class="grid grid-cols-10 gap-x-2 items-end">
+                        <div class="col-span-4"><label class="block text-xs mb-1">단가</label><input type="text" id="unitPurchasePrice-${id}" readonly class="unit-purchase-price-input number-input w-full input-field text-sm"></div>
+                        <div class="col-span-3"><label class="block text-xs mb-1">수량</label><div class="quantity-input-wrapper mt-0"><button type="button" class="decrease-quantity quantity-control-button">-</button><input type="number" id="quantity-${id}" value="1" min="1" class="quantity-input number-input w-full input-field text-sm"><button type="button" class="increase-quantity quantity-control-button">+</button></div></div>
+                        <div class="col-span-3"><label class="block text-xs mb-1">소계</label><input type="text" id="lineSubtotal-${id}" readonly class="line-subtotal-display number-input w-full input-field text-sm subtotal-field"></div>
+                    </div>
+                </div>
+                <div class="unregistered-product-section hidden-element">
+                    <div class="relative mb-2"><input type="text" id="unregisteredProductName-${id}" placeholder="미등록 상품명..." class="unregistered-product-name-input mt-1 block w-full input-field text-sm"></div>
+                    <div class="grid grid-cols-10 gap-x-2 items-end">
+                        <div class="col-span-4"><label class="block text-xs mb-1">단가</label><input type="text" id="unregisteredUnitPrice-${id}" placeholder="예: 15,000" class="unregistered-unit-price-input number-input w-full input-field text-sm"></div>
+                        <div class="col-span-3"><label class="block text-xs mb-1">수량</label><div class="quantity-input-wrapper mt-0"><button type="button" class="decrease-quantity quantity-control-button">-</button><input type="number" id="unregisteredQuantity-${id}" value="1" min="1" class="unregistered-quantity-input number-input w-full input-field text-sm"><button type="button" class="increase-quantity quantity-control-button">+</button></div></div>
+                        <div class="col-span-3"><label class="block text-xs mb-1">소계</label><input type="text" id="unregisteredLineSubtotal-${id}" readonly class="line-subtotal-display number-input w-full input-field text-sm subtotal-field"></div>
+                    </div>
+                </div>`;
+            setupProductLineEventListeners(lineDiv);
+            return lineDiv;
+        }
+        
+        function setupProductLineEventListeners(lineElement) {
+            const id = lineElement.dataset.lineId;
+            lineElement.querySelectorAll(`input[name="purchaseType-${id}"]`).forEach(radio => radio.addEventListener('change', function() {
+                const isRegistered = this.value === 'registered';
+                lineElement.querySelector('.registered-product-section').classList.toggle('hidden-element', !isRegistered);
+                lineElement.querySelector('.unregistered-product-section').classList.toggle('hidden-element', isRegistered);
+                const sectionToClear = isRegistered ? lineElement.querySelector('.unregistered-product-section') : lineElement.querySelector('.registered-product-section');
+                sectionToClear.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+                    if (input.classList.contains('quantity-input') || input.classList.contains('unregistered-quantity-input')) input.value = 1;
+                    else input.value = '';
+                });
+                calculateAndUpdateLineSubtotal(lineElement);
+            }));
+
+            ['registered', 'unregistered'].forEach(type => {
+                const section = lineElement.querySelector(type === 'registered' ? '.registered-product-section' : '.unregistered-product-section');
+                const unitPriceInput = section.querySelector(type === 'registered' ? '.unit-purchase-price-input' : '.unregistered-unit-price-input');
+                const quantityInput = section.querySelector(type === 'registered' ? '.quantity-input' : '.unregistered-quantity-input');
+                if (unitPriceInput) {
+                    unitPriceInput.addEventListener('input', (e) => handleNumberInputFormatting(e.target));
+                    unitPriceInput.addEventListener('blur', (e) => applyNumberInputFormatting(e.target));
+                    unitPriceInput.addEventListener('input', () => calculateAndUpdateLineSubtotal(lineElement));
+                }
+                if (quantityInput) quantityInput.addEventListener('input', () => calculateAndUpdateLineSubtotal(lineElement));
+                section.querySelector('.decrease-quantity')?.addEventListener('click', () => {
+                    let currentVal = parseInt(quantityInput.value);
+                    if (currentVal > 1) {
+                        quantityInput.value = currentVal - 1;
+                        calculateAndUpdateLineSubtotal(lineElement);
+                    }
+                });
+                section.querySelector('.increase-quantity')?.addEventListener('click', () => {
+                    quantityInput.value = (parseInt(quantityInput.value) || 0) + 1;
+                    calculateAndUpdateLineSubtotal(lineElement);
+                });
+            });
+
+            const searchInput = lineElement.querySelector('.product-search-input');
+            const dropdown = lineElement.querySelector('.product-dropdown');
+            const unitPriceInput = lineElement.querySelector('.unit-purchase-price-input');
+            if(searchInput) searchInput.addEventListener('input', () => handleProductSearch(searchInput, dropdown, unitPriceInput, lineElement));
+            
+            document.addEventListener('click', (event) => {
+                if (searchInput && dropdown && !searchInput.contains(event.target) && !dropdown.contains(event.target)) dropdown.classList.add('hidden');
+            });
+
+            lineElement.querySelector('.delete-product-line-button')?.addEventListener('click', () => {
+                lineElement.remove();
+                calculateAndDisplayOverallTotalPurchasePrice();
+                addProductLineButton.disabled = productLinesContainer.children.length >= 4;
+            });
+        }
+        
+        function handleProductSearch(searchInput, dropdown, unitPriceInput, lineElement) {
+            const searchTerm = searchInput.value.toLowerCase();
+            dropdown.innerHTML = '';
+            if (searchTerm.length === 0) {
+                dropdown.classList.add('hidden');
+                unitPriceInput.value = '';
+                calculateAndUpdateLineSubtotal(lineElement);
+                return;
+            }
+            const filtered = uniqueProductData.filter(p => p.name.toLowerCase().includes(searchTerm));
+            if (filtered.length > 0) {
+                filtered.forEach(product => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'product-dropdown-item';
+                    itemDiv.innerHTML = `${product.name} <span class="product-price">(${formatNumberWithCommas(product.price)}원)</span>`;
+                    itemDiv.addEventListener('click', () => {
+                        searchInput.value = product.name;
+                        unitPriceInput.value = formatNumberWithCommas(product.price);
+                        dropdown.classList.add('hidden');
+                        calculateAndUpdateLineSubtotal(lineElement);
+                    });
+                    dropdown.appendChild(itemDiv);
+                });
+                dropdown.classList.remove('hidden');
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+
+        function handleNumberInputFormatting(inputElement) {
+            let value = unformatNumber(inputElement.value);
+            if (!/^-?\d*\.?\d*$/.test(value)) value = value.slice(0, -1);
+            inputElement.value = value.includes('.') ? value : formatNumberWithCommas(value);
+        }
+
+        function applyNumberInputFormatting(inputElement) {
+            let value = unformatNumber(inputElement.value);
+            if (value && !isNaN(parseFloat(value))) inputElement.value = formatNumberWithCommas(value);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setupProductLineEventListeners(document.querySelector('.product-line-item'));
+            calculateAndDisplayOverallTotalPurchasePrice();
+            
+            salePriceInput.addEventListener('input', (e) => handleNumberInputFormatting(e.target));
+            salePriceInput.addEventListener('blur', (e) => applyNumberInputFormatting(e.target));
+
+            addProductLineButton.addEventListener('click', () => {
+                if (productLinesContainer.children.length < 4) {
+                    productLineIdCounter++;
+                    const newLine = createProductLine(productLineIdCounter);
+                    productLinesContainer.appendChild(newLine);
+                    addProductLineButton.disabled = productLinesContainer.children.length >= 4;
+                }
+            });
+
+            customerShippingTypeRadios.forEach(radio => radio.addEventListener('change', function() {
+                customerShippingAmountGroup.classList.toggle('hidden', this.value !== 'paid');
+            }));
+
+            advertisingRadios.forEach(radio => radio.addEventListener('change', function() {
+                const isAdYes = this.value === 'yes';
+                advertisingCostGroup.classList.toggle('hidden-element', !isAdYes);
+                document.getElementById('advertisingRate').required = isAdYes;
+                if (!isAdYes) document.getElementById('advertisingRate').value = '';
+            }));
+
+            form.addEventListener('submit', handleFormSubmit);
+        });
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            errorMessageDiv.classList.add('hidden-element');
+            const oldResults = document.getElementById('results-card');
+            if(oldResults) oldResults.remove();
+
+            const salePrice = parseFloat(unformatNumber(salePriceInput.value));
+            const totalPurchasePriceVal = parseFloat(unformatNumber(totalPurchasePriceInput.value));
+            if (isNaN(salePrice) || salePrice <= 0) return displayError("💰 판매가격을 올바르게 입력해주세요.");
+            if (totalPurchasePriceVal <= 0) return displayError("🛒 최소 하나의 상품에 대해 유효한 매입가를 입력해주세요.");
+            
+            const salesType = document.querySelector('input[name="salesType"]:checked').value;
+            const customerShippingType = document.querySelector('input[name="customerShippingType"]:checked').value;
+            const customerShippingAmountSelected = customerShippingType === 'paid' ? parseFloat(document.getElementById('customerShippingAmount').value) : 0;
+            const packagingCostRate = parseFloat(document.getElementById('packagingCostRate').value);
+            const outgoingShippingCost = parseFloat(document.getElementById('outgoingShippingCost').value);
+            const isAdvertising = document.querySelector('input[name="advertising"]:checked').value === 'yes';
+            const advertisingRate = isAdvertising ? parseFloat(document.getElementById('advertisingRate').value) || 0 : 0;
+            if (isAdvertising && advertisingRate < 0) return displayError("📊 광고비를 올바르게 입력해주세요.");
+
+            const channelFeeRate = (salesType === 'business' || salesType === 'member') ? 0.037 : 0.13;
+            const channelFee = salePrice * channelFeeRate;
+            const customerShippingSurcharge = customerShippingAmountSelected * 0.033;
+            const salesChannelSettlement = salePrice + customerShippingAmountSelected - channelFee - customerShippingSurcharge;
+            const packagingCost = salePrice * packagingCostRate;
+            const advertisingCost = isAdvertising ? salePrice * (advertisingRate / 100) : 0;
+            const finalMarginKRW = salesChannelSettlement - totalPurchasePriceVal - packagingCost - outgoingShippingCost - advertisingCost;
+            const finalMarginPercentage = salePrice > 0 ? (finalMarginKRW / salePrice) * 100 : 0;
+
+            displayResults({
+                salePrice, customerShippingAmountSelected, channelFee, channelFeeRate, customerShippingSurcharge,
+                salesChannelSettlement, totalPurchasePriceVal, packagingCost, packagingCostRate, outgoingShippingCost,
+                marginBeforeAdvertising: salesChannelSettlement - totalPurchasePriceVal - packagingCost - outgoingShippingCost,
+                isAdvertising, advertisingCost, advertisingRate, finalMarginKRW, finalMarginPercentage
+            });
+        }
+        
         function displayResults(data) {
             const formatKRW = (num) => `${formatNumberWithCommas(Math.round(num))} 원`;
             
@@ -402,70 +637,59 @@
                     <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800 p-6 border-b">계산 결과 상세</h2>
                     <div class="p-6 text-sm space-y-4">
                         
-                        <div class="result-item flex justify-between items-center">
-                            <strong><span class="emoji" role="img" aria-label="price tag">🏷️</span>판매 가격:</strong>
-                            <span class="font-medium">${formatKRW(data.salePrice)}</span>
+                        <div class="result-item grid grid-cols-5 items-center">
+                            <strong class="col-span-3 flex items-center"><span class="emoji" role="img" aria-label="price tag">🏷️</span>판매 가격:</strong>
+                            <span class="col-span-2 text-right font-medium">${formatKRW(data.salePrice)}</span>
                         </div>
-                        <div class="result-item flex justify-between items-center">
-                            <strong><span class="emoji" role="img" aria-label="shipping parcel">📦</span>고객 부담 배송비:</strong>
-                            <span class="font-medium">${formatKRW(data.customerShippingAmountSelected)}</span>
+                        <div class="result-item grid grid-cols-5 items-center">
+                            <strong class="col-span-3 flex items-center"><span class="emoji" role="img" aria-label="shipping parcel">📦</span>고객 부담 배송비:</strong>
+                            <span class="col-span-2 text-right font-medium">${formatKRW(data.customerShippingAmountSelected)}</span>
                         </div>
-                        <div class="result-item flex justify-between items-center">
-                            <strong><span class="emoji" role="img" aria-label="percentage">📉</span>(-) 채널 수수료:</strong>
-                            <span class="font-medium">- ${formatKRW(data.channelFee)} (${(data.channelFeeRate * 100).toFixed(1)}%)</span>
+                        <div class="result-item grid grid-cols-5 items-center">
+                            <strong class="col-span-3 flex items-center"><span class="emoji" role="img" aria-label="percentage">📉</span>(-) 채널 수수료:</strong>
+                            <span class="col-span-2 text-right font-medium">- ${formatKRW(data.channelFee)} (${(data.channelFeeRate * 100).toFixed(1)}%)</span>
                         </div>
-                        <div class="result-item flex justify-between items-center">
-                            <strong><span class="emoji" role="img" aria-label="percentage">📉</span>(-) 배송비 수수료:</strong>
-                            <span class="font-medium">- ${formatKRW(data.customerShippingSurcharge)} (3.3%)</span>
-                        </div>
-
-                        <div class="result-item flex justify-between items-center p-3 bg-indigo-50 rounded-lg font-semibold">
-                            <strong><span class="emoji" role="img" aria-label="credit card">💳</span>판매채널 정산금액:</strong>
-                            <span class="text-indigo-800">${formatKRW(data.salesChannelSettlement)}</span>
-                        </div>
-                        
-                        <div class="result-item flex justify-between items-center pt-4 border-t">
-                            <strong><span class="emoji" role="img" aria-label="receipt">🧾</span>(-) 총 상품 매입가:</strong>
-                            <span class="font-medium">- ${formatKRW(data.totalPurchasePriceVal)}</span>
-                        </div>
-                        <div class="result-item flex justify-between items-center">
-                            <strong><span class="emoji" role="img" aria-label="wrapped gift">🎁</span>(-) 포장 비용:</strong>
-                            <span class="font-medium">- ${formatKRW(data.packagingCost)} (${(data.packagingCostRate * 100).toFixed(0)}%)</span>
-                        </div>
-                        <div class="result-item flex justify-between items-center">
-                            <strong><span class="emoji" role="img" aria-label="delivery truck icon">🚚</span>(-) 출고 배송비:</strong>
-                            <span class="font-medium">- ${formatKRW(data.outgoingShippingCost)}</span>
+                        <div class="result-item grid grid-cols-5 items-center">
+                            <strong class="col-span-3 flex items-center"><span class="emoji" role="img" aria-label="percentage">📉</span>(-) 배송비 수수료:</strong>
+                            <span class="col-span-2 text-right font-medium">- ${formatKRW(data.customerShippingSurcharge)} (3.3%)</span>
                         </div>
 
-                        <div class="result-item flex justify-between items-center p-3 bg-indigo-50 rounded-lg font-semibold">
-                            <strong><span class="emoji" role="img" aria-label="pin">📍</span>광고비 반영 전 마진:</strong>
-                            <span class="text-indigo-800">${formatKRW(data.marginBeforeAdvertising)}</span>
+                        <div class="result-item grid grid-cols-5 items-center p-3 bg-indigo-50 rounded-lg font-semibold">
+                            <strong class="col-span-3 flex items-center"><span class="emoji" role="img" aria-label="credit card">💳</span>판매채널 정산금액:</strong>
+                            <span class="col-span-2 text-right text-indigo-800">${formatKRW(data.salesChannelSettlement)}</span>
                         </div>
                         
-                        <div class="result-item flex justify-between items-center pt-4 border-t ${data.isAdvertising ? '' : 'hidden-element'}">
-                            <strong><span class="emoji" role="img" aria-label="decreasing chart">📉</span>(-) 광고비:</strong>
-                            <span class="font-medium">- ${formatKRW(data.advertisingCost)} (${data.advertisingRate.toFixed(0)}%)</span>
+                        <div class="result-item grid grid-cols-5 items-center pt-4 border-t">
+                            <strong class="col-span-3 flex items-center"><span class="emoji" role="img" aria-label="receipt">🧾</span>(-) 총 상품 매입가:</strong>
+                            <span class="col-span-2 text-right font-medium">- ${formatKRW(data.totalPurchasePriceVal)}</span>
                         </div>
-                        
-                        <hr class="my-4">
+                        <div class="result-item grid grid-cols-5 items-center">
+                            <strong class="col-span-3 flex items-center"><span class="emoji" role="img" aria-label="wrapped gift">🎁</span>(-) 포장 비용:</strong>
+                            <span class="col-span-2 text-right font-medium">- ${formatKRW(data.packagingCost)} (${(data.packagingCostRate * 100).toFixed(0)}%)</span>
+                        </div>
+                        <div class="result-item grid grid-cols-5 items-center">
+                            <strong class="col-span-3 flex items-center"><span class="emoji" role="img" aria-label="delivery truck icon">🚚</span>(-) 출고 배송비:</strong>
+                            <span class="col-span-2 text-right font-medium">- ${formatKRW(data.outgoingShippingCost)}</span>
+                        </div>
 
-                        <div class="result-item flex justify-between items-center text-lg">
-                            <strong class="font-semibold"><span class="emoji" role="img" aria-label="check mark">✅</span>최종 마진 (금액):</strong>
-                            <span class="font-bold text-xl ${data.finalMarginKRW < 0 ? 'text-red-600' : 'text-green-600'}">${formatKRW(data.finalMarginKRW)}</span>
+                        <div class="result-item grid grid-cols-5 items-center p-3 bg-indigo-50 rounded-lg font-semibold">
+                            <strong class="col-span-3 flex items-center"><span class="emoji" role="img" aria-label="pin">📍</span>광고비 반영 전 마진:</strong>
+                            <span class="col-span-2 text-right text-indigo-800">${formatKRW(data.marginBeforeAdvertising)}</span>
                         </div>
-                        <div class="result-item flex justify-between items-center text-lg">
-                            <strong class="font-semibold"><span class="emoji" role="img" aria-label="chart increasing">📈</span>최종 마진율 (%):</strong>
-                            <span class="font-bold text-xl ${data.finalMarginKRW < 0 ? 'text-red-600' : 'text-green-600'}">${data.finalMarginPercentage.toFixed(2)} %</span>
+                        
+                        <div class="result-item grid grid-cols-5 items-center pt-4 border-t ${data.isAdvertising ? '' : 'hidden-element'}">
+                            <strong class="col-span-3 flex items-center"><span class="emoji" role="img" aria-label="decreasing chart">📉</span>(-) 광고비:</strong>
+                            <span class="col-span-2 text-right font-medium">- ${formatKRW(data.advertisingCost)} (${data.advertisingRate.toFixed(0)}%)</span>
                         </div>
                         
                         <hr class="my-4">
 
                         <div class="result-item grid grid-cols-5 items-center text-lg">
-                            <strong class="col-span-3 font-semibold"><span class="emoji" role="img" aria-label="check mark">✅</span>최종 마진 (금액):</strong>
+                            <strong class="col-span-3 font-semibold flex items-center"><span class="emoji" role="img" aria-label="check mark">✅</span>최종 마진 (금액):</strong>
                             <span class="col-span-2 text-right font-bold text-xl ${data.finalMarginKRW < 0 ? 'text-red-600' : 'text-green-600'}">${formatKRW(data.finalMarginKRW)}</span>
                         </div>
                         <div class="result-item grid grid-cols-5 items-center text-lg">
-                            <strong class="col-span-3 font-semibold"><span class="emoji" role="img" aria-label="chart increasing">📈</span>최종 마진율 (%):</strong>
+                            <strong class="col-span-3 font-semibold flex items-center"><span class="emoji" role="img" aria-label="chart increasing">📈</span>최종 마진율 (%):</strong>
                             <span class="col-span-2 text-right font-bold text-xl ${data.finalMarginKRW < 0 ? 'text-red-600' : 'text-green-600'}">${data.finalMarginPercentage.toFixed(2)} %</span>
                         </div>
                     </div>
@@ -479,10 +703,6 @@
             errorMessageDiv.textContent = message;
             errorMessageDiv.classList.remove('hidden-element');
         }
-
-        // --- All other setup functions and event listeners are here ---
-        // (Full script omitted for brevity but is identical to the previous version)
-
     </script>
 </body>
 </html>
