@@ -633,58 +633,58 @@
                     <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800 p-6 border-b">계산 결과 상세</h2>
                     <div class="p-6 text-sm space-y-4">
                         
-                        <div class="result-item grid grid-cols-2 gap-2 items-center">
+                        <div class="result-item grid grid-cols-2 gap-1 items-center">
                             <strong><span class="emoji" role="img" aria-label="price tag">🏷️</span>판매 가격:</strong>
                             <span class="text-right font-medium">${formatKRW(data.salePrice)}</span>
                         </div>
-                        <div class="result-item grid grid-cols-2 gap-2 items-center">
+                        <div class="result-item grid grid-cols-2 gap-1 items-center">
                             <strong><span class="emoji" role="img" aria-label="shipping parcel">📦</span>고객 부담 배송비:</strong>
                             <span class="text-right font-medium">${formatKRW(data.customerShippingAmountSelected)}</span>
                         </div>
-                        <div class="result-item grid grid-cols-2 gap-2 items-center">
+                        <div class="result-item grid grid-cols-2 gap-1 items-center">
                             <strong><span class="emoji" role="img" aria-label="percentage">📉</span>(-) 채널 수수료:</strong>
                             <span class="text-right font-medium">- ${formatKRW(data.channelFee)} (${(data.channelFeeRate * 100).toFixed(1)}%)</span>
                         </div>
-                        <div class="result-item grid grid-cols-2 gap-2 items-center">
+                        <div class="result-item grid grid-cols-2 gap-1 items-center">
                             <strong><span class="emoji" role="img" aria-label="percentage">📉</span>(-) 배송비 수수료:</strong>
                             <span class="text-right font-medium">- ${formatKRW(data.customerShippingSurcharge)} (3.3%)</span>
                         </div>
 
-                        <div class="result-item grid grid-cols-2 gap-2 items-center p-3 bg-indigo-50 rounded-lg font-semibold">
+                        <div class="result-item grid grid-cols-2 gap-1 items-center p-3 bg-indigo-50 rounded-lg font-semibold">
                             <strong><span class="emoji" role="img" aria-label="credit card">💳</span>판매채널 정산금액:</strong>
                             <span class="text-right text-indigo-800">${formatKRW(data.salesChannelSettlement)}</span>
                         </div>
                         
-                        <div class="result-item grid grid-cols-2 gap-2 items-center pt-4 border-t">
+                        <div class="result-item grid grid-cols-2 gap-1 items-center pt-4 border-t">
                             <strong><span class="emoji" role="img" aria-label="receipt">🧾</span>(-) 총 상품 매입가:</strong>
                             <span class="text-right font-medium">- ${formatKRW(data.totalPurchasePriceVal)}</span>
                         </div>
-                        <div class="result-item grid grid-cols-2 gap-2 items-center">
+                        <div class="result-item grid grid-cols-2 gap-1 items-center">
                             <strong><span class="emoji" role="img" aria-label="wrapped gift">🎁</span>(-) 포장 비용:</strong>
                             <span class="text-right font-medium">- ${formatKRW(data.packagingCost)} (${(data.packagingCostRate * 100).toFixed(0)}%)</span>
                         </div>
-                        <div class="result-item grid grid-cols-2 gap-2 items-center">
+                        <div class="result-item grid grid-cols-2 gap-1 items-center">
                             <strong><span class="emoji" role="img" aria-label="delivery truck icon">🚚</span>(-) 출고 배송비:</strong>
                             <span class="text-right font-medium">- ${formatKRW(data.outgoingShippingCost)}</span>
                         </div>
 
-                        <div class="result-item grid grid-cols-2 gap-2 items-center p-3 bg-indigo-50 rounded-lg font-semibold">
+                        <div class="result-item grid grid-cols-2 gap-1 items-center p-3 bg-indigo-50 rounded-lg font-semibold">
                             <strong><span class="emoji" role="img" aria-label="pin">📍</span>광고비 반영 전 마진:</strong>
                             <span class="text-right text-indigo-800">${formatKRW(data.marginBeforeAdvertising)}</span>
                         </div>
                         
-                        <div class="result-item grid grid-cols-2 gap-2 items-center pt-4 border-t ${data.isAdvertising ? '' : 'hidden-element'}">
+                        <div class="result-item grid grid-cols-2 gap-1 items-center pt-4 border-t ${data.isAdvertising ? '' : 'hidden-element'}">
                             <strong><span class="emoji" role="img" aria-label="decreasing chart">📉</span>(-) 광고비:</strong>
                             <span class="text-right font-medium">- ${formatKRW(data.advertisingCost)} (${data.advertisingRate.toFixed(0)}%)</span>
                         </div>
                         
                         <hr class="my-4">
 
-                        <div class="result-item grid grid-cols-2 gap-2 items-center text-lg">
+                        <div class="result-item grid grid-cols-2 gap-1 items-center text-lg">
                             <strong class="font-semibold"><span class="emoji" role="img" aria-label="check mark">✅</span>최종 마진 (금액):</strong>
                             <span class="text-right font-bold text-xl ${data.finalMarginKRW < 0 ? 'text-red-600' : 'text-green-600'}">${formatKRW(data.finalMarginKRW)}</span>
                         </div>
-                        <div class="result-item grid grid-cols-2 gap-2 items-center text-lg">
+                        <div class="result-item grid grid-cols-2 gap-1 items-center text-lg">
                             <strong class="font-semibold"><span class="emoji" role="img" aria-label="chart increasing">📈</span>최종 마진율 (%):</strong>
                             <span class="text-right font-bold text-xl ${data.finalMarginKRW < 0 ? 'text-red-600' : 'text-green-600'}">${data.finalMarginPercentage.toFixed(2)} %</span>
                         </div>
