@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스틱트랩 + 파워킬맥스 번들 | 지긋지긋한 날벌레 전쟁, 오늘로 끝내세요</title>
+    <meta name="description" content="초파리, 날파리, 벼룩파리 완벽 박멸! 국내 1위 유인제 파워킬맥스와 강력 끈끈이 스틱트랩으로 벌레 스트레스 없는 깨끗한 공간을 되찾으세요.">
+    <script>
+        // JSON-LD 스키마
+        const schema = {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": "스틱트랩 + 강력한 유인제 파워킬맥스 번들",
+            "description": "초파리, 날파리, 벼룩파리를 유인하여 강력하게 포획하고 살충하는 번들 제품. 스틱트랩의 노란색 주광성 효과와 파워킬맥스의 유인 살충 효과로 벌레 문제를 해결합니다. ",
+            "brand": {
+                "@type": "Brand",
+                "name": "메디데이"
+            },
+            "image": "https://via.placeholder.com/800x600.png?text=Main+Product+Image",
+            "offers": {
+                "@type": "Offer",
+                "priceCurrency": "KRW",
+                "price": "12900",
+                "availability": "https://schema.org/InStock",
+                "seller": {
+                    "@type": "Organization",
+                    "name": "메디데이"
+                }
+            },
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.6",
+                "reviewCount": "1000"
+            }
+        };
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.innerHTML = JSON.stringify(schema);
+        document.head.appendChild(script);
+    </script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+        :root {
+            --primary-yellow: #FFD600;
+            --primary-red: #FF3B30;
+            --text-black: #1A1A1A;
+            --text-secondary: #4F4F4F;
+            --background-white: #FFFFFF;
+            --background-gray: #F2F2F7;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--background-gray);
+            color: var(--text-black);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            word-break: keep-all;
+        }
+
+        .wrapper {
+            width: 100%;
+            background-color: var(--background-white);
+        }
+
+        /* PC 화면에서는 중앙 정렬 및 최대 너비 제한 */
+        @media (min-width: 768px) {
+            .wrapper {
+                max-width: 800px;
+                margin: 0 auto;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+            }
+        }
+        
+        section {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            section {
+                padding: 100px 40px;
+            }
+        }
+
+        .section-eyebrow {
+            font-size: 1.125rem; /* 18px */
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--primary-red);
+            margin-bottom: 12px;
+        }
+
+        .section-headline {
+            font-size: 2.5rem; /* 40px */
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.25;
+            margin: 0 0 24px 0;
+        }
+
+        .section-body {
+            font-size: 1.05rem; /* 17px */
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            max-width: 620px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* PC에서 폰트 사이즈 키움 */
+        @media (min-width: 768px) {
+            .section-eyebrow {
+                font-size: 1.25rem; /* 20px */
+            }
+            .section-headline {
+                font-size: 3.25rem; /* 52px */
+            }
+            .section-body {
+                font-size: 1.2rem; /* 19px */
+            }
+        }
+        
+        .full-width-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 16px;
+        }
+
+        .highlight {
+            background-color: #FFFBEA;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            border: 1px solid var(--primary-yellow);
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary-red);
+            color: var(--background-white);
+            font-size: 1.25rem;
+            font-weight: 700;
+            padding: 20px 40px;
+            border-radius: 14px;
+            text-decoration: none;
+            margin-top: 30px;
+            box-shadow: 0 10px 20px rgba(255, 59, 48, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 25px rgba(255, 59, 48, 0.4);
+        }
+        @media (min-width: 768px) {
+            .cta-button {
+                font-size: 1.5rem;
+                padding: 24px 60px;
+            }
+        }
+        
+        .review-card {
+            background-color: var(--background-gray);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            text-align: left;
+            border-left: 5px solid var(--primary-yellow);
+        }
+        .review-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 0 0 12px 0;
+            color: var(--text-black);
+        }
+        .review-card .reviewer {
+            font-weight: 600;
+            color: #828282;
+            font-size: 0.9rem;
+        }
+
+        .plan-step-container {
+            margin-top: 50px;
+        }
+        .plan-step {
+            display: flex;
+            align-items: center;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+        .plan-step-icon {
+            font-size: 2.5rem;
+            margin-right: 20px;
+            background-color: var(--primary-yellow);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 700;
+        }
+        .plan-step-text h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .plan-step-text p {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        @media (min-width: 768px) {
+            .plan-step-container {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+            }
+            .plan-step {
+                flex-direction: column;
+                text-align: center;
+                margin-bottom: 0;
+            }
+            .plan-step-icon {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 50px;
+            font-size: 0.9rem;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #E0E0E0;
+            padding: 12px;
+        }
+        .comparison-table th {
+            background-color: #f9f9f9;
+        }
+        .comparison-table .our-product {
+            background-color: #FFFBEA;
+        }
+        .our-product-header {
+            background-color: var(--primary-yellow) !important;
+            color: var(--text-black);
+            font-size: 1rem;
+        }
+        .comparison-table strong {
+            font-size: 1.05em;
+        }
+        .vs-text {
+            color: #888;
+        }
+
+        @media (min-width: 768px) {
+             .comparison-table {
+                font-size: 1rem;
+            }
+            .comparison-table th, .comparison-table td {
+                padding: 16px;
+            }
+        }
+
+        .failure-vs-success {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 50px;
+        }
+        @media (min-width: 768px) {
+            .failure-vs-success {
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+        }
+        .failure-vs-success > div {
+            padding: 30px;
+            border-radius: 16px;
+        }
+        .failure-box {
+            background-color: #333;
+            color: #eee;
+        }
+        .success-box {
+            background-color: #FFFBEA;
+            border: 2px solid var(--primary-yellow);
+        }
+        .failure-vs-success h3 {
+            margin: 0 0 15px;
+            font-size: 1.5rem;
+        }
+        .failure-vs-success ul {
+            padding-left: 20px;
+            margin: 0;
+            text-align: left;
+            line-height: 1.8;
+        }
+        .failure-vs-success ul li {
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <section style="background-color: var(--primary-yellow);">
+        <p class="section-eyebrow" style="color: var(--text-black);">🦟 지긋지긋한 날벌레와의 전쟁, 이제 끝내세요!</p>
+        <h1 class="section-headline">
+            눈에 보였다 사라지는<br>
+            <span style="background: var(--background-white); padding: 0 12px; border-radius: 8px;">날벌레 스트레스,</span><br>
+            언제까지 참으실 건가요?
+        </h1>
+        <p class="section-body" style="color: var(--text-black);">
+            "음식물만 없는데도 생겨요!", "잡아도 끝이 없어요!" <br>
+            수많은 고객님들의 <b>짜증과 분노,</b> 저희가 해결해 드립니다.
+        </p>
+        <img src="https://via.placeholder.com/720x400.png?text=Annoying+Flies+Buzzing+in+a+Clean+Kitchen" alt="스트레스 받는 벌레 문제" class="full-width-img" style="margin-top: 40px;"/>
+    </section>
+
+    <section>
+        <h2 class="section-headline">이런 고민, 당신만의 이야기가 아닙니다 😥</h2>
+        <p class="section-body">
+            과일을 좋아해서, 식물을 키워서, 혹은 이유도 없이 나타나 <span class="highlight">소중한 일상을 망치는 벌레들.</span> 많은 분들이 같은 문제로 고통받고 있습니다.
+        </p>
+        <div style="text-align: left; margin-top: 40px; background-color: var(--background-gray); padding: 24px; border-radius: 16px; max-width: 620px; margin-left: auto; margin-right: auto;">
+            <p style="font-size: 1.1rem;">💬 <b>"초파리인지 아닌지 모르는 것들이 자꾸 제 주변에서 엥엥 거려서 엄청 신경쓰였는데..." </b></p>
+            <p style="font-size: 1.1rem;">💬 <b>"음식물이 없는데도 초파리가생겨서 정말 폭발 직전이었는데..." </b></p>
+            <p style="font-size: 1.1rem;">💬 <b>"파리때문에 짜증났는데 이제품으로 고민해결!" </b></p>
+        </div>
+        <p class="section-body" style="margin-top: 30px;">
+            이 작은 벌레들이 만드는 스트레스는 결코 작지 않습니다.<br>
+            <b>우리의 공간은 더 이상 벌레들의 놀이터가 되어서는 안됩니다.</b>
+        </p>
+    </section>
+
+    <section style="background-color: var(--background-gray);">
+        <p class="section-eyebrow">✨ 그래서, 전문가가 나섰습니다</p>
+        <h2 class="section-headline">해충 문제, 더 이상<br>혼자 고민하지 마세요.</h2>
+        <p class="section-body">
+            수많은 실패와 좌절의 경험, 저희가 끝내드리겠습니다. <br>
+            <span class="highlight">국내 1위 유인살충제</span>와 <span class="highlight">과학적으로 설계된 트랩</span>의 압도적인 시너지로 당신의 공간에 평화를 되찾아 드립니다. 
+        </p>
+        <img src="https://via.placeholder.com/720x500.png?text=Product+Bundle+Shot" alt="스틱트랩과 파워킬맥스 번들 제품" class="full-width-img" style="margin-top: 40px;"/>
+    </section>
+
+    <section>
+        <h2 class="section-headline">왜 비교불가한<br>선택일까요? 🧐</h2>
+        <div style="text-align: left; margin-top: 50px; max-width: 700px; margin-left: auto; margin-right: auto;">
+            <div class="plan-step" style="align-items: flex-start;">
+                <div class="plan-step-icon" style="flex-shrink: 0;">💡</div>
+                <div class="plan-step-text">
+                    <h3>비밀 1: 본능을 이용한 유인 (양성 주광성) </h3>
+                    <p>벌레는 빛을 향해 돌진합니다. 스틱트랩의 <span class="highlight">선명한 노란색</span>은 벌레들이 거부할 수 없는 유혹의 빛깔입니다. </p>
+                </div>
+            </div>
+            <div class="plan-step" style="align-items: flex-start;">
+                <div class="plan-step-icon" style="flex-shrink: 0;">🔗</div>
+                <div class="plan-step-text">
+                    <h3>비밀 2: 동료를 부르는 효과 (집합 페로몬) </h3>
+                    <p>먼저 잡힌 벌레가 페로몬을 내뿜어 동료들을 유인! 스스로 <span class="highlight">거대한 덫</span>이 되어 주변 벌레까지 끌어들입니다. </p>
+                </div>
+            </div>
+            <div class="plan-step" style="align-items: flex-start;">
+                <div class="plan-step-icon" style="flex-shrink: 0;">💥</div>
+                <div class="plan-step-text">
+                    <h3>비밀 3: 국내 1위 유인제의 압도적 파워 </h3>
+                    <p><span class="highlight">'파워킬맥스'</span>는 단순 유인을 넘어, 내성 없는 신물질 '디노테푸란'으로 강력하게 살충하여 번식을 원천 차단합니다. </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background-color: var(--background-gray);">
+        <h2 class="section-headline">아직도 효과 없는<br>방법에 돈 쓰시나요?</h2>
+        <p class="section-body">
+            "효과가 없어요" , "돈 아깝다" 는 후기는 이제 그만. <br>제대로 된 제품 하나가 모든 것을 바꿉니다.
+        </p>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>비교 항목</th>
+                    <th class="our-product-header">스틱트랩+파워킬맥스</th>
+                    <th>타사 트랩 / 민간요법</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>유인 방식</strong></td>
+                    <td class="our-product"><strong>주광성 + 페로몬 + 강력 유인제 (3중 유인) </strong></td>
+                    <td class="vs-text">단순 향, 식초 냄새 (제한적 효과)</td>
+                </tr>
+                <tr>
+                    <td><strong>살충 효과</strong></td>
+                    <td class="our-product"><strong>O (신물질 디노테푸란) </strong></td>
+                    <td class="vs-text">X (단순 포획)</td>
+                </tr>
+                <tr>
+                    <td><strong>효과 범위</strong></td>
+                    <td class="our-product"><strong>초파리, 날파리, 벼룩파리, 큰 파리 등 광범위 </strong></td>
+                    <td class="vs-text">특정 벌레만, 혹은 효과 없음</td>
+                </tr>
+                <tr>
+                    <td><strong>설치 편의성</strong></td>
+                    <td class="our-product"><strong>걸이형, 스탠드형, 가로/세로 모두 가능 </strong></td>
+                    <td class="vs-text">제한적, 지저분함</td>
+                </tr>
+                <tr>
+                    <td><strong>고객 만족도</strong></td>
+                    <td class="our-product"><strong>"효과 직빵" , "재구매 필수"  등 극찬 후기 다수</strong></td>
+                    <td class="vs-text">"한마리도 안붙음"  등 실패 후기 다수</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <p class="section-eyebrow">🚀 3단계면 충분합니다</p>
+        <h2 class="section-headline">벌레 퇴치,<br>이렇게나 쉽습니다</h2>
+        <div class="plan-step-container">
+            <div class="plan-step">
+                <div class="plan-step-icon">1</div>
+                <div class="plan-step-text">
+                    <h3>유인제 넣기</h3>
+                    <p>스틱트랩 하단에 '파워킬맥스'를 부어주세요. 집에 있는 매실청이나 식초를 추가하면 효과가 극대화됩니다. </p>
+                </div>
+            </div>
+            <div class="plan-step">
+                <div class="plan-step-icon">2</div>
+                <div class="plan-step-text">
+                    <h3>설치하기</h3>
+                    <p>벌레가 자주 보이는 주방, 쓰레기통 옆, 화분 근처에 간편하게 걸거나 세워두세요. (Tip: 벌레 출몰 장소에 집중 설치!) </p>
+                </div>
+            </div>
+            <div class="plan-step">
+                <div class="plan-step-icon">3</div>
+                <div class="plan-step-text">
+                    <h3>해방감 만끽하기</h3>
+                    <p>며칠 뒤, 까맣게 뒤덮인 트랩을 확인하고 벌레 없는 깨끗한 공간을 마음껏 즐기세요! </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background-color: var(--background-gray);">
+        <h2 class="section-headline">먼저 써본 분들의<br>진짜 후기 👍</h2>
+        <div class="review-card">
+            <p>⭐⭐⭐⭐⭐ "오늘 받자마자 설치하고 반나절 지났는데 30마리가 넘게 잡혔네요. 매실청 조금 부었더니 효과 좋습니다. 날아다니던 초파리들이 눈에 띄게 줄었네요. 초파리로 고생하시는 분들 강추합니다" </p>
+            <p class="reviewer">kiho***님</p>
+        </div>
+        <div class="review-card">
+            <p>⭐⭐⭐⭐⭐ "리뷰 잘 안쓰는데... 진짜 잘잡혀서 써요. 대만족 !! 강력추천!! 날파리가 파리보다 잡기힘든데 요즘 현저히 줄었어요" </p>
+            <p class="reviewer">swh_****님</p>
+        </div>
+        <div class="review-card">
+            <p>⭐⭐⭐⭐⭐ "작년에 사용하고 다시 주문했습니다. 타 제품에 비해 효율성이 좋아 사무실과 집에서 사용하고 있습니다." </p>
+            <p class="reviewer">hipo********님</p>
+        </div>
+         <div class="review-card">
+            <p>⭐⭐⭐⭐⭐ "이거 쓰고나서 스트레스가 확 줄었습니다 ㅋㅋㅋ 설치한지 1분만에 열마리는 붙었어요 최고!!!!" </p>
+            <p class="reviewer">0103*******님</p>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-headline">당신의 선택이<br>가져올 두 가지 미래</h2>
+        <div class="failure-vs-success">
+            <div class="failure-box">
+                <h3>💀 망설인다면?</h3>
+                <ul>
+                    <li>계속되는 벌레 스트레스</li>
+                    <li>지저분한 주방과 집</li>
+                    <li>효과 없는 제품에 돈 낭비 </li>
+                    <li>언제 끝날지 모르는 전쟁</li>
+                </ul>
+            </div>
+            <div class="success-box">
+                <h3>🏆 구매한다면?</h3>
+                <ul>
+                    <li>벌레 없는 평화로운 일상 </li>
+                    <li>깨끗하고 위생적인 공간</li>
+                    <li>압도적 효과로 시간/돈 절약</li>
+                    <li>지긋지긋한 벌레 전쟁 종결! </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section style="background-color: var(--primary-yellow);">
+        <h2 class="section-headline">지금 바로, 지긋지긋한<br>벌레 전쟁을 끝내세요!</h2>
+        <p class="section-body" style="color: #555;">
+            하루만 설치해도 효과를 아실 겁니다.<br>
+            당신의 스트레스, 더 이상 방치하지 마세요.
+        </p>
+        <a href="#" class="cta-button">
+            스틱트랩+파워킬맥스 구매하고<br>
+            <span style="font-size: 1.1rem; font-weight: 500;">벌레 스트레스 해방되기!</span>
+        </a>
+        <p style="margin-top:20px; font-size: 0.9rem; color: #333;">⚠️ 경고: 효과가 너무 강력해 징그러울 수 있습니다.</p>
+    </section>
+    
+    <section>
+        <h2 class="section-headline">자주 묻는 질문 💡</h2>
+        <div style="text-align: left; max-width: 700px; margin-left: auto; margin-right: auto;">
+            <div class="review-card">
+                <p style="font-weight: bold; font-size: 1.1rem;">Q. 효과가 없다는 후기도 있던데요?</p>
+                <p>A. 대부분 유인제 없이 사용하셨거나, 설치 장소가 잘못된 경우입니다. 벌레가 자주 출몰하는 장소(쓰레기통, 음식물, 화분 근처)에 <span class="highlight">'파워킬맥스'나 식초/매실청 등 유인제</span>와 함께 설치하시면 놀라운 효과를 경험하실 수 있습니다. </p>
+            </div>
+            <div class="review-card">
+                <p style="font-weight: bold; font-size: 1.1rem;">Q. 끈끈이가 너무 강력해요. 손에 묻으면 어떡하죠?</p>
+                <p>A. 제품의 강력한 포획력을 위해 특수 끈끈이를 사용했습니다. 개봉 및 설치 시 노란색 부분을 만지지 않도록 주의해주세요.  만약 손에 묻었다면, <span class="highlight">식용유나 오일</span>로 부드럽게 문질러 닦아내시면 쉽게 제거됩니다.</p>
+            </div>
+            <div class="review-card">
+                <p style="font-weight: bold; font-size: 1.1rem;">Q. 설치는 어떻게 하는게 가장 좋은가요?</p>
+                <p>A. 제품 후면 고리를 이용해 벽에 걸거나, 원하는 장소에 세워서 사용할 수 있습니다.  공간에 따라 가로 또는 세로로 유연하게 설치 가능하며, <span class="highlight">벌레 발생 정도에 따라 커버를 분리</span>하여 노출 면적을 조절할 수 있어 더욱 효과적입니다. </p>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    console.log("스틱트랩 상세페이지가 로드되었습니다. (반응형 버전)");
+</script>
+
+</body>
+</html>
