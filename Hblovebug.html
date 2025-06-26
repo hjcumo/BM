@@ -18,6 +18,17 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
+      
+              /* 반응형 이미지 스타일 */
+        .hero-image {
+            width: 100%;
+            max-width: 1200px;
+            height: auto;
+            display: block;
+            margin: 0 auto 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
 
         .container {
             max-width: 1200px;
@@ -71,12 +82,6 @@
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
         }
 
         .card-header {
@@ -125,11 +130,6 @@
             padding: 15px;
             border-radius: 10px;
             border-left: 4px solid #667eea;
-            transition: background 0.3s ease;
-        }
-
-        .method-list li:hover {
-            background: #edf2f7;
         }
 
         .method-list li strong {
@@ -181,10 +181,6 @@
             background: #f8f9fa;
         }
 
-        tr:hover td {
-            background: #e8f4f8;
-        }
-
         .faq-section {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -204,25 +200,15 @@
         .faq-question {
             background: #f8f9fa;
             padding: 15px;
-            cursor: pointer;
             font-weight: 600;
             color: #2d3748;
-            transition: background 0.3s ease;
-        }
-
-        .faq-question:hover {
-            background: #e2e8f0;
         }
 
         .faq-answer {
             padding: 15px;
             background: white;
             color: #4a5568;
-            display: none;
-        }
-
-        .faq-answer.active {
-            display: block;
+            display: block; /* 항상 보이도록 수정 */
         }
 
         .summary-box {
@@ -280,24 +266,14 @@
                 padding: 20px;
             }
         }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
     </style>
 </head>
+  <img src="https://hjcumo.github.io/hbimage/sum1.png" alt="썸네일 이미지" class="hero-image">
 <body>
     <div class="container">
         <div class="header">
             <h1>🐛 러브버그 가이드</h1>
             <p class="subtitle">징글징글 러브버그, 정말 해충일까요?</p>
-          
         </div>
 
         <div class="content-grid">
@@ -305,7 +281,7 @@
                 <div class="card-header">
                     <div class="card-icon">🔍</div>
                     <h2>러브버그의 정체</h2>
-                    <img src="https://hjcumo.github.io/hbimage/sum1.png" alt="썸네일 이미지">
+                    
                 </div>
                 <p><strong>정식명칭:</strong> 붉은등우단털파리 (파리과 곤충)</p>
                 <p><strong>크기:</strong> 약 1cm 미만</p>
@@ -410,7 +386,7 @@
             <h2 style="text-align: center; margin-bottom: 30px; color: #2d3748;">자주 묻는 질문</h2>
             
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
+                <div class="faq-question">
                     Q: 러브버그는 사람을 물거나 병을 옮기나요? 👆
                 </div>
                 <div class="faq-answer">
@@ -419,7 +395,7 @@
             </div>
 
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
+                <div class="faq-question">
                     Q: 살충제를 뿌려서 다 없애버리면 안 되나요? 👆
                 </div>
                 <div class="faq-answer">
@@ -428,7 +404,7 @@
             </div>
 
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
+                <div class="faq-question">
                     Q: 러브버그는 도대체 언제쯤 사라지나요? 👆
                 </div>
                 <div class="faq-answer">
@@ -438,7 +414,7 @@
 
         </div>
 
-        <div class="summary-box pulse">
+        <div class="summary-box">
             <h3>🎯 핵심 요약</h3>
             <div class="summary-points">
                 <div class="summary-point">
@@ -460,39 +436,3 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function toggleFAQ(element) {
-            const answer = element.nextElementSibling;
-            const isActive = answer.classList.contains('active');
-            
-            // 모든 FAQ 답변 닫기
-            document.querySelectorAll('.faq-answer').forEach(ans => {
-                ans.classList.remove('active');
-            });
-            
-            // 클릭한 항목만 열기 (이미 열려있었다면 닫기)
-            if (!isActive) {
-                answer.classList.add('active');
-            }
-        }
-
-        // 페이지 로드 시 애니메이션 효과
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.card');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(30px)';
-                    card.style.transition = 'all 0.6s ease';
-                    
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, 100);
-                }, index * 200);
-            });
-        });
-    </script>
-</body>
-</html>
