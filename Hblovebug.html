@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>러브버그 가이드</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: #718096;
+            margin-bottom: 20px;
+        }
+
+        .expert-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+
+        .card h2 {
+            color: #2d3748;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card p, .card li {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .highlight-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .method-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .method-list li {
+            background: #f7fafc;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: background 0.3s ease;
+        }
+
+        .method-list li:hover {
+            background: #edf2f7;
+        }
+
+        .method-list li strong {
+            color: #2d3748;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .warning-box {
+            background: linear-gradient(45deg, #ff8a80, #ff5722);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .success-box {
+            background: linear-gradient(45deg, #81c784, #4caf50);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8f9fa;
+        }
+
+        tr:hover td {
+            background: #e8f4f8;
+        }
+
+        .faq-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            background: #f8f9fa;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #2d3748;
+            transition: background 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: #e2e8f0;
+        }
+
+        .faq-answer {
+            padding: 15px;
+            background: white;
+            color: #4a5568;
+            display: none;
+        }
+
+        .faq-answer.active {
+            display: block;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .summary-box h3 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .summary-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .summary-point {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .summary-point h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐛 러브버그 가이드</h1>
+            <p class="subtitle">징글징글 러브버그, 정말 해충일까요?</p>
+            <div class="expert-badge">20년 해충 전문가가 알려주는 완벽 대처법</div>
+        </div>
+
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔍</div>
+                    <h2>러브버그의 정체</h2>
+                </div>
+                <p><strong>정식명칭:</strong> 붉은등우단털파리 (파리과 곤충)</p>
+                <p><strong>크기:</strong> 약 1cm 미만</p>
+                <p><strong>특징:</strong> 암수가 짝짓기 상태로 붙어 다님</p>
+                <p><strong>출현시기:</strong> 6월 중순 ~ 7월 초</p>
+                <p><strong>수명:</strong> 매우 짧음 (3~7일)</p>
+                
+                <div class="success-box">
+                    <h3>💡 중요한 사실!</h3>
+                    <p>러브버그는 해충이 아닌 <strong>'익충'</strong>입니다. 독성이 없고 사람을 물거나 질병을 옮기지 않아요!</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🌱</div>
+                    <h2>왜 익충일까요?</h2>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>구분</th>
+                                <th>역할</th>
+                                <th>기대효과</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>유충 시기</td>
+                                <td>낙엽, 유기물 분해</td>
+                                <td>토양을 비옥하게 만듦</td>
+                            </tr>
+                            <tr>
+                                <td>성충 시기</td>
+                                <td>꽃가루 매개 (수분)</td>
+                                <td>식물의 결실을 도움</td>
+                            </tr>
+                            <tr>
+                                <td>기타</td>
+                                <td>진드기 등 해충 박멸</td>
+                                <td>생태계 균형 유지</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="warning-box">
+                    <h3>⚠️ 주의하세요!</h3>
+                    <p>무분별한 살충제 사용은 꿀벌이나 다른 이로운 곤충까지 죽일 수 있어 생태계에 더 큰 문제를 일으킬 수 있습니다.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🚿</div>
+                    <h2>즉시 퇴치법</h2>
+                </div>
+                <ul class="method-list">
+                    <li>
+                        <strong>물 뿌리기 (가장 효과적!)</strong>
+                        러브버그는 물에 매우 약합니다. 분무기로 물을 뿌리면 쉽게 떨어져요.
+                    </li>
+                    <li>
+                        <strong>진공청소기 사용</strong>
+                        안으로 들어온 개체는 휴지보다 진공청소기가 더 편리해요.
+                    </li>
+                    <li>
+                        <strong>천연 기피제</strong>
+                        물 + 구강청결제 + 주방세제 + 시트러스 오일을 섞어 뿌리세요.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🛡️</div>
+                    <h2>예방법</h2>
+                </div>
+                <ul class="method-list">
+                    <li>
+                        <strong>방충망 점검</strong>
+                        찢어지거나 구멍 난 방충망, 창틀 틈새를 꼼꼼히 점검하고 보수하세요.
+                    </li>
+                    <li>
+                        <strong>야간 조명 관리</strong>
+                        밝은 백색 조명 대신 노란색 계열 조명으로 바꾸고, 커튼으로 빛을 차단하세요.
+                    </li>
+                    <li>
+                        <strong>어두운 색 옷 착용</strong>
+                        외출 시 흰색, 노란색보다는 어두운 색 옷을 입으세요.
+                    </li>
+                    <li>
+                        <strong>자동차 관리</strong>
+                        배기가스를 좋아해서 차에 많이 붙습니다.
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="faq-section">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #2d3748;">자주 묻는 질문</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    Q: 러브버그는 사람을 물거나 병을 옮기나요? 👆
+                </div>
+                <div class="faq-answer">
+                    전혀 그렇지 않습니다. 러브버그는 독성도 없고 사람을 물지도 않으며, 어떠한 질병도 옮기지 않는 것으로 알려져 있습니다. 안심하셔도 좋습니다.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    Q: 살충제를 뿌려서 다 없애버리면 안 되나요? 👆
+                </div>
+                <div class="faq-answer">
+                    추천하지 않습니다. 무분별한 살충제 사용은 러브버그뿐만 아니라 꿀벌, 나비 등 다른 이로운 곤충까지 죽여 생태계 교란을 일으킬 수 있습니다. 가급적 물을 뿌리는 등 친환경적인 방법을 사용해주세요.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    Q: 러브버그는 도대체 언제쯤 사라지나요? 👆
+                </div>
+                <div class="faq-answer">
+                    러브버그의 평균 수명은 3~7일로 매우 짧습니다. 대량으로 나타나는 시기는 6월 말부터 7월 초까지이며, 보통 1~2주 정도 지나면 개체 수가 급격히 줄어들고 자연스럽게 사라집니다.
+                </div>
+            </div>
+
+        </div>
+
+        <div class="summary-box pulse">
+            <h3>🎯 핵심 요약</h3>
+            <div class="summary-points">
+                <div class="summary-point">
+                    <h4>✨ 핵심 1</h4>
+                    <p>러브버그는 <strong>질병을 옮기지 않는 익충</strong>이에요. 토양을 비옥하게 하고 꽃가루를 옮기는 착한 벌레랍니다.</p>
+                </div>
+                <div class="summary-point">
+                    <h4>💧 핵심 2</h4>
+                    <p>가장 좋은 퇴치법은 <strong>분무기로 물 뿌리기!</strong> 살충제 없이도 쉽게 쫓아낼 수 있어요.</p>
+                </div>
+                <div class="summary-point">
+                    <h4>🛡️ 핵심 3</h4>
+                    <p>예방을 위해서는 <strong>방충망 점검</strong>과 밤에는 <strong>노란색 조명</strong>을 사용하는 것이 효과적입니다.</p>
+                </div>
+                <div class="summary-point">
+                    <h4>⏳ 핵심 4</h4>
+                    <p>활동 기간은 짧아요! 7월 중순이면 자연스럽게 사라지니 조금만 참고 현명하게 대처해요.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const isActive = answer.classList.contains('active');
+            
+            // 모든 FAQ 답변 닫기
+            document.querySelectorAll('.faq-answer').forEach(ans => {
+                ans.classList.remove('active');
+            });
+            
+            // 클릭한 항목만 열기 (이미 열려있었다면 닫기)
+            if (!isActive) {
+                answer.classList.add('active');
+            }
+        }
+
+        // 페이지 로드 시 애니메이션 효과
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(30px)';
+                    card.style.transition = 'all 0.6s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>
