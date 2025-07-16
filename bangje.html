@@ -91,11 +91,9 @@
             border-radius: 4px;
             background-color: white;
             position: relative;
-            overflow: hidden; /* 캔버스 밖으로 나가는 요소 숨기기 */
-            /* ======[업데이트된 코드]====== */
-            width: 100%; /* 너비 확장 */
-            height: 700px; /* 높이 조정 */
-            /* ============================ */
+            overflow: hidden; 
+            width: 100%;
+            height: 700px; 
         }
         
         .size-controls {
@@ -107,6 +105,7 @@
             border-radius: 4px;
             padding: 10px;
             display: none;
+            z-index: 10;
         }
         
         .size-controls.show {
@@ -131,10 +130,6 @@
             border-radius: 4px;
             font-size: 14px;
         }
-        
-        /* ======[업데이트된 코드]====== */
-        /* .grid-toggle 클래스 및 CSS 속성 제거 */
-        /* ============================ */
         
         .shortcut {
             color: #666;
@@ -174,36 +169,21 @@
             
             <div class="tool-group">
                 <h3>건축 요소</h3>
-                <button id="door-btn" class="icon-btn" title="문">
-                    <svg viewBox="0 0 60 60">
-                        <line x1="10" y1="50" x2="50" y2="50" stroke="black" stroke-width="3"/>
-                        <path d="M 10 50 Q 30 30, 50 50" stroke="black" stroke-width="2" fill="none"/>
-                    </svg>
+                <!-- ======[업데이트된 코드]====== -->
+                <!-- draggable="true" 속성 추가 -->
+                <button id="door-btn" class="icon-btn" title="문 (클릭 또는 드래그)" draggable="true">
+                    <svg viewBox="0 0 60 60"><line x1="10" y1="50" x2="50" y2="50" stroke="black" stroke-width="3"/><path d="M 10 50 Q 30 30, 50 50" stroke="black" stroke-width="2" fill="none"/></svg>
                 </button>
-                <button id="window-btn" class="icon-btn" title="창문">
-                    <svg viewBox="0 0 60 60">
-                        <rect x="10" y="25" width="40" height="10" fill="none" stroke="black" stroke-width="2"/>
-                        <line x1="10" y1="30" x2="50" y2="30" stroke="black" stroke-width="1"/>
-                    </svg>
+                <button id="window-btn" class="icon-btn" title="창문 (클릭 또는 드래그)" draggable="true">
+                    <svg viewBox="0 0 60 60"><rect x="10" y="25" width="40" height="10" fill="none" stroke="black" stroke-width="2"/><line x1="10" y1="30" x2="50" y2="30" stroke="black" stroke-width="1"/></svg>
                 </button>
-                <button id="sliding-door-btn" class="icon-btn" title="미닫이문">
-                    <svg viewBox="0 0 60 60">
-                        <line x1="10" y1="30" x2="50" y2="30" stroke="black" stroke-width="3"/>
-                        <rect x="15" y="25" width="15" height="10" fill="none" stroke="black" stroke-width="2"/>
-                        <rect x="30" y="25" width="15" height="10" fill="none" stroke="black" stroke-width="2"/>
-                    </svg>
+                <button id="sliding-door-btn" class="icon-btn" title="미닫이문 (클릭 또는 드래그)" draggable="true">
+                    <svg viewBox="0 0 60 60"><line x1="10" y1="30" x2="50" y2="30" stroke="black" stroke-width="3"/><rect x="15" y="25" width="15" height="10" fill="none" stroke="black" stroke-width="2"/><rect x="30" y="25" width="15" height="10" fill="none" stroke="black" stroke-width="2"/></svg>
                 </button>
-                <button id="stairs-btn" class="icon-btn" title="계단">
-                    <svg viewBox="0 0 60 60">
-                        <g>
-                            <line x1="10" y1="15" x2="50" y2="15" stroke="black" stroke-width="1"/>
-                            <line x1="10" y1="25" x2="50" y2="25" stroke="black" stroke-width="1"/>
-                            <line x1="10" y1="35" x2="50" y2="35" stroke="black" stroke-width="1"/>
-                            <line x1="10" y1="45" x2="50" y2="45" stroke="black" stroke-width="1"/>
-                            <polygon points="25,10 30,20 20,20" fill="black"/>
-                        </g>
-                    </svg>
+                <button id="stairs-btn" class="icon-btn" title="계단 (클릭 또는 드래그)" draggable="true">
+                    <svg viewBox="0 0 60 60"><g><line x1="10" y1="15" x2="50" y2="15" stroke="black" stroke-width="1"/><line x1="10" y1="25" x2="50" y2="25" stroke="black" stroke-width="1"/><line x1="10" y1="35" x2="50" y2="35" stroke="black" stroke-width="1"/><line x1="10" y1="45" x2="50" y2="45" stroke="black" stroke-width="1"/><polygon points="25,10 30,20 20,20" fill="black"/></g></svg>
                 </button>
+                <!-- ============================ -->
             </div>
             
             <div class="tool-group">
@@ -226,20 +206,14 @@
                 </div>
             </div>
             
-            <!-- ======[업데이트된 코드]====== -->
-            <!-- grid-toggle 클래스 제거하여 위치 변경 -->
             <div class="tool-group">
                 <h3>보기</h3>
                 <button id="grid-btn">격자 표시</button>
             </div>
-            <!-- ============================ -->
         </div>
         
         <div id="canvas-container">
-            <!-- ======[업데이트된 코드]====== -->
-            <!-- width/height 속성 제거하여 동적으로 설정 -->
             <canvas id="canvas"></canvas>
-            <!-- ============================ -->
             <div class="size-controls" id="size-controls">
                 <label>너비: <input type="number" id="width-input" min="10" step="5"></label>
                 <label>높이: <input type="number" id="height-input" min="10" step="5"></label>
@@ -251,14 +225,13 @@
         <div class="info">
             <strong>사용법:</strong>
             <ul>
+                <li><strong>건축 요소 삽입: 아이콘을 클릭 후 캔버스를 클릭하거나, 아이콘을 캔버스로 드래그 앤 드롭하여 배치합니다.</strong></li>
                 <li>배경 이미지: 거래처 도면을 불러와서 위에 따라 그릴 수 있습니다.</li>
-                <li>불투명도 조절: 배경 이미지가 너무 진할 때 조절하여 작업을 편하게 합니다.</li>
                 <li>확대/축소: Ctrl 키를 누른 채 마우스 휠을 돌려 조절합니다.</li>
                 <li>화면 이동: 마우스 휠(가운데 버튼)을 클릭한 상태로 드래그합니다.</li>
                 <li>선택 모드: V 키 또는 버튼 클릭. 객체를 클릭/드래그하여 선택, 이동, 회전이 가능합니다.</li>
-                <li>크기 조절: 객체 모서리를 드래그하여 조절합니다. <strong>Shift 키를 누른 채 드래그하면 정비율로 조절됩니다.</strong></li>
-                <li>벽 그리기: 클릭하고 드래그하여 벽을 그립니다. (Shift 누른 채 드래그 시 직선 고정)</li>
-                <li>건축 요소: 아이콘을 클릭 후 캔버스에 클릭하여 배치합니다. (배치 후 자동으로 선택 모드 전환)</li>
+                <li>크기 조절: 객체 모서리를 드래그하여 조절합니다. Shift 키를 누른 채 드래그하면 정비율로 조절됩니다.</li>
+                <li>벽/사각형 그리기: 클릭하고 드래그하여 그립니다. (그리기 완료 후 자동으로 선택 모드 전환)</li>
                 <li>객체 삭제: 객체 선택 후 Backspace 키 또는 삭제 버튼 클릭.</li>
                 <li>실행취소/다시실행: Ctrl+Z / Ctrl+Y 또는 버튼 클릭.</li>
             </ul>
@@ -267,487 +240,146 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <script>
-        // ======[업데이트된 코드]======
-        // 컨테이너 크기에 맞춰 캔버스 크기를 동적으로 설정
         const canvasContainer = document.getElementById('canvas-container');
         const canvasEl = document.getElementById('canvas');
         canvasEl.width = canvasContainer.clientWidth;
         canvasEl.height = canvasContainer.clientHeight;
-        // ============================
 
-        // Canvas 초기화
         const canvas = new fabric.Canvas('canvas', {
             backgroundColor: 'white',
             selection: true,
             stopContextMenu: true, 
             fireRightClick: true,
-            uniScaleTransform: true, // Shift 키로 정비율 조절 활성화
+            uniScaleTransform: true, 
         });
 
-        // 히스토리 관리
         const history = {
-            states: [],
-            currentIndex: -1,
-            maxSize: 50,
-            isRestoring: false,
-            
-            saveState() {
-                if (this.isRestoring) return;
-                this.states = this.states.slice(0, this.currentIndex + 1);
-                const state = JSON.stringify(canvas.toJSON(['elementType']));
-                this.states.push(state);
-                if (this.states.length > this.maxSize) {
-                    this.states.shift();
-                } else {
-                    this.currentIndex++;
-                }
-                this.updateButtons();
-                this.updateCounter();
-            },
-            
-            undo() {
-                if (this.currentIndex > 0) {
-                    this.currentIndex--;
-                    this.restore(this.states[this.currentIndex]);
-                }
-            },
-            
-            redo() {
-                if (this.currentIndex < this.states.length - 1) {
-                    this.currentIndex++;
-                    this.restore(this.states[this.currentIndex]);
-                }
-            },
-            
-            restore(state) {
-                this.isRestoring = true;
-                const vpt = canvas.viewportTransform;
-                canvas.loadFromJSON(state, () => {
-                    canvas.viewportTransform = vpt;
-                    canvas.renderAll();
-                    if (showGrid) drawGrid();
-                    this.isRestoring = false;
-                    this.updateButtons();
-                    this.updateCounter();
-                });
-            },
-            
-            updateButtons() {
-                undoBtn.disabled = this.currentIndex <= 0;
-                redoBtn.disabled = this.currentIndex >= this.states.length - 1;
-            },
-            
-            updateCounter() {
-                const counter = document.getElementById('history-counter');
-                counter.textContent = `${this.currentIndex + 1} / ${this.states.length}`;
-            }
+            states: [], currentIndex: -1, maxSize: 50, isRestoring: false,
+            saveState() { if (this.isRestoring) return; this.states = this.states.slice(0, this.currentIndex + 1); const state = JSON.stringify(canvas.toJSON(['elementType'])); this.states.push(state); if (this.states.length > this.maxSize) { this.states.shift(); } else { this.currentIndex++; } this.updateButtons(); this.updateCounter(); },
+            undo() { if (this.currentIndex > 0) { this.currentIndex--; this.restore(this.states[this.currentIndex]); } },
+            redo() { if (this.currentIndex < this.states.length - 1) { this.currentIndex++; this.restore(this.states[this.currentIndex]); } },
+            restore(state) { this.isRestoring = true; const vpt = canvas.viewportTransform; canvas.loadFromJSON(state, () => { canvas.viewportTransform = vpt; canvas.renderAll(); if (showGrid) drawGrid(); this.isRestoring = false; this.updateButtons(); this.updateCounter(); }); },
+            updateButtons() { undoBtn.disabled = this.currentIndex <= 0; redoBtn.disabled = this.currentIndex >= this.states.length - 1; },
+            updateCounter() { const counter = document.getElementById('history-counter'); counter.textContent = `${this.currentIndex + 1} / ${this.states.length}`; }
         };
 
-        // 전역 변수들
         const gridSize = 20;
-        let showGrid = false;
-        let currentMode = 'select';
-        let isDrawing = false;
+        let showGrid = false, currentMode = 'select', isDrawing = false;
         let startX, startY, currentLine = null, selectedObject = null;
         let isPanning = false, lastPosX, lastPosY;
         let backgroundImage = null;
         
-        // DOM 요소들
-        const bgImageBtn = document.getElementById('bg-image-btn');
-        const bgClearBtn = document.getElementById('bg-clear-btn');
-        const bgOpacity = document.getElementById('bg-opacity');
-        const opacityValue = document.getElementById('opacity-value');
-        const opacityControl = document.getElementById('opacity-control');
-        const selectBtn = document.getElementById('select-mode');
-        const wallBtn = document.getElementById('wall-mode');
-        const rectBtn = document.getElementById('rect-mode');
-        const textBtn = document.getElementById('text-mode');
-        const deleteBtn = document.getElementById('delete-btn');
-        const doorBtn = document.getElementById('door-btn');
-        const windowBtn = document.getElementById('window-btn');
-        const slidingDoorBtn = document.getElementById('sliding-door-btn');
-        const stairsBtn = document.getElementById('stairs-btn');
-        const gridBtn = document.getElementById('grid-btn');
-        const undoBtn = document.getElementById('undo-btn');
-        const redoBtn = document.getElementById('redo-btn');
-        const sizeControls = document.getElementById('size-controls');
-        const widthInput = document.getElementById('width-input');
-        const heightInput = document.getElementById('height-input');
-        const angleInput = document.getElementById('angle-input');
+        const bgImageBtn = document.getElementById('bg-image-btn'), bgClearBtn = document.getElementById('bg-clear-btn'), bgOpacity = document.getElementById('bg-opacity'), opacityValue = document.getElementById('opacity-value'), opacityControl = document.getElementById('opacity-control');
+        const selectBtn = document.getElementById('select-mode'), wallBtn = document.getElementById('wall-mode'), rectBtn = document.getElementById('rect-mode'), textBtn = document.getElementById('text-mode'), deleteBtn = document.getElementById('delete-btn');
+        const doorBtn = document.getElementById('door-btn'), windowBtn = document.getElementById('window-btn'), slidingDoorBtn = document.getElementById('sliding-door-btn'), stairsBtn = document.getElementById('stairs-btn');
+        const gridBtn = document.getElementById('grid-btn'), undoBtn = document.getElementById('undo-btn'), redoBtn = document.getElementById('redo-btn');
+        const sizeControls = document.getElementById('size-controls'), widthInput = document.getElementById('width-input'), heightInput = document.getElementById('height-input'), angleInput = document.getElementById('angle-input');
 
-        // 초기 상태 저장
         history.saveState();
 
-        // Canvas 이벤트에 히스토리 저장 추가
-        canvas.on({
-            'object:added': () => { if (!history.isRestoring) history.saveState(); },
-            'object:modified': () => history.saveState(),
-            'object:removed': () => { if (!history.isRestoring) history.saveState(); }
-        });
+        canvas.on({ 'object:added': () => { if (!history.isRestoring) history.saveState(); }, 'object:modified': () => history.saveState(), 'object:removed': () => { if (!history.isRestoring) history.saveState(); } });
 
-        // 건축 요소 생성 함수들
-        function createDoor(x, y) {
-            const doorGroup = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' });
-            const frame = new fabric.Rect({ left: -40, top: -3, width: 80, height: 6, fill: 'white', stroke: 'black', strokeWidth: 2 });
-            const arc = new fabric.Path('M -40 0 Q -40 -40, 0 -40', { fill: '', stroke: 'black', strokeWidth: 2 });
-            doorGroup.addWithUpdate(frame);
-            doorGroup.addWithUpdate(arc);
-            doorGroup.elementType = 'door';
-            return doorGroup;
-        }
-
-        function createWindow(x, y) {
-            const windowGroup = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' });
-            const outerFrame = new fabric.Rect({ left: -30, top: -4, width: 60, height: 8, fill: 'white', stroke: 'black', strokeWidth: 2 });
-            const centerLine = new fabric.Line([-30, 0, 30, 0], { stroke: 'black', strokeWidth: 1 });
-            windowGroup.addWithUpdate(outerFrame);
-            windowGroup.addWithUpdate(centerLine);
-            windowGroup.elementType = 'window';
-            return windowGroup;
-        }
-
-        function createSlidingDoor(x, y) {
-            const slidingGroup = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' });
-            const rail = new fabric.Line([-40, 0, 40, 0], { stroke: 'black', strokeWidth: 3 });
-            const door1 = new fabric.Rect({ left: -35, top: -5, width: 30, height: 10, fill: 'transparent', stroke: 'black', strokeWidth: 2 });
-            const door2 = new fabric.Rect({ left: -5, top: -5, width: 30, height: 10, fill: 'transparent', stroke: 'black', strokeWidth: 2 });
-            slidingGroup.addWithUpdate(rail);
-            slidingGroup.addWithUpdate(door1);
-            slidingGroup.addWithUpdate(door2);
-            slidingGroup.elementType = 'slidingDoor';
-            return slidingGroup;
-        }
-
-        function createStairs(x, y) {
-            const stairsGroup = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' });
-            for (let i = 0; i < 6; i++) {
-                stairsGroup.addWithUpdate(new fabric.Line([-30, -25 + i * 10, 30, -25 + i * 10], { stroke: 'black', strokeWidth: 1 }));
-            }
-            stairsGroup.addWithUpdate(new fabric.Polygon([{x: 0, y: -35}, {x: -5, y: -25}, {x: 5, y: -25}], { fill: 'black' }));
-            stairsGroup.elementType = 'stairs';
-            return stairsGroup;
-        }
+        function createDoor(x, y) { const g = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' }); g.addWithUpdate(new fabric.Rect({ left: -40, top: -3, width: 80, height: 6, fill: 'white', stroke: 'black', strokeWidth: 2 })); g.addWithUpdate(new fabric.Path('M -40 0 Q -40 -40, 0 -40', { fill: '', stroke: 'black', strokeWidth: 2 })); g.elementType = 'door'; return g; }
+        function createWindow(x, y) { const g = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' }); g.addWithUpdate(new fabric.Rect({ left: -30, top: -4, width: 60, height: 8, fill: 'white', stroke: 'black', strokeWidth: 2 })); g.addWithUpdate(new fabric.Line([-30, 0, 30, 0], { stroke: 'black', strokeWidth: 1 })); g.elementType = 'window'; return g; }
+        function createSlidingDoor(x, y) { const g = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' }); g.addWithUpdate(new fabric.Line([-40, 0, 40, 0], { stroke: 'black', strokeWidth: 3 })); g.addWithUpdate(new fabric.Rect({ left: -35, top: -5, width: 30, height: 10, fill: 'transparent', stroke: 'black', strokeWidth: 2 })); g.addWithUpdate(new fabric.Rect({ left: -5, top: -5, width: 30, height: 10, fill: 'transparent', stroke: 'black', strokeWidth: 2 })); g.elementType = 'slidingDoor'; return g; }
+        function createStairs(x, y) { const g = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' }); for (let i = 0; i < 6; i++) { g.addWithUpdate(new fabric.Line([-30, -25 + i * 10, 30, -25 + i * 10], { stroke: 'black', strokeWidth: 1 })); } g.addWithUpdate(new fabric.Polygon([{x: 0, y: -35}, {x: -5, y: -25}, {x: 5, y: -25}], { fill: 'black' })); g.elementType = 'stairs'; return g; }
         
-        // 모드 변경 함수
-        function setMode(mode) {
-            currentMode = mode;
-            document.querySelectorAll('button.active').forEach(btn => btn.classList.remove('active'));
-            const currentBtn = document.getElementById(mode + '-mode') || document.getElementById(mode + '-btn');
-            if (currentBtn) currentBtn.classList.add('active');
+        function setMode(mode) { currentMode = mode; document.querySelectorAll('button.active').forEach(btn => btn.classList.remove('active')); const currentBtn = document.getElementById(mode + '-mode') || document.getElementById(mode + '-btn'); if (currentBtn) currentBtn.classList.add('active'); canvas.selection = mode === 'select'; canvas.forEachObject(obj => { if (obj.stroke !== '#e0e0e0') obj.selectable = (mode === 'select'); }); canvas.renderAll(); }
 
-            canvas.selection = mode === 'select';
-            canvas.forEachObject(obj => { if (obj.stroke !== '#e0e0e0') obj.selectable = (mode === 'select'); });
-            canvas.renderAll();
-        }
+        document.addEventListener('keydown', (e) => { if (e.target.tagName === 'INPUT') return; if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); history.undo(); } if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); history.redo(); } if (e.key === 'Backspace') { e.preventDefault(); deleteSelectedObjects(); } if (e.key.toLowerCase() === 'v') setMode('select'); });
 
-        // 키보드/마우스 이벤트 핸들러
-        document.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT') return;
-            if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); history.undo(); }
-            if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); history.redo(); }
-            if (e.key === 'Backspace') { e.preventDefault(); deleteSelectedObjects(); }
-            if (e.key.toLowerCase() === 'v') setMode('select');
-        });
-
-        // 줌, 팬, 그리기 이벤트
-        canvas.on('mouse:wheel', (opt) => {
-            if (opt.e.ctrlKey) {
-                const delta = opt.e.deltaY;
-                let zoom = canvas.getZoom();
-                zoom *= 0.999 ** delta;
-                if (zoom > 20) zoom = 20;
-                if (zoom < 0.1) zoom = 0.1;
-                canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
-                opt.e.preventDefault();
-                opt.e.stopPropagation();
-            }
-        });
+        canvas.on('mouse:wheel', (opt) => { if (opt.e.ctrlKey) { const delta = opt.e.deltaY; let zoom = canvas.getZoom(); zoom *= 0.999 ** delta; if (zoom > 20) zoom = 20; if (zoom < 0.1) zoom = 0.1; canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom); opt.e.preventDefault(); opt.e.stopPropagation(); } });
 
         canvas.on('mouse:down', (e) => {
-            if (e.e.button === 1) { // 휠(가운데) 버튼 클릭
-                isPanning = true;
-                lastPosX = e.e.clientX;
-                lastPosY = e.e.clientY;
-                canvas.setCursor('grabbing');
-                canvas.selection = false;
-                return;
-            }
-            
+            if (e.e.button === 1) { isPanning = true; lastPosX = e.e.clientX; lastPosY = e.e.clientY; canvas.setCursor('grabbing'); canvas.selection = false; return; }
             if (currentMode === 'select' || isDrawing) return;
-            
-            const pointer = canvas.getPointer(e.e);
-            startX = pointer.x;
-            startY = pointer.y;
-            isDrawing = true;
-
+            const pointer = canvas.getPointer(e.e); startX = pointer.x; startY = pointer.y; isDrawing = true;
             let insertedObject = null;
             switch(currentMode) {
-                case 'wall':
-                    currentLine = new fabric.Line([startX, startY, startX, startY], { stroke: 'black', strokeWidth: 6, strokeLineCap: 'square', selectable: false });
-                    canvas.add(currentLine);
-                    break;
-                case 'text':
-                    const text = prompt('텍스트를 입력하세요:');
-                    if (text) {
-                        insertedObject = new fabric.Text(text, { left: startX, top: startY, fontSize: 14, fill: 'black' });
-                        canvas.add(insertedObject);
-                    }
-                    isDrawing = false;
-                    break;
+                case 'wall': currentLine = new fabric.Line([startX, startY, startX, startY], { stroke: 'black', strokeWidth: 6, strokeLineCap: 'square', selectable: false }); canvas.add(currentLine); break;
+                case 'text': const text = prompt('텍스트를 입력하세요:'); if (text) { insertedObject = new fabric.Text(text, { left: startX, top: startY, fontSize: 14, fill: 'black' }); canvas.add(insertedObject); } isDrawing = false; break;
                 case 'door': insertedObject = createDoor(startX, startY); canvas.add(insertedObject); isDrawing = false; break;
                 case 'window': insertedObject = createWindow(startX, startY); canvas.add(insertedObject); isDrawing = false; break;
                 case 'slidingDoor': insertedObject = createSlidingDoor(startX, startY); canvas.add(insertedObject); isDrawing = false; break;
                 case 'stairs': insertedObject = createStairs(startX, startY); canvas.add(insertedObject); isDrawing = false; break;
             }
-
-            if (insertedObject) {
-                setMode('select');
-                canvas.setActiveObject(insertedObject);
-            }
+            if (insertedObject) { setMode('select'); canvas.setActiveObject(insertedObject); }
         });
 
         canvas.on('mouse:move', (e) => {
-            if (isPanning) {
-                const vpt = canvas.viewportTransform;
-                vpt[4] += e.e.clientX - lastPosX;
-                vpt[5] += e.e.clientY - lastPosY;
-                canvas.requestRenderAll();
-                lastPosX = e.e.clientX;
-                lastPosY = e.e.clientY;
-                return;
-            }
-            if (!isDrawing || !currentLine) return;
-            
-            const pointer = canvas.getPointer(e.e);
-            let endX = pointer.x, endY = pointer.y;
-            if (e.e.shiftKey) {
-                const dx = Math.abs(pointer.x - startX);
-                const dy = Math.abs(pointer.y - startY);
-                if (dx > dy) { endY = startY; } else { endX = startX; }
-            }
-            currentLine.set({ x2: endX, y2: endY });
-            canvas.renderAll();
+            if (isPanning) { const vpt = canvas.viewportTransform; vpt[4] += e.e.clientX - lastPosX; vpt[5] += e.e.clientY - lastPosY; canvas.requestRenderAll(); lastPosX = e.e.clientX; lastPosY = e.e.clientY; return; }
+            if (!isDrawing || !currentLine) return; const pointer = canvas.getPointer(e.e); let endX = pointer.x, endY = pointer.y; if (e.e.shiftKey) { const dx = Math.abs(pointer.x - startX); const dy = Math.abs(pointer.y - startY); if (dx > dy) { endY = startY; } else { endX = startX; } } currentLine.set({ x2: endX, y2: endY }); canvas.renderAll();
         });
 
         canvas.on('mouse:up', (e) => {
-            if (isPanning) {
-                isPanning = false;
-                canvas.setCursor('default');
-                canvas.selection = (currentMode === 'select');
-                return;
-            }
+            if (isPanning) { isPanning = false; canvas.setCursor('default'); canvas.selection = (currentMode === 'select'); return; }
             if (!isDrawing) return;
-
-            if (currentMode === 'wall' && currentLine) {
-                currentLine.setCoords();
-                history.saveState();
-            } else if (currentMode === 'rect') {
-                const pointer = canvas.getPointer(e.e);
-                const width = Math.abs(pointer.x - startX);
-                const height = Math.abs(pointer.y - startY);
-                if (width > 2 && height > 2) {
-                    const rect = new fabric.Rect({
-                        left: Math.min(startX, pointer.x),
-                        top: Math.min(startY, pointer.y),
-                        width: width, height: height,
-                        fill: 'transparent', stroke: 'black', strokeWidth: 2
-                    });
-                    canvas.add(rect);
-                }
-            }
-            
-            isDrawing = false;
-            currentLine = null;
+            let newObject = null;
+            if (currentMode === 'wall' && currentLine) { currentLine.set('selectable', true).setCoords(); newObject = currentLine; } 
+            else if (currentMode === 'rect') { const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if (width > 2 && height > 2) { newObject = new fabric.Rect({ left: Math.min(startX, pointer.x), top: Math.min(startY, pointer.y), width, height, fill: 'transparent', stroke: 'black', strokeWidth: 2 }); canvas.add(newObject); } }
+            if(newObject) { setMode('select'); canvas.setActiveObject(newObject); }
+            isDrawing = false; currentLine = null;
         });
 
-        // 객체 선택 및 크기 조절 관련 이벤트
-        canvas.on({
-            'selection:created': (e) => updateSelection(e.selected),
-            'selection:updated': (e) => updateSelection(e.selected),
-            'selection:cleared': () => updateSelection([]),
-            'object:scaling': updateSizeControls,
-            'object:rotating': updateSizeControls,
-        });
-
-        function updateSelection(selected) {
-            selectedObject = selected.length === 1 ? selected[0] : null;
-            if (selectedObject) {
-                sizeControls.classList.add('show');
-                updateSizeControls();
-            } else {
-                sizeControls.classList.remove('show');
-            }
-        }
-
-        function updateSizeControls() {
-            if (selectedObject) {
-                widthInput.value = Math.round(selectedObject.getScaledWidth());
-                heightInput.value = Math.round(selectedObject.getScaledHeight());
-                angleInput.value = Math.round(selectedObject.angle);
-            }
-        }
-        
+        canvas.on({ 'selection:created': (e) => updateSelection(e.selected), 'selection:updated': (e) => updateSelection(e.selected), 'selection:cleared': () => updateSelection([]), 'object:scaling': updateSizeControls, 'object:rotating': updateSizeControls });
+        function updateSelection(selected) { selectedObject = selected.length === 1 ? selected[0] : null; if (selectedObject) { sizeControls.classList.add('show'); updateSizeControls(); } else { sizeControls.classList.remove('show'); } }
+        function updateSizeControls() { if (selectedObject) { widthInput.value = Math.round(selectedObject.getScaledWidth()); heightInput.value = Math.round(selectedObject.getScaledHeight()); angleInput.value = Math.round(selectedObject.angle); } }
         widthInput.addEventListener('input', () => { if (selectedObject) { selectedObject.scaleToWidth(parseInt(widthInput.value, 10)); canvas.renderAll(); }});
         heightInput.addEventListener('input', () => { if (selectedObject) { selectedObject.scaleToHeight(parseInt(heightInput.value, 10)); canvas.renderAll(); }});
         angleInput.addEventListener('input', () => { if (selectedObject) { selectedObject.set('angle', parseInt(angleInput.value, 10)).setCoords(); canvas.renderAll(); }});
         
-        // 버튼 클릭 이벤트 리스너
-        selectBtn.addEventListener('click', () => setMode('select'));
-        wallBtn.addEventListener('click', () => setMode('wall'));
-        rectBtn.addEventListener('click', () => setMode('rect'));
-        textBtn.addEventListener('click', () => setMode('text'));
-        doorBtn.addEventListener('click', () => setMode('door'));
-        windowBtn.addEventListener('click', () => setMode('window'));
-        slidingDoorBtn.addEventListener('click', () => setMode('slidingDoor'));
-        stairsBtn.addEventListener('click', () => setMode('stairs'));
-        undoBtn.addEventListener('click', () => history.undo());
-        redoBtn.addEventListener('click', () => history.redo());
-        deleteBtn.addEventListener('click', deleteSelectedObjects);
-
-        function deleteSelectedObjects() {
-            canvas.getActiveObjects().forEach(obj => canvas.remove(obj));
-            canvas.discardActiveObject().renderAll();
-        }
+        selectBtn.addEventListener('click', () => setMode('select')); wallBtn.addEventListener('click', () => setMode('wall')); rectBtn.addEventListener('click', () => setMode('rect')); textBtn.addEventListener('click', () => setMode('text'));
+        doorBtn.addEventListener('click', () => setMode('door')); windowBtn.addEventListener('click', () => setMode('window')); slidingDoorBtn.addEventListener('click', () => setMode('slidingDoor')); stairsBtn.addEventListener('click', () => setMode('stairs'));
+        undoBtn.addEventListener('click', () => history.undo()); redoBtn.addEventListener('click', () => history.redo()); deleteBtn.addEventListener('click', deleteSelectedObjects);
+        function deleteSelectedObjects() { canvas.getActiveObjects().forEach(obj => canvas.remove(obj)); canvas.discardActiveObject().renderAll(); }
         
-        // 파일/전체삭제/그리드 기능
-        document.getElementById('clear-btn').addEventListener('click', () => {
-            if (confirm('모든 내용을 삭제하시겠습니까?\n(배경 이미지도 함께 제거됩니다)')) {
-                history.isRestoring = true;
-                canvas.clear();
-                canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-                canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas));
-                canvas.backgroundColor = 'white';
-                backgroundImage = null;
-                bgClearBtn.disabled = true;
-                opacityControl.style.display = 'none';
-                if (showGrid) drawGrid();
-                history.isRestoring = false;
-                history.saveState();
+        // ======[업데이트된 코드]======
+        // 드래그 앤 드롭 기능
+        const draggableElements = ['door-btn', 'window-btn', 'sliding-door-btn', 'stairs-btn'];
+        draggableElements.forEach(id => {
+            const el = document.getElementById(id);
+            el.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', id.replace('-btn', ''));
+            });
+        });
+
+        canvasContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        canvasContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const type = e.dataTransfer.getData('text/plain');
+            const pointer = canvas.getPointer(e);
+            let newObject = null;
+            switch(type) {
+                case 'door': newObject = createDoor(pointer.x, pointer.y); break;
+                case 'window': newObject = createWindow(pointer.x, pointer.y); break;
+                case 'sliding-door': newObject = createSlidingDoor(pointer.x, pointer.y); break;
+                case 'stairs': newObject = createStairs(pointer.x, pointer.y); break;
             }
-        });
-        
-        bgImageBtn.addEventListener('click', () => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = (e) => {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    fabric.Image.fromURL(event.target.result, (img) => {
-                        const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-                        img.set({ scaleX: scale, scaleY: scale, opacity: bgOpacity.value / 100 });
-                        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), { originX: 'left', originY: 'top' });
-                        backgroundImage = img;
-                        bgClearBtn.disabled = false;
-                        opacityControl.style.display = 'block';
-                    });
-                };
-                reader.readAsDataURL(e.target.files[0]);
-            };
-            input.click();
-        });
-
-        bgClearBtn.addEventListener('click', () => {
-            canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas));
-            backgroundImage = null;
-            bgClearBtn.disabled = true;
-            opacityControl.style.display = 'none';
-        });
-
-        bgOpacity.addEventListener('input', (e) => {
-            const opacity = e.target.value;
-            opacityValue.textContent = opacity + '%';
-            if (backgroundImage) {
-                backgroundImage.set('opacity', opacity / 100);
+            if (newObject) {
+                canvas.add(newObject);
+                setMode('select');
+                canvas.setActiveObject(newObject);
                 canvas.renderAll();
             }
         });
+        // ============================
         
-        function drawGrid() {
-             canvas.getObjects().forEach(o => { if (o.isGridLine) canvas.remove(o) });
-             const zoom = canvas.getZoom();
-             const panX = canvas.viewportTransform[4];
-             const panY = canvas.viewportTransform[5];
-
-             for (let i = Math.floor(-panX / (gridSize * zoom)); i * gridSize < canvas.width / zoom; i++) {
-                 const x = i * gridSize;
-                 const line = new fabric.Line([x, -panY / zoom, x, (canvas.height - panY) / zoom], { stroke: '#e0e0e0', strokeWidth: 1, selectable: false, evented: false, isGridLine: true });
-                 canvas.add(line);
-             }
-             for (let i = Math.floor(-panY / (gridSize * zoom)); i * gridSize < canvas.height / zoom; i++) {
-                 const y = i * gridSize;
-                 const line = new fabric.Line([-panX / zoom, y, (canvas.width - panX) / zoom, y], { stroke: '#e0e0e0', strokeWidth: 1, selectable: false, evented: false, isGridLine: true });
-                 canvas.add(line);
-             }
-             canvas.getObjects().filter(o => o.isGridLine).forEach(o => canvas.sendToBack(o));
-        }
+        document.getElementById('clear-btn').addEventListener('click', () => { if (confirm('모든 내용을 삭제하시겠습니까?\n(배경 이미지도 함께 제거됩니다)')) { history.isRestoring = true; canvas.clear(); canvas.setViewportTransform([1, 0, 0, 1, 0, 0]); canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas)); canvas.backgroundColor = 'white'; backgroundImage = null; bgClearBtn.disabled = true; opacityControl.style.display = 'none'; if (showGrid) drawGrid(); history.isRestoring = false; history.saveState(); } });
+        bgImageBtn.addEventListener('click', () => { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => { const reader = new FileReader(); reader.onload = (event) => { fabric.Image.fromURL(event.target.result, (img) => { const scale = Math.min(canvas.width / img.width, canvas.height / img.height); img.set({ scaleX: scale, scaleY: scale, opacity: bgOpacity.value / 100 }); canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), { originX: 'left', originY: 'top' }); backgroundImage = img; bgClearBtn.disabled = false; opacityControl.style.display = 'block'; }); }; reader.readAsDataURL(e.target.files[0]); }; input.click(); });
+        bgClearBtn.addEventListener('click', () => { canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas)); backgroundImage = null; bgClearBtn.disabled = true; opacityControl.style.display = 'none'; });
+        bgOpacity.addEventListener('input', (e) => { const opacity = e.target.value; opacityValue.textContent = opacity + '%'; if (backgroundImage) { backgroundImage.set('opacity', opacity / 100); canvas.renderAll(); } });
         
+        function drawGrid() { canvas.getObjects().forEach(o => { if (o.isGridLine) canvas.remove(o) }); const zoom = canvas.getZoom(); const panX = canvas.viewportTransform[4]; const panY = canvas.viewportTransform[5]; for (let i = Math.floor(-panX / (gridSize * zoom)); i * gridSize < canvas.width / zoom; i++) { const x = i * gridSize; const line = new fabric.Line([x, -panY / zoom, x, (canvas.height - panY) / zoom], { stroke: '#e0e0e0', strokeWidth: 1, selectable: false, evented: false, isGridLine: true }); canvas.add(line); } for (let i = Math.floor(-panY / (gridSize * zoom)); i * gridSize < canvas.height / zoom; i++) { const y = i * gridSize; const line = new fabric.Line([-panX / zoom, y, (canvas.width - panX) / zoom, y], { stroke: '#e0e0e0', strokeWidth: 1, selectable: false, evented: false, isGridLine: true }); canvas.add(line); } canvas.getObjects().filter(o => o.isGridLine).forEach(o => canvas.sendToBack(o)); }
         canvas.on('after:render', () => { if (showGrid) drawGrid(); });
-        gridBtn.addEventListener('click', () => {
-            showGrid = !showGrid;
-            gridBtn.classList.toggle('active', showGrid);
-            if (!showGrid) {
-                canvas.getObjects().forEach(o => { if(o.isGridLine) canvas.remove(o) });
-            }
-            canvas.renderAll();
-        });
+        gridBtn.addEventListener('click', () => { showGrid = !showGrid; gridBtn.classList.toggle('active', showGrid); if (!showGrid) { canvas.getObjects().forEach(o => { if(o.isGridLine) canvas.remove(o) }); } canvas.renderAll(); });
         
-        document.getElementById('export-btn').addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.download = '평면도.png';
-            link.href = canvas.toDataURL({format: 'png', quality: 1});
-            link.click();
-        });
+        document.getElementById('export-btn').addEventListener('click', () => { const link = document.createElement('a'); link.download = '평면도.png'; link.href = canvas.toDataURL({format: 'png', quality: 1}); link.click(); });
+        document.getElementById('save-btn').addEventListener('click', () => { const data = { version: '2.0', canvas: canvas.toJSON(['elementType']), viewport: canvas.viewportTransform, backgroundImage: backgroundImage ? { src: canvas.backgroundImage._element.src, opacity: backgroundImage.opacity, scaleX: backgroundImage.scaleX, scaleY: backgroundImage.scaleY } : null }; const blob = new Blob([JSON.stringify(data)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.download = '평면도.json'; link.href = url; link.click(); URL.revokeObjectURL(url); });
+        document.getElementById('load-btn').addEventListener('click', () => { const input = document.createElement('input'); input.type = 'file'; input.accept = '.json'; input.onchange = (e) => { const reader = new FileReader(); reader.onload = (event) => { const data = JSON.parse(event.target.result); history.isRestoring = true; canvas.loadFromJSON(data.canvas || data, () => { if (data.viewport) canvas.setViewportTransform(data.viewport); if (data.backgroundImage) { fabric.Image.fromURL(data.backgroundImage.src, (img) => { img.set(data.backgroundImage); canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas)); backgroundImage = img; bgClearBtn.disabled = false; opacityControl.style.display = 'block'; bgOpacity.value = (data.backgroundImage.opacity || 1) * 100; opacityValue.textContent = `${Math.round(bgOpacity.value)}%`; }); } canvas.renderAll(); history.isRestoring = false; history.saveState(); }); }; reader.readAsText(e.target.files[0]); }; input.click(); });
         
-        document.getElementById('save-btn').addEventListener('click', () => {
-            const data = {
-                version: '2.0',
-                canvas: canvas.toJSON(['elementType']),
-                viewport: canvas.viewportTransform,
-                backgroundImage: backgroundImage ? { src: canvas.backgroundImage._element.src, opacity: backgroundImage.opacity, scaleX: backgroundImage.scaleX, scaleY: backgroundImage.scaleY } : null
-            };
-            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.download = '평면도.json';
-            link.href = url;
-            link.click();
-            URL.revokeObjectURL(url);
-        });
-        
-        document.getElementById('load-btn').addEventListener('click', () => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = (e) => {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const data = JSON.parse(event.target.result);
-                    history.isRestoring = true;
-                    canvas.loadFromJSON(data.canvas || data, () => {
-                        if (data.viewport) canvas.setViewportTransform(data.viewport);
-                        if (data.backgroundImage) {
-                            fabric.Image.fromURL(data.backgroundImage.src, (img) => {
-                                img.set(data.backgroundImage);
-                                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
-                                backgroundImage = img;
-                                bgClearBtn.disabled = false;
-                                opacityControl.style.display = 'block';
-                                bgOpacity.value = (data.backgroundImage.opacity || 1) * 100;
-                                opacityValue.textContent = `${Math.round(bgOpacity.value)}%`;
-                            });
-                        }
-                        canvas.renderAll();
-                        history.isRestoring = false;
-                        history.saveState();
-                    });
-                };
-                reader.readAsText(e.target.files[0]);
-            };
-            input.click();
-        });
-        
-        // 초기화
         setMode('select');
     </script>
 </body>
