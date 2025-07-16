@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAD 스타일 평면도 편집기</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tool-group {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        
+        .tool-group h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        button {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 2px;
+            position: relative;
+        }
+        
+        button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        button.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .icon-btn {
+            width: 50px;
+            height: 50px;
+            padding: 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .icon-btn svg {
+            width: 30px;
+            height: 30px;
+        }
+        
+        .icon-btn span {
+            font-size: 10px;
+            margin-top: 2px;
+        }
+        
+        #canvas-container {
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            display: inline-block;
+            background-color: white;
+            position: relative;
+            overflow: hidden; /* 캔버스 밖으로 나가는 요소 숨기기 */
+        }
+        
+        .size-controls {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            display: none;
+        }
+        
+        .size-controls.show {
+            display: block;
+        }
+        
+        .size-controls label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        
+        .size-controls input {
+            width: 60px;
+            margin-left: 5px;
+        }
+        
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4f8;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .grid-toggle {
+            margin-left: auto;
+        }
+        
+        .shortcut {
+            color: #666;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+        
+        .history-counter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CAD 스타일 평면도 편집기</h1>
+
+        <div class="toolbar">
+            <div class="tool-group">
+                <h3>기본 도구</h3>
+                <button id="select-mode" class="active">선택<span class="shortcut">V</span></button>
+                <button id="wall-mode">벽</button>
+                <button id="rect-mode">사각형</button>
+                <button id="text-mode">텍스트</button>
+                <button id="delete-btn">삭제<span class="shortcut">Backspace</span></button>
+            </div>
+            
+            <div class="tool-group">
+                <h3>편집</h3>
+                <button id="undo-btn" disabled>실행취소<span class="shortcut">Ctrl+Z</span></button>
+                <button id="redo-btn" disabled>다시실행<span class="shortcut">Ctrl+Y</span></button>
+            </div>
+            
+            <div class="tool-group">
+                <h3>건축 요소</h3>
+                <button id="door-btn" class="icon-btn" title="문">
+                    <svg viewBox="0 0 60 60">
+                        <line x1="10" y1="50" x2="50" y2="50" stroke="black" stroke-width="3"/>
+                        <path d="M 10 50 Q 30 30, 50 50" stroke="black" stroke-width="2" fill="none"/>
+                    </svg>
+                </button>
+                <button id="window-btn" class="icon-btn" title="창문">
+                    <svg viewBox="0 0 60 60">
+                        <rect x="10" y="25" width="40" height="10" fill="none" stroke="black" stroke-width="2"/>
+                        <line x1="10" y1="30" x2="50" y2="30" stroke="black" stroke-width="1"/>
+                    </svg>
+                </button>
+                <button id="sliding-door-btn" class="icon-btn" title="미닫이문">
+                    <svg viewBox="0 0 60 60">
+                        <line x1="10" y1="30" x2="50" y2="30" stroke="black" stroke-width="3"/>
+                        <rect x="15" y="25" width="15" height="10" fill="none" stroke="black" stroke-width="2"/>
+                        <rect x="30" y="25" width="15" height="10" fill="none" stroke="black" stroke-width="2"/>
+                    </svg>
+                </button>
+                <button id="stairs-btn" class="icon-btn" title="계단">
+                    <svg viewBox="0 0 60 60">
+                        <g>
+                            <line x1="10" y1="15" x2="50" y2="15" stroke="black" stroke-width="1"/>
+                            <line x1="10" y1="25" x2="50" y2="25" stroke="black" stroke-width="1"/>
+                            <line x1="10" y1="35" x2="50" y2="35" stroke="black" stroke-width="1"/>
+                            <line x1="10" y1="45" x2="50" y2="45" stroke="black" stroke-width="1"/>
+                            <polygon points="25,10 30,20 20,20" fill="black"/>
+                        </g>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="tool-group">
+                <h3>파일</h3>
+                <button id="save-btn">저장</button>
+                <button id="load-btn">불러오기</button>
+                <button id="export-btn">이미지 내보내기</button>
+                <button id="clear-btn">전체 삭제</button>
+            </div>
+            
+            <div class="tool-group">
+                <h3>배경 이미지</h3>
+                <button id="bg-image-btn">이미지 불러오기</button>
+                <button id="bg-clear-btn" disabled>이미지 제거</button>
+                <div style="margin-top: 10px; display: none;" id="opacity-control">
+                    <label style="font-size: 12px;">불투명도: 
+                        <input type="range" id="bg-opacity" min="10" max="100" value="50" style="width: 100px; vertical-align: middle;">
+                        <span id="opacity-value">50%</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="tool-group grid-toggle">
+                <h3>보기</h3>
+                <button id="grid-btn">격자 표시</button>
+            </div>
+        </div>
+        
+        <div id="canvas-container">
+            <canvas id="canvas" width="800" height="600"></canvas>
+            <div class="size-controls" id="size-controls">
+                <label>너비: <input type="number" id="width-input" min="10" max="500" step="5"></label>
+                <label>높이: <input type="number" id="height-input" min="10" max="500" step="5"></label>
+                <label>각도: <input type="number" id="angle-input" min="0" max="360" step="15"></label>
+            </div>
+            <div class="history-counter" id="history-counter"></div>
+        </div>
+        
+        <div class="info">
+            <strong>사용법:</strong>
+            <ul>
+                <li>배경 이미지: 거래처 도면을 불러와서 위에 따라 그릴 수 있습니다.</li>
+                <li>불투명도 조절: 배경 이미지가 너무 진할 때 조절하여 작업을 편하게 합니다.</li>
+                <li><strong>확대/축소: Ctrl 키를 누른 채 마우스 휠을 돌려 조절합니다.</strong></li>
+                <li><strong>화면 이동: 마우스 휠(가운데 버튼)을 클릭한 상태로 드래그합니다.</strong></li>
+                <li>선택 모드: <strong>V 키 또는 버튼 클릭</strong>. 객체를 클릭/드래그하여 선택, 이동, 크기 조절, 회전이 가능합니다.</li>
+                <li>벽 그리기: 클릭하고 드래그하여 벽을 그립니다. (Shift 누른 채 드래그 시 직선 고정)</li>
+                <li>건축 요소: 아이콘을 클릭 후 캔버스에 클릭하여 배치합니다.</li>
+                <li>크기 조절: 선택 모드에서 객체 선택 시 우측 하단에 크기 조절 패널이 나타납니다.</li>
+                <li><strong>객체 삭제: 객체 선택 후 Backspace 키 또는 삭제 버튼 클릭.</strong></li>
+                <li>실행취소/다시실행: Ctrl+Z / Ctrl+Y 또는 버튼 클릭.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <script>
+        // Canvas 초기화
+        const canvas = new fabric.Canvas('canvas', {
+            backgroundColor: 'white',
+            selection: true,
+            // 휠 이벤트가 브라우저 스크롤을 방지하도록 설정
+            stopContextMenu: true, 
+            fireRightClick: true,
+        });
+
+        // 히스토리 관리
+        const history = {
+            states: [],
+            currentIndex: -1,
+            maxSize: 50,
+            isRestoring: false,
+            
+            saveState() {
+                if (this.isRestoring) return;
+                
+                this.states = this.states.slice(0, this.currentIndex + 1);
+                
+                const state = JSON.stringify(canvas.toJSON(['elementType']));
+                this.states.push(state);
+                
+                if (this.states.length > this.maxSize) {
+                    this.states.shift();
+                } else {
+                    this.currentIndex++;
+                }
+                
+                this.updateButtons();
+                this.updateCounter();
+            },
+            
+            undo() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                    this.restore(this.states[this.currentIndex]);
+                }
+            },
+            
+            redo() {
+                if (this.currentIndex < this.states.length - 1) {
+                    this.currentIndex++;
+                    this.restore(this.states[this.currentIndex]);
+                }
+            },
+            
+            restore(state) {
+                this.isRestoring = true;
+                // 뷰포트(확대/축소/이동 상태)는 유지하고 객체만 복원
+                const vpt = canvas.viewportTransform;
+                canvas.loadFromJSON(state, () => {
+                    canvas.viewportTransform = vpt;
+                    canvas.renderAll();
+                    if (showGrid) {
+                        drawGrid();
+                    }
+                    this.isRestoring = false;
+                    this.updateButtons();
+                    this.updateCounter();
+                });
+            },
+            
+            updateButtons() {
+                undoBtn.disabled = this.currentIndex <= 0;
+                redoBtn.disabled = this.currentIndex >= this.states.length - 1;
+            },
+            
+            updateCounter() {
+                const counter = document.getElementById('history-counter');
+                counter.textContent = `${this.currentIndex + 1} / ${this.states.length}`;
+            }
+        };
+
+        // 그리드 설정
+        const gridSize = 20;
+        let showGrid = false;
+
+        // 현재 모드와 색상
+        let currentMode = 'select';
+        let isDrawing = false;
+        let startX, startY;
+        let currentLine = null;
+        let selectedObject = null; // 단일 선택 시 사용 (기존 로직 호환)
+
+        // 화면 이동(Panning) 관련 변수
+        let isPanning = false;
+        let lastPosX, lastPosY;
+
+        // 배경 이미지 관련 변수
+        let backgroundImage = null;
+        const bgImageBtn = document.getElementById('bg-image-btn');
+        const bgClearBtn = document.getElementById('bg-clear-btn');
+        const bgOpacity = document.getElementById('bg-opacity');
+        const opacityValue = document.getElementById('opacity-value');
+        const opacityControl = document.getElementById('opacity-control');
+
+        // 배경 이미지 불러오기
+        bgImageBtn.addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = (event) => {
+                    fabric.Image.fromURL(event.target.result, (img) => {
+                        const canvasWidth = canvas.width;
+                        const canvasHeight = canvas.height;
+                        const imgWidth = img.width;
+                        const imgHeight = img.height;
+                        
+                        const scale = Math.min(canvasWidth / imgWidth, canvasHeight / imgHeight);
+                        
+                        img.set({
+                            scaleX: scale,
+                            scaleY: scale,
+                            opacity: bgOpacity.value / 100
+                        });
+                        
+                        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+                            originX: 'left',
+                            originY: 'top'
+                        });
+                        
+                        backgroundImage = img;
+                        bgClearBtn.disabled = false;
+                        opacityControl.style.display = 'block';
+                    });
+                };
+                
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        });
+
+        // 배경 이미지 제거
+        bgClearBtn.addEventListener('click', () => {
+            canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas));
+            backgroundImage = null;
+            bgClearBtn.disabled = true;
+            opacityControl.style.display = 'none';
+        });
+
+        // 불투명도 조절
+        bgOpacity.addEventListener('input', (e) => {
+            const opacity = e.target.value;
+            opacityValue.textContent = opacity + '%';
+            
+            if (backgroundImage) {
+                backgroundImage.set('opacity', opacity / 100);
+                canvas.renderAll();
+            }
+        });
+
+        // 모드 버튼들
+        const selectBtn = document.getElementById('select-mode');
+        const wallBtn = document.getElementById('wall-mode');
+        const rectBtn = document.getElementById('rect-mode');
+        const textBtn = document.getElementById('text-mode');
+        const deleteBtn = document.getElementById('delete-btn');
+        const doorBtn = document.getElementById('door-btn');
+        const windowBtn = document.getElementById('window-btn');
+        const slidingDoorBtn = document.getElementById('sliding-door-btn');
+        const stairsBtn = document.getElementById('stairs-btn');
+        const gridBtn = document.getElementById('grid-btn');
+        const undoBtn = document.getElementById('undo-btn');
+        const redoBtn = document.getElementById('redo-btn');
+
+        // 크기 조절 컨트롤
+        const sizeControls = document.getElementById('size-controls');
+        const widthInput = document.getElementById('width-input');
+        const heightInput = document.getElementById('height-input');
+        const angleInput = document.getElementById('angle-input');
+
+        // 초기 상태 저장
+        history.saveState();
+
+        // Canvas 이벤트에 히스토리 저장 추가
+        canvas.on('object:added', (e) => {
+            if (!history.isRestoring) {
+                history.saveState();
+            }
+        });
+
+        canvas.on('object:modified', () => {
+            history.saveState();
+        });
+
+        canvas.on('object:removed', () => {
+            if (!history.isRestoring) {
+                history.saveState();
+            }
+        });
+
+        // CAD 스타일 문 생성
+        function createDoor(x, y) {
+            const doorGroup = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' });
+            const frame = new fabric.Rect({ left: -40, top: -3, width: 80, height: 6, fill: 'white', stroke: 'black', strokeWidth: 2 });
+            const arc = new fabric.Path('M -40 0 Q -40 -40, 0 -40', { fill: '', stroke: 'black', strokeWidth: 2 });
+            doorGroup.addWithUpdate(frame);
+            doorGroup.addWithUpdate(arc);
+            doorGroup.elementType = 'door';
+            return doorGroup;
+        }
+
+        // CAD 스타일 창문 생성
+        function createWindow(x, y) {
+            const windowGroup = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' });
+            const outerFrame = new fabric.Rect({ left: -30, top: -4, width: 60, height: 8, fill: 'white', stroke: 'black', strokeWidth: 2 });
+            const centerLine = new fabric.Line([-30, 0, 30, 0], { stroke: 'black', strokeWidth: 1 });
+            windowGroup.addWithUpdate(outerFrame);
+            windowGroup.addWithUpdate(centerLine);
+            windowGroup.elementType = 'window';
+            return windowGroup;
+        }
+
+        // 미닫이문 생성
+        function createSlidingDoor(x, y) {
+            const slidingGroup = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' });
+            const rail = new fabric.Line([-40, 0, 40, 0], { stroke: 'black', strokeWidth: 3 });
+            const door1 = new fabric.Rect({ left: -35, top: -5, width: 30, height: 10, fill: 'transparent', stroke: 'black', strokeWidth: 2 });
+            const door2 = new fabric.Rect({ left: -5, top: -5, width: 30, height: 10, fill: 'transparent', stroke: 'black', strokeWidth: 2 });
+            slidingGroup.addWithUpdate(rail);
+            slidingGroup.addWithUpdate(door1);
+            slidingGroup.addWithUpdate(door2);
+            slidingGroup.elementType = 'slidingDoor';
+            return slidingGroup;
+        }
+
+        // CAD 스타일 계단 생성
+        function createStairs(x, y) {
+            const stairsGroup = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' });
+            for (let i = 0; i < 6; i++) {
+                const step = new fabric.Line([-30, -25 + i * 10, 30, -25 + i * 10], { stroke: 'black', strokeWidth: 1 });
+                stairsGroup.addWithUpdate(step);
+            }
+            const arrow = new fabric.Polygon([{x: 0, y: -35}, {x: -5, y: -25}, {x: 5, y: -25}], { fill: 'black' });
+            stairsGroup.addWithUpdate(arrow);
+            stairsGroup.elementType = 'stairs';
+            return stairsGroup;
+        }
+
+        // 그리드 그리기 (확대/축소에 대응하도록 수정)
+        function drawGrid() {
+            // 기존 그리드 제거
+            canvas.getObjects().forEach(obj => { if (obj.stroke === '#e0e0e0') canvas.remove(obj); });
+            
+            const zoom = canvas.getZoom();
+            const vp = canvas.getViewportTransform();
+            const panX = vp[4];
+            const panY = vp[5];
+            
+            // 확대 레벨에 따라 그리드 간격 조정
+            let dynamicGridSize = gridSize;
+            if (zoom < 0.5) dynamicGridSize = gridSize * 4;
+            else if (zoom < 1) dynamicGridSize = gridSize * 2;
+
+            for (let i = 0; i < (canvas.width / zoom + dynamicGridSize); i += dynamicGridSize) {
+                const x = (Math.floor(-panX / (dynamicGridSize * zoom)) * dynamicGridSize) + i;
+                const lineX = new fabric.Line([x, -panY/zoom, x, (canvas.height - panY)/zoom], { stroke: '#e0e0e0', strokeWidth: 1, selectable: false, evented: false });
+                canvas.add(lineX);
+            }
+            for (let i = 0; i < (canvas.height / zoom + dynamicGridSize); i += dynamicGridSize) {
+                const y = (Math.floor(-panY / (dynamicGridSize * zoom)) * dynamicGridSize) + i;
+                const lineY = new fabric.Line([-panX/zoom, y, (canvas.width - panX)/zoom, y], { stroke: '#e0e0e0', strokeWidth: 1, selectable: false, evented: false });
+                canvas.add(lineY);
+            }
+            canvas.sendToBack(canvas.getObjects().filter(o => o.stroke === '#e0e0e0'));
+        }
+
+        // 그리드 토글
+        gridBtn.addEventListener('click', () => {
+            showGrid = !showGrid;
+            if (showGrid) {
+                drawGrid();
+                gridBtn.classList.add('active');
+            } else {
+                canvas.getObjects().forEach(obj => { if (obj.stroke === '#e0e0e0') canvas.remove(obj); });
+                gridBtn.classList.remove('active');
+            }
+            canvas.renderAll();
+        });
+        
+        // 캔버스 렌더링 후 이벤트 (그리드 다시 그리기용)
+        canvas.on('after:render', () => {
+             if (showGrid) drawGrid();
+        });
+
+        // 모드 변경 함수
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('button').forEach(btn => { if (btn.id !== 'grid-btn' || (btn.id === 'grid-btn' && !showGrid)) btn.classList.remove('active'); });
+            
+            switch(mode) {
+                case 'select': selectBtn.classList.add('active'); break;
+                case 'wall': wallBtn.classList.add('active'); break;
+                case 'rect': rectBtn.classList.add('active'); break;
+                case 'text': textBtn.classList.add('active'); break;
+                case 'door': doorBtn.classList.add('active'); break;
+                case 'window': windowBtn.classList.add('active'); break;
+                case 'slidingDoor': slidingDoorBtn.classList.add('active'); break;
+                case 'stairs': stairsBtn.classList.add('active'); break;
+            }
+            
+            canvas.selection = mode === 'select';
+            canvas.forEachObject(obj => { if (obj.stroke !== '#e0e0e0') obj.selectable = mode === 'select'; });
+            canvas.renderAll();
+        }
+
+        // 버튼 이벤트 리스너
+        selectBtn.addEventListener('click', () => setMode('select'));
+        wallBtn.addEventListener('click', () => setMode('wall'));
+        rectBtn.addEventListener('click', () => setMode('rect'));
+        textBtn.addEventListener('click', () => setMode('text'));
+        doorBtn.addEventListener('click', () => setMode('door'));
+        windowBtn.addEventListener('click', () => setMode('window'));
+        slidingDoorBtn.addEventListener('click', () => setMode('slidingDoor'));
+        stairsBtn.addEventListener('click', () => setMode('stairs'));
+        undoBtn.addEventListener('click', () => history.undo());
+        redoBtn.addEventListener('click', () => history.redo());
+
+        // 키보드 단축키
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return; // 입력 필드에서는 단축키 비활성화
+
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); history.undo(); }
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); history.redo(); }
+            
+            // Backspace: 삭제
+            if (e.key === 'Backspace') {
+                e.preventDefault(); // 브라우저 뒤로가기 방지
+                deleteSelectedObjects();
+            }
+            // V: 선택 모드로 변경
+            if (e.key.toLowerCase() === 'v') {
+                setMode('select');
+            }
+        });
+
+        // 객체 선택 이벤트
+        canvas.on('selection:created', (e) => {
+            selectedObject = e.selected.length === 1 ? e.selected[0] : null;
+            if (selectedObject) {
+                updateSizeControls();
+                sizeControls.classList.add('show');
+            } else {
+                 sizeControls.classList.remove('show');
+            }
+        });
+
+        canvas.on('selection:updated', (e) => {
+            selectedObject = e.selected.length === 1 ? e.selected[0] : null;
+            if (selectedObject) {
+                updateSizeControls();
+                sizeControls.classList.add('show');
+            } else {
+                 sizeControls.classList.remove('show');
+            }
+        });
+
+        canvas.on('selection:cleared', () => {
+            selectedObject = null;
+            sizeControls.classList.remove('show');
+        });
+        
+        // 줌 기능 (Ctrl + 마우스 휠)
+        canvas.on('mouse:wheel', function(opt) {
+            if (opt.e.ctrlKey) {
+                const delta = opt.e.deltaY;
+                let zoom = canvas.getZoom();
+                zoom *= 0.999 ** delta;
+                if (zoom > 20) zoom = 20;
+                if (zoom < 0.1) zoom = 0.1;
+                canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+                opt.e.preventDefault();
+                opt.e.stopPropagation();
+            }
+        });
+
+        // 크기 컨트롤 업데이트
+        function updateSizeControls() {
+            if (selectedObject) {
+                widthInput.value = Math.round(selectedObject.getScaledWidth());
+                heightInput.value = Math.round(selectedObject.getScaledHeight());
+                angleInput.value = Math.round(selectedObject.angle);
+            }
+        }
+
+        // 크기 입력 이벤트
+        widthInput.addEventListener('input', () => {
+            if (selectedObject) {
+                selectedObject.scaleX = parseInt(widthInput.value) / selectedObject.width;
+                canvas.renderAll();
+            }
+        });
+
+        heightInput.addEventListener('input', () => {
+            if (selectedObject) {
+                selectedObject.scaleY = parseInt(heightInput.value) / selectedObject.height;
+                canvas.renderAll();
+            }
+        });
+
+        angleInput.addEventListener('input', () => {
+            if (selectedObject) {
+                selectedObject.set('angle', parseInt(angleInput.value)).setCoords();
+                canvas.renderAll();
+            }
+        });
+        
+        canvas.on('object:scaling', updateSizeControls);
+        canvas.on('object:rotating', updateSizeControls);
+
+        // Canvas 마우스 이벤트
+        canvas.on('mouse:down', (e) => {
+            // 화면 이동 (Panning) 시작
+            if (e.e.button === 1 || e.e.button === 1 && e.e.altKey) { // 휠(가운데) 버튼 클릭
+                isPanning = true;
+                lastPosX = e.e.clientX;
+                lastPosY = e.e.clientY;
+                canvas.setCursor('grabbing');
+                canvas.selection = false; // 패닝 중에는 선택 방지
+                return;
+            }
+            
+            if (currentMode === 'select' || isDrawing) return;
+            
+            const pointer = canvas.getPointer(e.e);
+            startX = pointer.x;
+            startY = pointer.y;
+            isDrawing = true;
+
+            switch(currentMode) {
+                case 'wall':
+                    currentLine = new fabric.Line([startX, startY, startX, startY], { stroke: 'black', strokeWidth: 6, strokeLineCap: 'square', selectable: false });
+                    canvas.add(currentLine);
+                    break;
+                case 'text':
+                    const text = prompt('텍스트를 입력하세요:');
+                    if (text) {
+                        const textObj = new fabric.Text(text, { left: startX, top: startY, fontSize: 14, fill: 'black' });
+                        canvas.add(textObj);
+                    }
+                    isDrawing = false;
+                    break;
+                case 'door': canvas.add(createDoor(startX, startY)); isDrawing = false; break;
+                case 'window': canvas.add(createWindow(startX, startY)); isDrawing = false; break;
+                case 'slidingDoor': canvas.add(createSlidingDoor(startX, startY)); isDrawing = false; break;
+                case 'stairs': canvas.add(createStairs(startX, startY)); isDrawing = false; break;
+            }
+        });
+
+        canvas.on('mouse:move', (e) => {
+            // 화면 이동 (Panning) 중
+            if (isPanning) {
+                const vpt = canvas.viewportTransform;
+                vpt[4] += e.e.clientX - lastPosX;
+                vpt[5] += e.e.clientY - lastPosY;
+                canvas.requestRenderAll();
+                lastPosX = e.e.clientX;
+                lastPosY = e.e.clientY;
+                return;
+            }
+            
+            if (!isDrawing) return;
+            
+            const pointer = canvas.getPointer(e.e);
+            
+            if (currentMode === 'wall' && currentLine) {
+                let endX = pointer.x;
+                let endY = pointer.y;
+                if (e.e.shiftKey) {
+                    const dx = Math.abs(pointer.x - startX);
+                    const dy = Math.abs(pointer.y - startY);
+                    if (dx > dy) { endY = startY; } else { endX = startX; }
+                }
+                currentLine.set({ x2: endX, y2: endY });
+                canvas.renderAll();
+            }
+        });
+
+        canvas.on('mouse:up', (e) => {
+            // 화면 이동 (Panning) 종료
+            if (isPanning) {
+                isPanning = false;
+                canvas.setCursor('default');
+                canvas.selection = (currentMode === 'select'); // 선택 모드일 때만 선택 활성화
+                return;
+            }
+
+            if (!isDrawing) return;
+            
+            if(currentMode === 'wall' && currentLine) {
+                currentLine.setCoords(); // 최종 좌표 설정
+                history.saveState(); // 벽 그리기가 끝난 후 히스토리 저장
+            }
+
+            const pointer = canvas.getPointer(e.e);
+            
+            if(currentMode === 'rect') {
+                const width = Math.abs(pointer.x - startX);
+                const height = Math.abs(pointer.y - startY);
+                if (width > 2 && height > 2) {
+                    const left = Math.min(startX, pointer.x);
+                    const top = Math.min(startY, pointer.y);
+                    const rect = new fabric.Rect({ left: left, top: top, width: width, height: height, fill: 'transparent', stroke: 'black', strokeWidth: 2 });
+                    canvas.add(rect);
+                }
+            }
+            
+            isDrawing = false;
+            currentLine = null;
+        });
+        
+        // 선택된 모든 객체를 삭제하는 함수
+        function deleteSelectedObjects() {
+            const activeObjects = canvas.getActiveObjects();
+            if (activeObjects.length > 0) {
+                activeObjects.forEach(obj => canvas.remove(obj));
+                canvas.discardActiveObject().renderAll();
+                sizeControls.classList.remove('show');
+            }
+        }
+
+        // 삭제 버튼 클릭 이벤트
+        deleteBtn.addEventListener('click', deleteSelectedObjects);
+
+        // 전체 삭제
+        document.getElementById('clear-btn').addEventListener('click', () => {
+            if (confirm('모든 내용을 삭제하시겠습니까?\n(배경 이미지도 함께 제거됩니다)')) {
+                history.isRestoring = true;
+                canvas.clear();
+                // 줌/팬 상태 초기화
+                canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+                canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas));
+                canvas.backgroundColor = 'white';
+                backgroundImage = null;
+                bgClearBtn.disabled = true;
+                opacityControl.style.display = 'none';
+                if (showGrid) { drawGrid(); }
+                canvas.renderAll();
+                history.isRestoring = false;
+                history.saveState();
+            }
+        });
+
+        // 이미지 내보내기
+        document.getElementById('export-btn').addEventListener('click', () => {
+            let includeBackground = true;
+            if (backgroundImage) { includeBackground = confirm('배경 이미지를 포함하여 내보내시겠습니까?'); }
+            
+            let tempBgImage = null;
+            if (!includeBackground && backgroundImage) {
+                tempBgImage = backgroundImage;
+                canvas.setBackgroundImage(null, null);
+            }
+            
+            const gridObjects = canvas.getObjects().filter(obj => obj.stroke === '#e0e0e0');
+            gridObjects.forEach(obj => obj.set('visible', false));
+            
+            canvas.renderAll();
+            const dataURL = canvas.toDataURL({
+                format: 'png',
+                quality: 1,
+                multiplier: 1 / canvas.getZoom() // 현재 줌 상태에 맞게 내보내기
+            });
+            
+            gridObjects.forEach(obj => obj.set('visible', true));
+            if (tempBgImage) { canvas.setBackgroundImage(tempBgImage, canvas.renderAll.bind(canvas)); }
+            
+            canvas.renderAll();
+            
+            const link = document.createElement('a');
+            link.download = '평면도.png';
+            link.href = dataURL;
+            link.click();
+        });
+
+        // 저장 기능
+        document.getElementById('save-btn').addEventListener('click', () => {
+            const data = {
+                version: '2.0',
+                canvas: canvas.toJSON(['elementType']),
+                viewport: canvas.viewportTransform,
+                backgroundImage: backgroundImage ? {
+                    src: canvas.backgroundImage._element.src,
+                    opacity: backgroundImage.opacity,
+                    scaleX: backgroundImage.scaleX,
+                    scaleY: backgroundImage.scaleY
+                } : null
+            };
+            const json = JSON.stringify(data);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = '평면도.json';
+            link.href = url;
+            link.click();
+        });
+
+        // 불러오기 기능
+        document.getElementById('load-btn').addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const data = JSON.parse(event.target.result);
+                    history.isRestoring = true;
+                    
+                    canvas.loadFromJSON(data.canvas || data, () => {
+                        // 뷰포트(줌/팬) 정보 불러오기
+                        if (data.viewport) {
+                            canvas.setViewportTransform(data.viewport);
+                        }
+
+                        if (data.backgroundImage) {
+                            fabric.Image.fromURL(data.backgroundImage.src, (img) => {
+                                img.set({
+                                    opacity: data.backgroundImage.opacity,
+                                    scaleX: data.backgroundImage.scaleX,
+                                    scaleY: data.backgroundImage.scaleY
+                                });
+                                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+                                backgroundImage = img;
+                                bgClearBtn.disabled = false;
+                                opacityControl.style.display = 'block';
+                                bgOpacity.value = data.backgroundImage.opacity * 100;
+                                opacityValue.textContent = (data.backgroundImage.opacity * 100).toFixed(0) + '%';
+                            });
+                        }
+                        
+                        canvas.renderAll();
+                        if (showGrid) { drawGrid(); }
+                        history.isRestoring = false;
+                        history.saveState();
+                    });
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        });
+
+        // 초기 모드 설정
+        setMode('select');
+    </script>
+</body>
+</html>
