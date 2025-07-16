@@ -89,10 +89,13 @@
         #canvas-container {
             border: 2px solid #ddd;
             border-radius: 4px;
-            display: inline-block;
             background-color: white;
             position: relative;
             overflow: hidden; /* 캔버스 밖으로 나가는 요소 숨기기 */
+            /* ======[업데이트된 코드]====== */
+            width: 100%; /* 너비 확장 */
+            height: 700px; /* 높이 조정 */
+            /* ============================ */
         }
         
         .size-controls {
@@ -129,9 +132,9 @@
             font-size: 14px;
         }
         
-        .grid-toggle {
-            margin-left: auto;
-        }
+        /* ======[업데이트된 코드]====== */
+        /* .grid-toggle 클래스 및 CSS 속성 제거 */
+        /* ============================ */
         
         .shortcut {
             color: #666;
@@ -145,6 +148,7 @@
             right: 10px;
             font-size: 12px;
             color: #666;
+            z-index: 10;
         }
     </style>
 </head>
@@ -222,14 +226,20 @@
                 </div>
             </div>
             
-            <div class="tool-group grid-toggle">
+            <!-- ======[업데이트된 코드]====== -->
+            <!-- grid-toggle 클래스 제거하여 위치 변경 -->
+            <div class="tool-group">
                 <h3>보기</h3>
                 <button id="grid-btn">격자 표시</button>
             </div>
+            <!-- ============================ -->
         </div>
         
         <div id="canvas-container">
-            <canvas id="canvas" width="800" height="600"></canvas>
+            <!-- ======[업데이트된 코드]====== -->
+            <!-- width/height 속성 제거하여 동적으로 설정 -->
+            <canvas id="canvas"></canvas>
+            <!-- ============================ -->
             <div class="size-controls" id="size-controls">
                 <label>너비: <input type="number" id="width-input" min="10" step="5"></label>
                 <label>높이: <input type="number" id="height-input" min="10" step="5"></label>
@@ -246,7 +256,7 @@
                 <li>확대/축소: Ctrl 키를 누른 채 마우스 휠을 돌려 조절합니다.</li>
                 <li>화면 이동: 마우스 휠(가운데 버튼)을 클릭한 상태로 드래그합니다.</li>
                 <li>선택 모드: V 키 또는 버튼 클릭. 객체를 클릭/드래그하여 선택, 이동, 회전이 가능합니다.</li>
-                <li><strong>크기 조절: 객체 모서리를 드래그하여 조절합니다. Shift 키를 누른 채 드래그하면 정비율로 조절됩니다.</strong></li>
+                <li>크기 조절: 객체 모서리를 드래그하여 조절합니다. <strong>Shift 키를 누른 채 드래그하면 정비율로 조절됩니다.</strong></li>
                 <li>벽 그리기: 클릭하고 드래그하여 벽을 그립니다. (Shift 누른 채 드래그 시 직선 고정)</li>
                 <li>건축 요소: 아이콘을 클릭 후 캔버스에 클릭하여 배치합니다. (배치 후 자동으로 선택 모드 전환)</li>
                 <li>객체 삭제: 객체 선택 후 Backspace 키 또는 삭제 버튼 클릭.</li>
@@ -257,16 +267,21 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <script>
+        // ======[업데이트된 코드]======
+        // 컨테이너 크기에 맞춰 캔버스 크기를 동적으로 설정
+        const canvasContainer = document.getElementById('canvas-container');
+        const canvasEl = document.getElementById('canvas');
+        canvasEl.width = canvasContainer.clientWidth;
+        canvasEl.height = canvasContainer.clientHeight;
+        // ============================
+
         // Canvas 초기화
         const canvas = new fabric.Canvas('canvas', {
             backgroundColor: 'white',
             selection: true,
             stopContextMenu: true, 
             fireRightClick: true,
-            // ======[업데이트된 코드 1]======
-            // Shift 키를 이용한 정비율 크기 조절 활성화
-            uniScaleTransform: true,
-            // ============================
+            uniScaleTransform: true, // Shift 키로 정비율 조절 활성화
         });
 
         // 히스토리 관리
@@ -428,8 +443,8 @@
         // 키보드/마우스 이벤트 핸들러
         document.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT') return;
-            if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); history.undo(); }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'y') { e.preventDefault(); history.redo(); }
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); history.undo(); }
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); history.redo(); }
             if (e.key === 'Backspace') { e.preventDefault(); deleteSelectedObjects(); }
             if (e.key.toLowerCase() === 'v') setMode('select');
         });
@@ -465,8 +480,6 @@
             startY = pointer.y;
             isDrawing = true;
 
-            // ======[업데이트된 코드 2]======
-            // 객체 삽입 후 자동으로 '선택' 모드로 전환
             let insertedObject = null;
             switch(currentMode) {
                 case 'wall':
@@ -491,7 +504,6 @@
                 setMode('select');
                 canvas.setActiveObject(insertedObject);
             }
-            // ============================
         });
 
         canvas.on('mouse:move', (e) => {
@@ -575,9 +587,9 @@
             }
         }
         
-        widthInput.addEventListener('input', () => { if (selectedObject) { selectedObject.scaleToWidth(parseInt(widthInput.value)); canvas.renderAll(); }});
-        heightInput.addEventListener('input', () => { if (selectedObject) { selectedObject.scaleToHeight(parseInt(heightInput.value)); canvas.renderAll(); }});
-        angleInput.addEventListener('input', () => { if (selectedObject) { selectedObject.set('angle', parseInt(angleInput.value)).setCoords(); canvas.renderAll(); }});
+        widthInput.addEventListener('input', () => { if (selectedObject) { selectedObject.scaleToWidth(parseInt(widthInput.value, 10)); canvas.renderAll(); }});
+        heightInput.addEventListener('input', () => { if (selectedObject) { selectedObject.scaleToHeight(parseInt(heightInput.value, 10)); canvas.renderAll(); }});
+        angleInput.addEventListener('input', () => { if (selectedObject) { selectedObject.set('angle', parseInt(angleInput.value, 10)).setCoords(); canvas.renderAll(); }});
         
         // 버튼 클릭 이벤트 리스너
         selectBtn.addEventListener('click', () => setMode('select'));
@@ -597,7 +609,7 @@
             canvas.discardActiveObject().renderAll();
         }
         
-        // 파일/전체삭제/그리드 기능 (나머지 코드는 이전과 동일)
+        // 파일/전체삭제/그리드 기능
         document.getElementById('clear-btn').addEventListener('click', () => {
             if (confirm('모든 내용을 삭제하시겠습니까?\n(배경 이미지도 함께 제거됩니다)')) {
                 history.isRestoring = true;
@@ -651,19 +663,89 @@
             }
         });
         
-        function drawGrid() { /* ... */ } // 그리드 로직은 생략. 이전과 동일
+        function drawGrid() {
+             canvas.getObjects().forEach(o => { if (o.isGridLine) canvas.remove(o) });
+             const zoom = canvas.getZoom();
+             const panX = canvas.viewportTransform[4];
+             const panY = canvas.viewportTransform[5];
+
+             for (let i = Math.floor(-panX / (gridSize * zoom)); i * gridSize < canvas.width / zoom; i++) {
+                 const x = i * gridSize;
+                 const line = new fabric.Line([x, -panY / zoom, x, (canvas.height - panY) / zoom], { stroke: '#e0e0e0', strokeWidth: 1, selectable: false, evented: false, isGridLine: true });
+                 canvas.add(line);
+             }
+             for (let i = Math.floor(-panY / (gridSize * zoom)); i * gridSize < canvas.height / zoom; i++) {
+                 const y = i * gridSize;
+                 const line = new fabric.Line([-panX / zoom, y, (canvas.width - panX) / zoom, y], { stroke: '#e0e0e0', strokeWidth: 1, selectable: false, evented: false, isGridLine: true });
+                 canvas.add(line);
+             }
+             canvas.getObjects().filter(o => o.isGridLine).forEach(o => canvas.sendToBack(o));
+        }
+        
         canvas.on('after:render', () => { if (showGrid) drawGrid(); });
         gridBtn.addEventListener('click', () => {
             showGrid = !showGrid;
             gridBtn.classList.toggle('active', showGrid);
-            canvas.getObjects().forEach(o => { if(o.stroke === '#e0e0e0') canvas.remove(o) });
-            if (showGrid) drawGrid();
+            if (!showGrid) {
+                canvas.getObjects().forEach(o => { if(o.isGridLine) canvas.remove(o) });
+            }
             canvas.renderAll();
         });
         
-        document.getElementById('export-btn').addEventListener('click', () => { /* ... */ }); // 이전과 동일
-        document.getElementById('save-btn').addEventListener('click', () => { /* ... */ }); // 이전과 동일
-        document.getElementById('load-btn').addEventListener('click', () => { /* ... */ }); // 이전과 동일
+        document.getElementById('export-btn').addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = '평면도.png';
+            link.href = canvas.toDataURL({format: 'png', quality: 1});
+            link.click();
+        });
+        
+        document.getElementById('save-btn').addEventListener('click', () => {
+            const data = {
+                version: '2.0',
+                canvas: canvas.toJSON(['elementType']),
+                viewport: canvas.viewportTransform,
+                backgroundImage: backgroundImage ? { src: canvas.backgroundImage._element.src, opacity: backgroundImage.opacity, scaleX: backgroundImage.scaleX, scaleY: backgroundImage.scaleY } : null
+            };
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = '평면도.json';
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+        
+        document.getElementById('load-btn').addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const data = JSON.parse(event.target.result);
+                    history.isRestoring = true;
+                    canvas.loadFromJSON(data.canvas || data, () => {
+                        if (data.viewport) canvas.setViewportTransform(data.viewport);
+                        if (data.backgroundImage) {
+                            fabric.Image.fromURL(data.backgroundImage.src, (img) => {
+                                img.set(data.backgroundImage);
+                                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+                                backgroundImage = img;
+                                bgClearBtn.disabled = false;
+                                opacityControl.style.display = 'block';
+                                bgOpacity.value = (data.backgroundImage.opacity || 1) * 100;
+                                opacityValue.textContent = `${Math.round(bgOpacity.value)}%`;
+                            });
+                        }
+                        canvas.renderAll();
+                        history.isRestoring = false;
+                        history.saveState();
+                    });
+                };
+                reader.readAsText(e.target.files[0]);
+            };
+            input.click();
+        });
         
         // 초기화
         setMode('select');
