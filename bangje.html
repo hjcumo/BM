@@ -207,11 +207,15 @@
                 <button id="delete-btn">삭제<span class="shortcut">Backspace</span></button>
             </div>
             
+            <!-- ======[업데이트된 코드]====== -->
             <div class="tool-group">
                 <h3>편집</h3>
+                <button id="copy-btn" disabled>복사<span class="shortcut">Ctrl+C</span></button>
+                <button id="paste-btn" disabled>붙여넣기<span class="shortcut">Ctrl+V</span></button>
                 <button id="undo-btn" disabled>실행취소<span class="shortcut">Ctrl+Z</span></button>
                 <button id="redo-btn" disabled>다시실행<span class="shortcut">Ctrl+Y</span></button>
             </div>
+            <!-- ============================ -->
             
             <div class="tool-group">
                 <h3>선 스타일</h3>
@@ -308,21 +312,24 @@
             </div>
         </div>
 
+        <!-- ======[업데이트된 코드]====== -->
         <div class="info">
             <strong>사용법:</strong>
             <ul>
-                <li><strong>화면 이동: 스페이스바를 누른 채 드래그</strong> 또는 마우스 휠(가운데 버튼)을 클릭한 채 드래그합니다.</li>
+                <li><strong>화면 이동:</strong> 스페이스바를 누른 채 드래그 또는 마우스 휠(가운데 버튼)을 클릭한 채 드래그합니다.</li>
                 <li><strong>객체 선택:</strong> 캔버스에서 직접 클릭하거나, 우측 '객체 목록' 패널에서 항목을 클릭합니다.</li>
+                <li><strong>복사/붙여넣기:</strong> 객체 선택 후 Ctrl+C / Ctrl+V (Mac: Cmd+C / Cmd+V) 또는 편집 메뉴의 버튼을 사용합니다.</li>
                 <li><strong>선 두께 조절:</strong> 상단 툴바에서 기본 두께를 설정하거나, 객체 선택 후 나타나는 컨트롤에서 개별 조절합니다.</li>
-                <li><strong>건축 요소 삽입:</strong> 아이콘을 클릭 후 캔버스에 클릭하거나, 아이콘을 캔버스로 드래그 앤 드롭합니다. (드롭 시 화면 중앙에 배치)</li>
+                <li><strong>건축 요소 삽입:</strong> 아이콘을 클릭 후 캔버스에 클릭하거나, 아이콘을 캔버스로 드래그 앤 드롭합니다.</li>
                 <li><strong>확대/축소:</strong> Ctrl(Windows) 또는 Command(Mac) 키를 누른 채 마우스 휠을 돌려 조절합니다.</li>
                 <li><strong>크기 조절:</strong> 객체 모서리를 드래그하여 조절합니다. Shift 키를 누른 채 드래그하면 정비율로 조절됩니다.</li>
-                <li><strong>객체 회전:</strong> 객체 모서리 바깥쪽을 드래그합니다. <strong>Shift 키를 누른 채 드래그하면 90도 단위로 회전</strong>합니다.</li>
+                <li><strong>객체 회전:</strong> 객체 모서리 바깥쪽을 드래그합니다. Shift 키를 누른 채 드래그하면 90도 단위로 회전합니다.</li>
                 <li><strong>벽/사각형 그리기:</strong> 클릭하고 드래그하여 그립니다. (그리기 완료 후 자동으로 선택 모드 전환)</li>
                 <li><strong>객체 삭제:</strong> 객체 선택 후 Backspace 키 또는 삭제 버튼 클릭.</li>
                 <li><strong>실행취소/다시실행:</strong> Ctrl+Z / Ctrl+Y 또는 버튼 클릭.</li>
             </ul>
         </div>
+        <!-- ============================ -->
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
@@ -350,6 +357,7 @@
         let isPanning = false, lastPosX, lastPosY, spacebarDown = false;
         let backgroundImage = null;
         let defaultStrokeWidth = 2;
+        let _clipboard = null; // 클립보드 변수 추가
         
         const objectPanelList = document.getElementById('object-panel-list');
         const bgImageBtn = document.getElementById('bg-image-btn'), bgClearBtn = document.getElementById('bg-clear-btn'), bgOpacity = document.getElementById('bg-opacity'), opacityValue = document.getElementById('opacity-value'), opacityControl = document.getElementById('opacity-control');
@@ -362,7 +370,14 @@
         const windowBothBtn = document.getElementById('window-both-btn');
         const doorDoubleBtn = document.getElementById('door-double-btn');
 
-        const gridBtn = document.getElementById('grid-btn'), undoBtn = document.getElementById('undo-btn'), redoBtn = document.getElementById('redo-btn');
+        // ======[업데이트된 코드: 편집 버튼]======
+        const gridBtn = document.getElementById('grid-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const pasteBtn = document.getElementById('paste-btn');
+        const undoBtn = document.getElementById('undo-btn');
+        const redoBtn = document.getElementById('redo-btn');
+        // ============================
+        
         const sizeControls = document.getElementById('size-controls'), widthInput = document.getElementById('width-input'), heightInput = document.getElementById('height-input'), angleInput = document.getElementById('angle-input');
         const defaultStrokeInput = document.getElementById('default-stroke-width');
         const strokeWidthControl = document.getElementById('stroke-width-control');
@@ -392,7 +407,6 @@
             }
 
             fabric.loadSVGFromString(svgString, (objects, options) => {
-                // SVG 로드 시 strokeWidth를 기본값으로 설정
                 objects.forEach(obj => { if (obj.stroke) obj.set('strokeWidth', defaultStrokeWidth); });
                 const group = new fabric.Group(objects, { left: x, top: y, originX: 'center', originY: 'center', elementType: elementType });
                 group.scaleToWidth(defaultWidth);
@@ -400,7 +414,21 @@
             });
         }
         
-        function setMode(mode) { currentMode = mode; document.querySelectorAll('button.active').forEach(btn => btn.classList.remove('active')); const currentBtn = document.getElementById(mode + '-mode') || document.getElementById(mode + '-btn'); if (currentBtn) currentBtn.classList.add('active'); canvas.selection = mode === 'select'; canvas.forEachObject(obj => { if (!obj.isGridLine) obj.selectable = (mode === 'select'); }); canvas.renderAll(); }
+        // ======[업데이트된 코드: 도구 변경 시 선택 해제]======
+        function setMode(mode) { 
+            // 그리기 도구로 전환 시, 기존 선택 해제
+            if (['wall', 'rect', 'text'].includes(mode)) {
+                canvas.discardActiveObject().renderAll();
+            }
+            
+            currentMode = mode; 
+            document.querySelectorAll('button.active').forEach(btn => btn.classList.remove('active')); 
+            const currentBtn = document.getElementById(mode + '-mode') || document.getElementById(mode + '-btn'); 
+            if (currentBtn) currentBtn.classList.add('active'); 
+            canvas.selection = mode === 'select'; 
+            canvas.forEachObject(obj => { if (!obj.isGridLine) obj.selectable = (mode === 'select'); }); 
+            canvas.renderAll(); 
+        }
 
         window.addEventListener('keydown', (e) => {
             if (e.target.tagName === 'INPUT' || e.repeat) return;
@@ -411,9 +439,21 @@
             if (e.code === 'Space') { e.preventDefault(); spacebarDown = false; if (isPanning && !e.buttons) { isPanning = false; canvas.setCursor('default'); } else if (!isPanning) { canvas.setCursor('default'); } }
         });
 
-        document.addEventListener('keydown', (e) => { if (e.target.tagName === 'INPUT') return; if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); history.undo(); } if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); history.redo(); } if (e.key === 'Backspace') { e.preventDefault(); deleteSelectedObjects(); } if (e.key.toLowerCase() === 'v' && !e.ctrlKey) setMode('select'); });
+        // ======[업데이트된 코드: 키보드 이벤트 핸들러]======
+        document.addEventListener('keydown', (e) => { 
+            if (e.target.tagName === 'INPUT') return; 
+            
+            const isCtrlOrCmd = e.ctrlKey || e.metaKey;
 
-        // ======[업데이트된 코드: macOS Command 키 호환]======
+            if (isCtrlOrCmd && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); history.undo(); } 
+            if (isCtrlOrCmd && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); history.redo(); }
+            if (isCtrlOrCmd && (e.key === 'c' || e.key === 'C')) { e.preventDefault(); copyObject(); }
+            if (isCtrlOrCmd && (e.key === 'v' || e.key === 'V')) { e.preventDefault(); pasteObject(); }
+
+            if (e.key === 'Backspace') { e.preventDefault(); deleteSelectedObjects(); } 
+            if (e.key.toLowerCase() === 'v' && !isCtrlOrCmd) setMode('select'); 
+        });
+
         canvas.on('mouse:wheel', (opt) => { 
             if (opt.e.ctrlKey || opt.e.metaKey) { 
                 const delta = opt.e.deltaY; let zoom = canvas.getZoom(); zoom *= 0.999 ** delta; if (zoom > 20) zoom = 20; if (zoom < 0.1) zoom = 0.1; canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom); opt.e.preventDefault(); opt.e.stopPropagation(); 
@@ -424,14 +464,13 @@
             const isMiddleClick = e.e.button === 1;
             const isSpacebarPan = spacebarDown && e.e.button === 0;
 
-            // ======[업데이트된 코드: 패닝 시 객체 선택 방지]======
             if (isMiddleClick || isSpacebarPan) {
                 isPanning = true;
                 lastPosX = e.e.clientX;
                 lastPosY = e.e.clientY;
                 canvas.setCursor('grabbing');
-                canvas.discardActiveObject(); // 현재 선택된 객체 해제
-                canvas.selection = false;     // 전체 선택 기능 비활성화
+                canvas.discardActiveObject();
+                canvas.selection = false;
                 canvas.renderAll();
                 return;
             }
@@ -455,13 +494,13 @@
             if (isPanning) { const vpt = canvas.viewportTransform; vpt[4] += e.e.clientX - lastPosX; vpt[5] += e.e.clientY - lastPosY; canvas.requestRenderAll(); lastPosX = e.e.clientX; lastPosY = e.e.clientY; return; }
             if (!isDrawing) return;
             if (currentMode === 'wall' && currentLine) { const pointer = canvas.getPointer(e.e); let endX = pointer.x, endY = pointer.y; if (e.e.shiftKey) { const dx = Math.abs(pointer.x - startX); const dy = Math.abs(pointer.y - startY); if (dx > dy) { endY = startY; } else { endX = startX; } } currentLine.set({ x2: endX, y2: endY }); canvas.renderAll(); }
-            else if (currentMode === 'rect' && isDrawing) { const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if(!currentLine) { currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, strokeDashArray: [5, 5] }); canvas.add(currentLine); } currentLine.set({ left: Math.min(pointer.x, startX), top: Math.min(pointer.y, startY), width: width, height: height }); canvas.renderAll(); }
+            else if (currentMode === 'rect' && isDrawing) { const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if(!currentLine) { currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, strokeDashArray: [5, 5] }); canvas.add(currentLine); } currentLine.set({ left: Math.min(pointer.x, startY), top: Math.min(pointer.y, startY), width: width, height: height }); canvas.renderAll(); }
         });
 
         canvas.on('mouse:up', (e) => {
             if (isPanning) { 
                 isPanning = false; 
-                canvas.selection = (currentMode === 'select'); // 선택 모드일 때만 선택 기능 복원
+                canvas.selection = (currentMode === 'select');
                 canvas.setCursor(spacebarDown ? 'grab' : 'default'); 
                 return; 
             }
@@ -473,7 +512,6 @@
             isDrawing = false; currentLine = null;
         });
 
-        // ======[업데이트된 코드: Shift+회전 기능 추가]======
         function handleRotating(opt) {
             if (opt.e.shiftKey) {
                 const target = opt.target;
@@ -488,17 +526,19 @@
             'selection:updated': (e) => updateSelection(e.selected), 
             'selection:cleared': () => updateSelection([]), 
             'object:scaling': updateSizeControls,
-            'object:rotating': handleRotating // 회전 이벤트 핸들러 연결
+            'object:rotating': handleRotating
         });
 
         function updateSelection(selected) { 
             highlightPanelSelection(); 
             selectedObject = selected.length === 1 ? selected[0] : null; 
+            
+            // ======[업데이트된 코드: 복사 버튼 활성화]======
+            copyBtn.disabled = !selectedObject;
+            
             if (selectedObject) { 
                 sizeControls.classList.add('show'); 
                 updateSizeControls(); 
-                // ======[업데이트된 코드: 건축 요소 선 두께 조절 UI]======
-                // 벽, 사각형, 건축 요소(그룹)일 때 선 두께 컨트롤 표시
                 if (selectedObject.type === 'line' || selectedObject.type === 'rect' || selectedObject.isType('group')) {
                     strokeWidthControl.style.display = 'block';
                 } else {
@@ -515,11 +555,9 @@
                 heightInput.value = Math.round(selectedObject.getScaledHeight()); 
                 angleInput.value = Math.round(selectedObject.angle); 
                 
-                // ======[업데이트된 코드: 건축 요소 선 두께 값 표시]======
                 if (selectedObject.type === 'line' || selectedObject.type === 'rect') {
                     strokeWidthInput.value = selectedObject.strokeWidth;
                 } else if (selectedObject.isType('group')) {
-                    // 그룹 내 첫 번째 선이 있는 객체의 두께를 대표로 표시
                     const firstStroked = selectedObject.getObjects().find(o => o.stroke);
                     if (firstStroked) {
                         strokeWidthInput.value = firstStroked.strokeWidth;
@@ -531,7 +569,6 @@
         heightInput.addEventListener('input', () => { if (selectedObject) { selectedObject.scaleToHeight(parseInt(heightInput.value, 10)); canvas.renderAll(); }});
         angleInput.addEventListener('input', () => { if (selectedObject) { selectedObject.set('angle', parseInt(angleInput.value, 10)).setCoords(); canvas.renderAll(); }});
         
-        // ======[업데이트된 코드: 건축 요소 선 두께 변경 로직]======
         strokeWidthInput.addEventListener('input', () => {
             if (!selectedObject) return;
             const newWidth = parseInt(strokeWidthInput.value, 10);
@@ -540,9 +577,8 @@
             if (selectedObject.type === 'line' || selectedObject.type === 'rect') {
                 selectedObject.set('strokeWidth', newWidth);
             } else if (selectedObject.isType('group')) {
-                // 그룹 내 모든 객체의 선 두께 변경
                 selectedObject.getObjects().forEach(obj => {
-                    if (obj.stroke) { // 선(stroke)이 있는 객체만 변경
+                    if (obj.stroke) {
                         obj.set('strokeWidth', newWidth);
                     }
                 });
@@ -553,9 +589,59 @@
         
         selectBtn.addEventListener('click', () => setMode('select')); wallBtn.addEventListener('click', () => setMode('wall')); rectBtn.addEventListener('click', () => setMode('rect')); textBtn.addEventListener('click', () => setMode('text'));
         doorLeftBtn.addEventListener('click', () => setMode('door-left')); doorRightBtn.addEventListener('click', () => setMode('door-right')); windowLeftBtn.addEventListener('click', () => setMode('window-left')); windowRightBtn.addEventListener('click', () => setMode('window-right')); windowBothBtn.addEventListener('click', () => setMode('window-both')); doorDoubleBtn.addEventListener('click', () => setMode('door-double'));
-        undoBtn.addEventListener('click', () => history.undo()); redoBtn.addEventListener('click', () => history.redo()); deleteBtn.addEventListener('click', deleteSelectedObjects);
+        
+        // ======[업데이트된 코드: 편집 버튼 이벤트]======
+        copyBtn.addEventListener('click', copyObject);
+        pasteBtn.addEventListener('click', pasteObject);
+        undoBtn.addEventListener('click', () => history.undo()); 
+        redoBtn.addEventListener('click', () => history.redo()); 
+        deleteBtn.addEventListener('click', deleteSelectedObjects);
+        // ============================
+
         function deleteSelectedObjects() { canvas.getActiveObjects().forEach(obj => canvas.remove(obj)); canvas.discardActiveObject().renderAll(); }
         
+        // ======[업데이트된 코드: 복사/붙여넣기 함수]======
+        function copyObject() {
+            const activeObject = canvas.getActiveObject();
+            if (activeObject) {
+                activeObject.clone(function(cloned) {
+                    _clipboard = cloned;
+                    pasteBtn.disabled = false; // 붙여넣기 버튼 활성화
+                }, ['elementType']); // 사용자 정의 속성 포함하여 복사
+            }
+        }
+
+        function pasteObject() {
+            if (!_clipboard) return;
+
+            _clipboard.clone(function(clonedObj) {
+                canvas.discardActiveObject(); // 기존 선택 해제
+                
+                // 약간의 오프셋을 주어 붙여넣기
+                clonedObj.set({
+                    left: clonedObj.left + 15,
+                    top: clonedObj.top + 15,
+                    evented: true, // 붙여넣은 객체가 이벤트를 받을 수 있도록
+                });
+
+                // 그룹 내 객체들의 strokeWidth가 0이 되는 현상 방지
+                if (clonedObj.isType('group')) {
+                    clonedObj.getObjects().forEach(function(obj) {
+                        // 원본 그룹에서 strokeWidth를 다시 가져와 설정
+                        const originalObj = _clipboard.getObjects().find(o => o.type === obj.type);
+                        if(originalObj && originalObj.strokeWidth) {
+                             obj.set('strokeWidth', originalObj.strokeWidth);
+                        }
+                    });
+                }
+                
+                canvas.add(clonedObj);
+                canvas.setActiveObject(clonedObj); // 붙여넣은 객체 선택
+                canvas.requestRenderAll();
+            }, ['elementType']);
+        }
+        // ============================
+
         function updateObjectPanel() {
             objectPanelList.innerHTML = '';
             const objects = canvas.getObjects().filter(obj => !obj.isGridLine);
