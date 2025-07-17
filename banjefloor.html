@@ -3,29 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HB 평면도 간이 편집기 by.MK</title>
+    <title>CAD 스타일 평면도 편집기</title>
     <style>
-        body {
+        html, body {
+            height: 100%;
             margin: 0;
-            padding: 20px;
             font-family: 'Malgun Gothic', sans-serif;
             background-color: #f0f0f0;
+            overflow: hidden; /* 전체 페이지 스크롤 방지 */
         }
 
         .container {
-            max-width: 1400px; /* 너비 확장 */
-            margin: 0 auto;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 20px;
+            box-sizing: border-box;
+            padding: 10px;
         }
         
         .toolbar {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
+            flex-shrink: 0; /* 툴바 높이 고정 */
         }
         
         .tool-group {
@@ -77,7 +80,7 @@
         }
         
         .icon-btn svg {
-            width: 100%; /* SVG 크기를 버튼에 맞춤 */
+            width: 100%;
             height: 100%;
         }
         
@@ -88,17 +91,18 @@
 
         .main-content {
             display: flex;
-            gap: 20px;
+            gap: 10px;
+            flex-grow: 1; /* 남은 세로 공간을 모두 차지 */
+            overflow: hidden; /* 내부 요소가 넘치지 않도록 */
         }
 
         #canvas-container {
-            flex-grow: 1; /* 남은 공간을 모두 차지 */
+            flex-grow: 1; /* 남은 가로 공간을 모두 차지 */
             border: 2px solid #ddd;
             border-radius: 4px;
             background-color: white;
             position: relative;
             overflow: hidden; 
-            height: 700px; 
         }
 
         #object-panel {
@@ -180,7 +184,38 @@
             margin: 0 5px;
         }
         
-        .info { margin-top: 20px; padding: 15px; background-color: #e8f4f8; border-radius: 4px; font-size: 14px; }
+        .info { 
+            margin-top: 10px; 
+            padding: 0 15px 15px 15px; 
+            background-color: #e8f4f8; 
+            border-radius: 4px; 
+            font-size: 14px; 
+            flex-shrink: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-out;
+        }
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 12px 0;
+        }
+        .toggle-icon {
+            font-size: 12px;
+            transition: transform 0.3s;
+        }
+        .info.collapsed {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .info.collapsed > ul {
+            display: none;
+        }
+        .info.collapsed .toggle-icon {
+             transform: rotate(-90deg);
+        }
+
         .shortcut { color: #666; font-size: 11px; margin-left: 5px; }
         
         .history-counter {
@@ -191,18 +226,39 @@
             color: #666;
             z-index: 10;
         }
+
+        #context-menu {
+            position: absolute;
+            display: none;
+            background-color: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            z-index: 1000;
+            padding: 5px 0;
+        }
+        #context-menu button {
+            display: block;
+            width: 100%;
+            padding: 8px 20px;
+            border: none;
+            background: none;
+            text-align: left;
+            cursor: pointer;
+        }
+        #context-menu button:hover {
+            background-color: #f0f0f0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>HB 평면도 간이 편집기 by.MK</h1>
-
         <div class="toolbar">
             <div class="tool-group">
                 <h3>기본 도구</h3>
                 <button id="select-mode" class="active">선택<span class="shortcut">V</span></button>
-                <button id="wall-mode">벽</button>
-                <button id="rect-mode">사각형</button>
+                <button id="wall-mode">벽<span class="shortcut">A</span></button>
+                <button id="rect-mode">사각형<span class="shortcut">R</span></button>
                 <button id="text-mode">텍스트</button>
                 <button id="delete-btn">삭제<span class="shortcut">Backspace</span></button>
             </div>
@@ -310,30 +366,36 @@
             </div>
         </div>
 
-        <div class="info">
-            <strong>사용법:</strong>
+        <div class="info collapsed" id="info-banner">
+            <div class="info-header" id="info-toggle-btn">
+                <strong>사용법</strong>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <!-- ======[업데이트된 코드: 스냅 기능 안내 추가]====== -->
             <ul>
-                <li><strong>화면 이동:</strong> 스페이스바를 누른 채 드래그</li>
+                <li><strong>도구 단축키:</strong> 선택(V), 벽(A), 사각형(R), 삭제(Backspace)</li>
+                <li><strong>스냅 기능:</strong> '벽' 도구 사용 시, 다른 객체의 선이나 모서리 근처로 가면 자동으로 달라붙습니다.</li>
+                <li><strong>화면 이동:</strong> 스페이스바를 누른 채 드래그 또는 마우스 휠(가운데 버튼)을 클릭한 채 드래그합니다.</li>
                 <li><strong>객체 선택:</strong> 캔버스에서 직접 클릭하거나, 우측 '객체 목록' 패널에서 항목을 클릭합니다.</li>
                 <li><strong>복사/붙여넣기:</strong> 객체 선택 후 Ctrl+C / Ctrl+V (Mac: Cmd+C / Cmd+V) 또는 편집 메뉴의 버튼을 사용합니다.</li>
                 <li><strong>선 두께 조절:</strong> 상단 툴바에서 기본 두께를 설정하거나, 객체 선택 후 나타나는 컨트롤에서 개별 조절합니다.</li>
-                <li><strong>건축 요소 삽입:</strong> 아이콘을 클릭 후 캔버스에 클릭하거나, 아이콘을 캔버스로 드래그 앤 드롭합니다.</li>
-                <li><strong>확대/축소:</strong> Ctrl키를 누른 채 마우스 휠을 돌려 조절합니다.</li>
-                <li><strong>크기 조절:</strong> 객체 모서리를 드래그하여 조절합니다. Shift 키를 누른 채 드래그하면 정비율로 조절됩니다.</li>
-                <li><strong>객체 회전:</strong> 객체 모서리 바깥쪽을 드래그합니다. Shift 키를 누른 채 조작하면 90도 단위로 회전합니다.</li>
-                <li><strong>벽/사각형 그리기:</strong> 클릭하고 드래그하여 그립니다. (그리기 완료 후 자동으로 선택 모드 전환)</li>
-                <li><strong>객체 삭제:</strong> 객체 선택 후 Backspace 키 또는 삭제 버튼 클릭.</li>
+                <li><strong>건축 요소:</strong> 아이콘 클릭 또는 드래그 앤 드롭으로 삽입. 우클릭 시 '좌우 반전'이 가능합니다.</li>
+                <li><strong>확대/축소:</strong> Ctrl(Windows) 또는 Command(Mac) 키를 누른 채 마우스 휠을 돌려 조절합니다.</li>
+                <li><strong>크기/회전:</strong> 객체 모서리 드래그. Shift 키를 누르면 정비율 조절/90도 단위 회전이 됩니다.</li>
                 <li><strong>실행취소/다시실행:</strong> Ctrl+Z / Ctrl+Y 또는 버튼 클릭.</li>
             </ul>
+            <!-- ============================ -->
         </div>
+    </div>
+
+    <div id="context-menu">
+        <button id="flip-btn">좌우 반전</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <script>
         const canvasContainer = document.getElementById('canvas-container');
         const canvasEl = document.getElementById('canvas');
-        canvasEl.width = canvasContainer.clientWidth;
-        canvasEl.height = canvasContainer.clientHeight;
 
         const canvas = new fabric.Canvas('canvas', { backgroundColor: 'white', selection: true, stopContextMenu: true, fireRightClick: true, uniScaleTransform: true, });
 
@@ -355,6 +417,11 @@
         let defaultStrokeWidth = 2;
         let _clipboard = null;
         
+        // ======[업데이트된 코드: 스냅 관련 변수]======
+        const snapThreshold = 10; // 스냅 감지 거리 (픽셀)
+        let snapIndicator;
+        // ============================
+
         const objectPanelList = document.getElementById('object-panel-list');
         const bgImageBtn = document.getElementById('bg-image-btn'), bgClearBtn = document.getElementById('bg-clear-btn'), bgOpacity = document.getElementById('bg-opacity'), opacityValue = document.getElementById('opacity-value'), opacityControl = document.getElementById('opacity-control');
         const selectBtn = document.getElementById('select-mode'), wallBtn = document.getElementById('wall-mode'), rectBtn = document.getElementById('rect-mode'), textBtn = document.getElementById('text-mode'), deleteBtn = document.getElementById('delete-btn');
@@ -409,6 +476,8 @@
         }
         
         function setMode(mode) { 
+            if (snapIndicator) snapIndicator.set({ visible: false }); // 모드 변경 시 스냅 표시기 숨기기
+
             if (['wall', 'rect', 'text'].includes(mode)) {
                 canvas.discardActiveObject().renderAll();
             }
@@ -422,12 +491,11 @@
             canvas.renderAll(); 
         }
 
-        // ======[업데이트된 코드: 키보드 이벤트 리스너 통합]======
         document.addEventListener('keydown', (e) => { 
             if (e.target.tagName === 'INPUT' || e.repeat) return;
             
             if (e.code === 'Space') {
-                e.preventDefault(); // 스크롤 방지
+                e.preventDefault();
                 spacebarDown = true;
                 if (!isPanning) {
                     canvas.setCursor('grab');
@@ -436,13 +504,19 @@
 
             const isCtrlOrCmd = e.ctrlKey || e.metaKey;
 
-            if (isCtrlOrCmd && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); history.undo(); } 
-            if (isCtrlOrCmd && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); history.redo(); }
-            if (isCtrlOrCmd && (e.key === 'c' || e.key === 'C')) { e.preventDefault(); copyObject(); }
-            if (isCtrlOrCmd && (e.key === 'v' || e.key === 'V')) { e.preventDefault(); pasteObject(); }
-
-            if (e.key === 'Backspace') { e.preventDefault(); deleteSelectedObjects(); } 
-            if (e.key.toLowerCase() === 'v' && !isCtrlOrCmd) setMode('select'); 
+            if (isCtrlOrCmd) {
+                if (e.key === 'z' || e.key === 'Z') { e.preventDefault(); history.undo(); } 
+                if (e.key === 'y' || e.key === 'Y') { e.preventDefault(); history.redo(); }
+                if (e.key === 'c' || e.key === 'C') { e.preventDefault(); copyObject(); }
+                if (e.key === 'v' || e.key === 'V') { e.preventDefault(); pasteObject(); }
+            } else {
+                switch(e.code) {
+                    case 'Backspace': e.preventDefault(); deleteSelectedObjects(); break;
+                    case 'KeyV': setMode('select'); break;
+                    case 'KeyA': setMode('wall'); break;
+                    case 'KeyR': setMode('rect'); break;
+                }
+            }
         });
         
         document.addEventListener('keyup', (e) => {
@@ -457,7 +531,6 @@
                 }
             }
         });
-        // ============================
 
         canvas.on('mouse:wheel', (opt) => { 
             if (opt.e.ctrlKey || opt.e.metaKey) { 
@@ -465,7 +538,25 @@
             } 
         });
         
+        const contextMenu = document.getElementById('context-menu');
+        const flipBtn = document.getElementById('flip-btn');
+        let rightClickedObject = null;
+
         canvas.on('mouse:down', (e) => {
+            contextMenu.style.display = 'none';
+
+            if (e.button === 3) {
+                const target = e.target;
+                if (target && target.isType('group') && target.elementType) {
+                    e.e.preventDefault();
+                    rightClickedObject = target;
+                    contextMenu.style.left = `${e.e.clientX}px`;
+                    contextMenu.style.top = `${e.e.clientY}px`;
+                    contextMenu.style.display = 'block';
+                    return;
+                }
+            }
+
             const isMiddleClick = e.e.button === 1;
             const isSpacebarPan = spacebarDown && e.e.button === 0;
 
@@ -495,14 +586,123 @@
             }
         });
         
+        flipBtn.addEventListener('click', () => {
+            if (rightClickedObject) {
+                rightClickedObject.set('flipX', !rightClickedObject.flipX);
+                canvas.renderAll();
+                history.saveState();
+            }
+            contextMenu.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!contextMenu.contains(e.target)) {
+                contextMenu.style.display = 'none';
+            }
+        });
+
+        // ======[업데이트된 코드: 스냅 로직]======
+        function getDistance(p1, p2) {
+            return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+        }
+
+        function getClosestPointOnLineSegment(p, a, b) {
+            const atob = { x: b.x - a.x, y: b.y - a.y };
+            const atop = { x: p.x - a.x, y: p.y - a.y };
+            const len = atob.x * atob.x + atob.y * atob.y;
+            let dot = atop.x * atob.x + atop.y * atob.y;
+            const t = Math.min(1, Math.max(0, dot / len));
+            dot = (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
+            return {
+                x: a.x + atob.x * t,
+                y: a.y + atob.y * t
+            };
+        }
+
         canvas.on('mouse:move', (e) => {
             if (isPanning) { const vpt = canvas.viewportTransform; vpt[4] += e.e.clientX - lastPosX; vpt[5] += e.e.clientY - lastPosY; canvas.requestRenderAll(); lastPosX = e.e.clientX; lastPosY = e.e.clientY; return; }
             if (!isDrawing) return;
-            if (currentMode === 'wall' && currentLine) { const pointer = canvas.getPointer(e.e); let endX = pointer.x, endY = pointer.y; if (e.e.shiftKey) { const dx = Math.abs(pointer.x - startX); const dy = Math.abs(pointer.y - startY); if (dx > dy) { endY = startY; } else { endX = startX; } } currentLine.set({ x2: endX, y2: endY }); canvas.renderAll(); }
-            else if (currentMode === 'rect' && isDrawing) { const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if(!currentLine) { currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, strokeDashArray: [5, 5] }); canvas.add(currentLine); } currentLine.set({ left: Math.min(pointer.x, startX), top: Math.min(pointer.y, startY), width: width, height: height }); canvas.renderAll(); }
+            
+            const pointer = canvas.getPointer(e.e);
+            let endX = pointer.x;
+            let endY = pointer.y;
+
+            if (currentMode === 'wall' && currentLine) {
+                let snapPoint = null;
+                let minDist = snapThreshold;
+
+                if (snapIndicator) snapIndicator.set({ visible: false });
+
+                canvas.getObjects().forEach(obj => {
+                    if (obj === currentLine || obj.isGridLine || obj === snapIndicator) return;
+
+                    if (obj.type === 'line') {
+                        const targetPoints = [{x: obj.x1, y: obj.y1}, {x: obj.x2, y: obj.y2}];
+                        targetPoints.forEach(p => {
+                            const dist = getDistance(pointer, p);
+                            if (dist < minDist) {
+                                minDist = dist;
+                                snapPoint = p;
+                            }
+                        });
+                        const closest = getClosestPointOnLineSegment(pointer, targetPoints[0], targetPoints[1]);
+                        const dist = getDistance(pointer, closest);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            snapPoint = closest;
+                        }
+
+                    } else if (obj.type === 'rect') {
+                        const oCoords = obj.oCoords;
+                        const lines = [
+                            { p1: oCoords.tl, p2: oCoords.tr },
+                            { p1: oCoords.tr, p2: oCoords.br },
+                            { p1: oCoords.br, p2: oCoords.bl },
+                            { p1: oCoords.bl, p2: oCoords.tl }
+                        ];
+                        lines.forEach(line => {
+                            const closest = getClosestPointOnLineSegment(pointer, line.p1, line.p2);
+                            const dist = getDistance(pointer, closest);
+                            if (dist < minDist) {
+                                minDist = dist;
+                                snapPoint = closest;
+                            }
+                        });
+                    }
+                });
+
+                if (snapPoint) {
+                    endX = snapPoint.x;
+                    endY = snapPoint.y;
+                    if (snapIndicator) {
+                        snapIndicator.set({ left: endX, top: endY, visible: true });
+                        canvas.bringToFront(snapIndicator);
+                    }
+                }
+            }
+            
+            if (e.e.shiftKey && !snapPoint) { // 스냅되지 않았을 때만 직교 모드 작동
+                const dx = Math.abs(endX - startX);
+                const dy = Math.abs(endY - startY);
+                if (dx > dy) { endY = startY; } else { endX = startX; }
+            }
+
+            if (currentMode === 'wall' && currentLine) {
+                 currentLine.set({ x2: endX, y2: endY });
+            } else if (currentMode === 'rect' && isDrawing) { 
+                const width = Math.abs(pointer.x - startX); 
+                const height = Math.abs(pointer.y - startY); 
+                if(!currentLine) { currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, strokeDashArray: [5, 5] }); canvas.add(currentLine); } 
+                currentLine.set({ left: Math.min(pointer.x, startX), top: Math.min(pointer.y, startY), width: width, height: height }); 
+            }
+            
+            canvas.renderAll();
         });
+        // ============================
 
         canvas.on('mouse:up', (e) => {
+            if (snapIndicator) snapIndicator.set({ visible: false }); // 그리기 완료 시 스냅 표시기 숨기기
+
             if (isPanning) { 
                 isPanning = false; 
                 canvas.selection = (currentMode === 'select');
@@ -641,7 +841,7 @@
 
         function updateObjectPanel() {
             objectPanelList.innerHTML = '';
-            const objects = canvas.getObjects().filter(obj => !obj.isGridLine);
+            const objects = canvas.getObjects().filter(obj => !obj.isGridLine && obj !== snapIndicator);
             objects.forEach((obj, index) => {
                 const li = document.createElement('li');
                 let name = obj.elementType || obj.type || '객체';
@@ -682,7 +882,7 @@
             });
         });
         
-        document.getElementById('clear-btn').addEventListener('click', () => { if (confirm('모든 내용을 삭제하시겠습니까?\n(배경 이미지도 함께 제거됩니다)')) { history.isRestoring = true; canvas.clear(); canvas.setViewportTransform([1, 0, 0, 1, 0, 0]); canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas)); canvas.backgroundColor = 'white'; backgroundImage = null; bgClearBtn.disabled = true; opacityControl.style.display = 'none'; if (showGrid) drawGrid(); history.isRestoring = false; history.saveState(); } });
+        document.getElementById('clear-btn').addEventListener('click', () => { if (confirm('모든 내용을 삭제하시겠습니까?\n(배경 이미지도 함께 제거됩니다)')) { history.isRestoring = true; canvas.clear(); initSnapIndicator(); canvas.setViewportTransform([1, 0, 0, 1, 0, 0]); canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas)); canvas.backgroundColor = 'white'; backgroundImage = null; bgClearBtn.disabled = true; opacityControl.style.display = 'none'; if (showGrid) drawGrid(); history.isRestoring = false; history.saveState(); } });
         bgImageBtn.addEventListener('click', () => { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => { const reader = new FileReader(); reader.onload = (event) => { fabric.Image.fromURL(event.target.result, (img) => { const scale = Math.min(canvas.width / img.width, canvas.height / img.height); img.set({ scaleX: scale, scaleY: scale, opacity: bgOpacity.value / 100 }); canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), { originX: 'left', originY: 'top' }); backgroundImage = img; bgClearBtn.disabled = false; opacityControl.style.display = 'block'; }); }; reader.readAsDataURL(e.target.files[0]); }; input.click(); });
         bgClearBtn.addEventListener('click', () => { canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas)); backgroundImage = null; bgClearBtn.disabled = true; opacityControl.style.display = 'none'; });
         bgOpacity.addEventListener('input', (e) => { const opacity = e.target.value; opacityValue.textContent = opacity + '%'; if (backgroundImage) { backgroundImage.set('opacity', opacity / 100); canvas.renderAll(); } });
@@ -691,10 +891,73 @@
         canvas.on('after:render', () => { if (showGrid) drawGrid(); });
         gridBtn.addEventListener('click', () => { showGrid = !showGrid; gridBtn.classList.toggle('active', showGrid); if (!showGrid) { canvas.getObjects().forEach(o => { if(o.isGridLine) canvas.remove(o) }); } canvas.renderAll(); });
         
-        document.getElementById('export-btn').addEventListener('click', () => { const link = document.createElement('a'); link.download = '평면도.png'; link.href = canvas.toDataURL({format: 'png', quality: 1}); link.click(); });
+        document.getElementById('export-btn').addEventListener('click', () => {
+            const tempBg = canvas.backgroundImage;
+            const doExport = () => {
+                const link = document.createElement('a');
+                link.download = '평면도.png';
+                link.href = canvas.toDataURL({ format: 'png', quality: 1 });
+                link.click();
+            };
+
+            if (tempBg) {
+                canvas.setBackgroundImage(null, () => {
+                    doExport();
+                    canvas.setBackgroundImage(tempBg, canvas.renderAll.bind(canvas));
+                });
+            } else {
+                doExport();
+            }
+        });
+
         document.getElementById('save-btn').addEventListener('click', () => { const data = { version: '2.0', canvas: canvas.toJSON(['elementType']), viewport: canvas.viewportTransform, backgroundImage: backgroundImage ? { src: canvas.backgroundImage._element.src, opacity: backgroundImage.opacity, scaleX: backgroundImage.scaleX, scaleY: backgroundImage.scaleY } : null, defaultStrokeWidth: defaultStrokeWidth }; const blob = new Blob([JSON.stringify(data)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.download = '평면도.json'; link.href = url; link.click(); URL.revokeObjectURL(url); });
         document.getElementById('load-btn').addEventListener('click', () => { const input = document.createElement('input'); input.type = 'file'; input.accept = '.json'; input.onchange = (e) => { const reader = new FileReader(); reader.onload = (event) => { const data = JSON.parse(event.target.result); history.isRestoring = true; canvas.loadFromJSON(data.canvas || data, () => { if (data.viewport) canvas.setViewportTransform(data.viewport); if (data.backgroundImage) { fabric.Image.fromURL(data.backgroundImage.src, (img) => { img.set(data.backgroundImage); canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas)); backgroundImage = img; bgClearBtn.disabled = false; opacityControl.style.display = 'block'; bgOpacity.value = (data.backgroundImage.opacity || 1) * 100; opacityValue.textContent = `${Math.round(bgOpacity.value)}%`; }); } if (data.defaultStrokeWidth) { defaultStrokeWidth = data.defaultStrokeWidth; defaultStrokeInput.value = defaultStrokeWidth; } canvas.renderAll(); history.isRestoring = false; history.saveState(); }); }; reader.readAsText(e.target.files[0]); }; input.click(); });
         
+        function resizeCanvas() {
+            const container = document.getElementById('canvas-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            canvasEl.width = width;
+            canvasEl.height = height;
+
+            canvas.setWidth(width);
+            canvas.setHeight(height);
+            canvas.renderAll();
+        }
+
+        const resizeObserver = new ResizeObserver(entries => {
+            resizeCanvas();
+        });
+        resizeObserver.observe(canvasContainer);
+        
+        resizeCanvas();
+
+        const infoBanner = document.getElementById('info-banner');
+        const infoToggleBtn = document.getElementById('info-toggle-btn');
+
+        infoToggleBtn.addEventListener('click', () => {
+            infoBanner.classList.toggle('collapsed');
+        });
+
+        // ======[업데이트된 코드: 스냅 표시기 초기화]======
+        function initSnapIndicator() {
+             snapIndicator = new fabric.Circle({
+                radius: 5,
+                fill: 'transparent',
+                stroke: 'red',
+                strokeWidth: 2,
+                originX: 'center',
+                originY: 'center',
+                selectable: false,
+                evented: false,
+                visible: false,
+            });
+            canvas.add(snapIndicator);
+        }
+        initSnapIndicator();
+        // ============================
+
         setMode('select');
     </script>
 </body>
