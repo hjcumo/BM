@@ -543,17 +543,23 @@
             return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
         }
 
-        function getClosestPointOnLineSegment(p, a, b) {
-            const atob = { x: b.x - a.x, y: b.y - a.y };
-            const atop = { x: p.x - a.x, y: p.y - a.y };
-            const lenSq = atob.x * atob.x + atob.y * atob.y;
-            if (lenSq === 0) return a;
-            const dot = atop.x * atob.x + atop.y * atob.y;
-            const t = Math.max(0, Math.min(1, dot / lenSq));
-            return { x: a.x + atob.x * t, y: a.y + atob.y * t };
+        function getIntersection(line1, line2) {
+            const x1 = line1.p1.x, y1 = line1.p1.y, x2 = line1.p2.x, y2 = line1.p2.y;
+            const x3 = line2.p1.x, y3 = line2.p1.y, x4 = line2.p2.x, y4 = line2.p2.y;
+            
+            const den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+            if (den === 0) return null; // Parallel
+
+            const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
+            const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
+
+            if (t > 0 && t < 1 && u > 0 && u < 1) {
+                return { x: x1 + t * (x2 - x1), y: y1 + t * (y2 - y1) };
+            }
+            return null;
         }
 
-        function findSnapPoint(pointer) {
+        function findSnapPoint(pointer, drawingLine = null) {
             let snapPoint = null;
             let minDist = snapThreshold;
 
@@ -563,38 +569,58 @@
                 (obj.type === 'line' || obj.type === 'rect') && obj !== currentLine && !obj.isGridLine
             );
             
+            // 1. 꼭짓점 스냅
             for (const obj of objectsToSnap) {
+                const points = [];
                 if (obj.type === 'line') {
-                    const points = [new fabric.Point(obj.x1, obj.y1), new fabric.Point(obj.x2, obj.y2)];
-                    obj.transformMatrix && fabric.util.transformPoint(points[0], obj.transformMatrix);
-                    obj.transformMatrix && fabric.util.transformPoint(points[1], obj.transformMatrix);
-
-                    const closest = getClosestPointOnLineSegment(pointer, points[0], points[1]);
-                    const dist = getDistance(pointer, closest);
-
-                    if (dist < minDist) {
-                        minDist = dist;
-                        snapPoint = closest;
+                    points.push(new fabric.Point(obj.x1, obj.y1), new fabric.Point(obj.x2, obj.y2));
+                    if (obj.transformMatrix) {
+                        points.forEach(p => fabric.util.transformPoint(p, obj.transformMatrix, false));
                     }
                 } else if (obj.type === 'rect') {
                     const oCoords = obj.oCoords;
-                    const lines = [
-                        { p1: oCoords.tl, p2: oCoords.tr },
-                        { p1: oCoords.tr, p2: oCoords.br },
-                        { p1: oCoords.br, p2: oCoords.bl },
-                        { p1: oCoords.bl, p2: oCoords.tl }
-                    ];
-                    lines.forEach(line => {
-                        const closest = getClosestPointOnLineSegment(pointer, line.p1, line.p2);
-                        const dist = getDistance(pointer, closest);
-                        if (dist < minDist) {
-                            minDist = dist;
-                            snapPoint = closest;
-                        }
-                    });
+                    points.push(oCoords.tl, oCoords.tr, oCoords.br, oCoords.bl);
+                }
+
+                for (const p of points) {
+                    const dist = getDistance(pointer, p);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        snapPoint = p;
+                    }
                 }
             }
 
+            // 2. 교차점 스냅 (벽 그리는 중에만)
+            if (drawingLine) {
+                 for (const obj of objectsToSnap) {
+                    const targetLines = [];
+                     if (obj.type === 'line') {
+                        const p1 = new fabric.Point(obj.x1, obj.y1);
+                        const p2 = new fabric.Point(obj.x2, obj.y2);
+                         if (obj.transformMatrix) {
+                            fabric.util.transformPoint(p1, obj.transformMatrix, false);
+                            fabric.util.transformPoint(p2, obj.transformMatrix, false);
+                        }
+                        targetLines.push({ p1, p2 });
+                    } else if (obj.type === 'rect') {
+                        const oCoords = obj.oCoords;
+                        targetLines.push({ p1: oCoords.tl, p2: oCoords.tr }, { p1: oCoords.tr, p2: oCoords.br }, { p1: oCoords.br, p2: oCoords.bl }, { p1: oCoords.bl, p2: oCoords.tl });
+                    }
+                    
+                    for (const targetLine of targetLines) {
+                        const intersection = getIntersection(drawingLine, targetLine);
+                        if (intersection) {
+                            const dist = getDistance(pointer, intersection);
+                            if (dist < minDist) {
+                                minDist = dist;
+                                snapPoint = intersection;
+                            }
+                        }
+                    }
+                 }
+            }
+            
             if (snapPoint) {
                 if (snapIndicator) {
                     snapIndicator.set({ left: snapPoint.x, top: snapPoint.y, visible: true });
@@ -643,11 +669,11 @@
             
             switch(currentMode) {
                 case 'wall': 
-                    currentLine = new fabric.Line([startX, startY, startX, startY], { stroke: 'black', strokeWidth: defaultStrokeWidth, strokeLineCap: 'square', selectable: false });
+                    currentLine = new fabric.Line([startX, startY, startX, startY], { stroke: 'black', strokeWidth: defaultStrokeWidth, strokeLineCap: 'square', selectable: false, evented: false });
                     canvas.add(currentLine); 
                     break;
                 case 'rect':
-                     currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, selectable: false });
+                     currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, selectable: false, evented: false });
                      canvas.add(currentLine);
                      break;
                 case 'text': 
@@ -686,7 +712,10 @@
 
         canvas.on('mouse:move', (e) => {
             if (isPanning) { const vpt = canvas.viewportTransform; vpt[4] += e.e.clientX - lastPosX; vpt[5] += e.e.clientY - lastPosY; canvas.requestRenderAll(); lastPosX = e.e.clientX; lastPosY = e.e.clientY; return; }
-            if (!isDrawing) return;
+            if (!isDrawing) {
+                if(currentMode === 'wall') findSnapPoint(canvas.getPointer(e.e)); // 그리기 전에도 스냅 지점 미리보기
+                return;
+            };
             
             const pointer = canvas.getPointer(e.e);
             let endX = pointer.x;
@@ -694,7 +723,8 @@
             let snapPoint = null;
 
             if (currentMode === 'wall') {
-                snapPoint = findSnapPoint(pointer);
+                const drawingLine = { p1: {x: startX, y: startY}, p2: pointer };
+                snapPoint = findSnapPoint(pointer, drawingLine);
                 if (snapPoint) {
                     endX = snapPoint.x;
                     endY = snapPoint.y;
@@ -728,17 +758,16 @@
                 return; 
             }
             if (!isDrawing) return;
-            let newObject = null;
-            if (currentMode === 'wall' && currentLine) {
-                 currentLine.set({selectable: true}).setCoords(); newObject = currentLine; 
-            } 
-            else if (currentMode === 'rect' && currentLine) {
-                 currentLine.set({selectable: true}).setCoords(); newObject = currentLine;
+            
+            if (currentLine) {
+                currentLine.set({selectable: true, evented: true}).setCoords();
+                setMode('select'); 
+                canvas.setActiveObject(currentLine);
             }
-            if(newObject) { setMode('select'); canvas.setActiveObject(newObject); }
-            isDrawing = false; currentLine = null;
+            
+            isDrawing = false; 
+            currentLine = null;
         });
-        // ============================
 
         function handleRotating(opt) {
             if (opt.e.shiftKey) {
