@@ -226,12 +226,36 @@
             color: #666;
             z-index: 10;
         }
+
+        /* ======[업데이트된 코드: 컨텍스트 메뉴 스타일]====== */
+        #context-menu {
+            position: absolute;
+            display: none;
+            background-color: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            z-index: 1000;
+            padding: 5px 0;
+        }
+        #context-menu button {
+            display: block;
+            width: 100%;
+            padding: 8px 20px;
+            border: none;
+            background: none;
+            text-align: left;
+            cursor: pointer;
+        }
+        #context-menu button:hover {
+            background-color: #f0f0f0;
+        }
+        /* ============================ */
     </style>
 </head>
 <body>
     <div class="container">
         <div class="toolbar">
-            <!-- ======[업데이트된 코드: 단축키 표시]====== -->
             <div class="tool-group">
                 <h3>기본 도구</h3>
                 <button id="select-mode" class="active">선택<span class="shortcut">V</span></button>
@@ -240,7 +264,6 @@
                 <button id="text-mode">텍스트</button>
                 <button id="delete-btn">삭제<span class="shortcut">Backspace</span></button>
             </div>
-            <!-- ============================ -->
             
             <div class="tool-group">
                 <h3>편집</h3>
@@ -350,7 +373,6 @@
                 <strong>사용법</strong>
                 <span class="toggle-icon">▼</span>
             </div>
-            <!-- ======[업데이트된 코드: 사용법 안내]====== -->
             <ul>
                 <li><strong>도구 단축키:</strong> 선택(V), 벽(A), 사각형(R), 삭제(Backspace)</li>
                 <li><strong>화면 이동:</strong> 스페이스바를 누른 채 드래그 또는 마우스 휠(가운데 버튼)을 클릭한 채 드래그합니다.</li>
@@ -363,9 +385,14 @@
                 <li><strong>객체 회전:</strong> 객체 모서리 바깥쪽을 드래그합니다. Shift 키를 누른 채 드래그하면 90도 단위로 회전합니다.</li>
                 <li><strong>실행취소/다시실행:</strong> Ctrl+Z / Ctrl+Y 또는 버튼 클릭.</li>
             </ul>
-            <!-- ============================ -->
         </div>
     </div>
+
+    <!-- ======[업데이트된 코드: 컨텍스트 메뉴 HTML]====== -->
+    <div id="context-menu">
+        <button id="flip-btn">좌우 반전</button>
+    </div>
+    <!-- ============================ -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <script>
@@ -459,7 +486,6 @@
             canvas.renderAll(); 
         }
 
-        // ======[업데이트된 코드: 한/영 무관 단축키]======
         document.addEventListener('keydown', (e) => { 
             if (e.target.tagName === 'INPUT' || e.repeat) return;
             
@@ -487,7 +513,6 @@
                 }
             }
         });
-        // ============================
         
         document.addEventListener('keyup', (e) => {
             if (e.code === 'Space') {
@@ -508,7 +533,29 @@
             } 
         });
         
+        // ======[업데이트된 코드: 우클릭 이벤트 처리]======
+        const contextMenu = document.getElementById('context-menu');
+        const flipBtn = document.getElementById('flip-btn');
+        let rightClickedObject = null;
+
         canvas.on('mouse:down', (e) => {
+            // 메뉴 숨기기
+            contextMenu.style.display = 'none';
+
+            // 우클릭 처리
+            if (e.button === 3) {
+                const target = e.target;
+                // 건축 요소(그룹) 위에서 우클릭한 경우
+                if (target && target.isType('group') && target.elementType) {
+                    e.e.preventDefault();
+                    rightClickedObject = target;
+                    contextMenu.style.left = `${e.e.clientX}px`;
+                    contextMenu.style.top = `${e.e.clientY}px`;
+                    contextMenu.style.display = 'block';
+                    return;
+                }
+            }
+
             const isMiddleClick = e.e.button === 1;
             const isSpacebarPan = spacebarDown && e.e.button === 0;
 
@@ -538,6 +585,23 @@
             }
         });
         
+        flipBtn.addEventListener('click', () => {
+            if (rightClickedObject) {
+                rightClickedObject.set('flipX', !rightClickedObject.flipX);
+                canvas.renderAll();
+                history.saveState();
+            }
+            contextMenu.style.display = 'none';
+        });
+
+        // 컨텍스트 메뉴 바깥 클릭 시 숨기기
+        window.addEventListener('click', (e) => {
+            if (!contextMenu.contains(e.target)) {
+                contextMenu.style.display = 'none';
+            }
+        });
+        // ============================
+
         canvas.on('mouse:move', (e) => {
             if (isPanning) { const vpt = canvas.viewportTransform; vpt[4] += e.e.clientX - lastPosX; vpt[5] += e.e.clientY - lastPosY; canvas.requestRenderAll(); lastPosX = e.e.clientX; lastPosY = e.e.clientY; return; }
             if (!isDrawing) return;
@@ -734,7 +798,33 @@
         canvas.on('after:render', () => { if (showGrid) drawGrid(); });
         gridBtn.addEventListener('click', () => { showGrid = !showGrid; gridBtn.classList.toggle('active', showGrid); if (!showGrid) { canvas.getObjects().forEach(o => { if(o.isGridLine) canvas.remove(o) }); } canvas.renderAll(); });
         
-        document.getElementById('export-btn').addEventListener('click', () => { const link = document.createElement('a'); link.download = '평면도.png'; link.href = canvas.toDataURL({format: 'png', quality: 1}); link.click(); });
+        // ======[업데이트된 코드: 배경 없는 이미지 내보내기]======
+        document.getElementById('export-btn').addEventListener('click', () => {
+            const tempBg = canvas.backgroundImage;
+            
+            // 내보내기 함수
+            const doExport = () => {
+                const link = document.createElement('a');
+                link.download = '평면도.png';
+                link.href = canvas.toDataURL({ format: 'png', quality: 1 });
+                link.click();
+            };
+
+            if (tempBg) {
+                // 1. 배경을 잠시 제거
+                canvas.setBackgroundImage(null, () => {
+                    // 2. 캔버스가 다시 그려진 후 내보내기 실행
+                    doExport();
+                    // 3. 원래 배경으로 복원
+                    canvas.setBackgroundImage(tempBg, canvas.renderAll.bind(canvas));
+                });
+            } else {
+                // 배경이 없으면 바로 내보내기
+                doExport();
+            }
+        });
+        // ============================
+
         document.getElementById('save-btn').addEventListener('click', () => { const data = { version: '2.0', canvas: canvas.toJSON(['elementType']), viewport: canvas.viewportTransform, backgroundImage: backgroundImage ? { src: canvas.backgroundImage._element.src, opacity: backgroundImage.opacity, scaleX: backgroundImage.scaleX, scaleY: backgroundImage.scaleY } : null, defaultStrokeWidth: defaultStrokeWidth }; const blob = new Blob([JSON.stringify(data)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.download = '평면도.json'; link.href = url; link.click(); URL.revokeObjectURL(url); });
         document.getElementById('load-btn').addEventListener('click', () => { const input = document.createElement('input'); input.type = 'file'; input.accept = '.json'; input.onchange = (e) => { const reader = new FileReader(); reader.onload = (event) => { const data = JSON.parse(event.target.result); history.isRestoring = true; canvas.loadFromJSON(data.canvas || data, () => { if (data.viewport) canvas.setViewportTransform(data.viewport); if (data.backgroundImage) { fabric.Image.fromURL(data.backgroundImage.src, (img) => { img.set(data.backgroundImage); canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas)); backgroundImage = img; bgClearBtn.disabled = false; opacityControl.style.display = 'block'; bgOpacity.value = (data.backgroundImage.opacity || 1) * 100; opacityValue.textContent = `${Math.round(bgOpacity.value)}%`; }); } if (data.defaultStrokeWidth) { defaultStrokeWidth = data.defaultStrokeWidth; defaultStrokeInput.value = defaultStrokeWidth; } canvas.renderAll(); history.isRestoring = false; history.saveState(); }); }; reader.readAsText(e.target.files[0]); }; input.click(); });
         
