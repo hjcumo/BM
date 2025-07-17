@@ -576,8 +576,6 @@
             const zoom = canvas.getZoom();
             const vpt = canvas.viewportTransform;
             
-            // 캔버스 컨테이너의 위치 가져오기
-            const canvasRect = canvasContainer.getBoundingClientRect();
             
             snapIndicator.style.left = (x * zoom + vpt[4] + canvasRect.left) + 'px';
             snapIndicator.style.top = (y * zoom + vpt[5] + canvasRect.top) + 'px';
@@ -716,6 +714,8 @@
                 }
                 hideSnapIndicator();
                 canvas.renderAll();
+                setMode('select'); // 이 부분을 추가하여 선택 모드로 전환합니다.
+
             }
 
             const isCtrlOrCmd = e.ctrlKey || e.metaKey;
