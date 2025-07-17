@@ -169,8 +169,6 @@
             
             <div class="tool-group">
                 <h3>건축 요소</h3>
-                <!-- ======[업데이트된 코드]====== -->
-                <!-- draggable="true" 속성 추가 -->
                 <button id="door-btn" class="icon-btn" title="문 (클릭 또는 드래그)" draggable="true">
                     <svg viewBox="0 0 60 60"><line x1="10" y1="50" x2="50" y2="50" stroke="black" stroke-width="3"/><path d="M 10 50 Q 30 30, 50 50" stroke="black" stroke-width="2" fill="none"/></svg>
                 </button>
@@ -183,7 +181,6 @@
                 <button id="stairs-btn" class="icon-btn" title="계단 (클릭 또는 드래그)" draggable="true">
                     <svg viewBox="0 0 60 60"><g><line x1="10" y1="15" x2="50" y2="15" stroke="black" stroke-width="1"/><line x1="10" y1="25" x2="50" y2="25" stroke="black" stroke-width="1"/><line x1="10" y1="35" x2="50" y2="35" stroke="black" stroke-width="1"/><line x1="10" y1="45" x2="50" y2="45" stroke="black" stroke-width="1"/><polygon points="25,10 30,20 20,20" fill="black"/></g></svg>
                 </button>
-                <!-- ============================ -->
             </div>
             
             <div class="tool-group">
@@ -225,7 +222,7 @@
         <div class="info">
             <strong>사용법:</strong>
             <ul>
-                <li><strong>건축 요소 삽입: 아이콘을 클릭 후 캔버스를 클릭하거나, 아이콘을 캔버스로 드래그 앤 드롭하여 배치합니다.</strong></li>
+                <li>건축 요소 삽입: 아이콘을 클릭 후 캔버스에 클릭하거나, 아이콘을 캔버스로 드래그 앤 드롭합니다. <strong>(드롭 시 화면 중앙에 배치)</strong></li>
                 <li>배경 이미지: 거래처 도면을 불러와서 위에 따라 그릴 수 있습니다.</li>
                 <li>확대/축소: Ctrl 키를 누른 채 마우스 휠을 돌려 조절합니다.</li>
                 <li>화면 이동: 마우스 휠(가운데 버튼)을 클릭한 상태로 드래그합니다.</li>
@@ -308,15 +305,17 @@
 
         canvas.on('mouse:move', (e) => {
             if (isPanning) { const vpt = canvas.viewportTransform; vpt[4] += e.e.clientX - lastPosX; vpt[5] += e.e.clientY - lastPosY; canvas.requestRenderAll(); lastPosX = e.e.clientX; lastPosY = e.e.clientY; return; }
-            if (!isDrawing || !currentLine) return; const pointer = canvas.getPointer(e.e); let endX = pointer.x, endY = pointer.y; if (e.e.shiftKey) { const dx = Math.abs(pointer.x - startX); const dy = Math.abs(pointer.y - startY); if (dx > dy) { endY = startY; } else { endX = startX; } } currentLine.set({ x2: endX, y2: endY }); canvas.renderAll();
+            if (!isDrawing) return;
+            if (currentMode === 'wall' && currentLine) { const pointer = canvas.getPointer(e.e); let endX = pointer.x, endY = pointer.y; if (e.e.shiftKey) { const dx = Math.abs(pointer.x - startX); const dy = Math.abs(pointer.y - startY); if (dx > dy) { endY = startY; } else { endX = startX; } } currentLine.set({ x2: endX, y2: endY }); canvas.renderAll(); }
+            else if (currentMode === 'rect' && isDrawing) { const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if(!currentLine) { currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: 2, strokeDashArray: [5, 5] }); canvas.add(currentLine); } currentLine.set({ left: Math.min(pointer.x, startX), top: Math.min(pointer.y, startY), width: width, height: height }); canvas.renderAll(); }
         });
-
+        
         canvas.on('mouse:up', (e) => {
             if (isPanning) { isPanning = false; canvas.setCursor('default'); canvas.selection = (currentMode === 'select'); return; }
             if (!isDrawing) return;
             let newObject = null;
-            if (currentMode === 'wall' && currentLine) { currentLine.set('selectable', true).setCoords(); newObject = currentLine; } 
-            else if (currentMode === 'rect') { const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if (width > 2 && height > 2) { newObject = new fabric.Rect({ left: Math.min(startX, pointer.x), top: Math.min(startY, pointer.y), width, height, fill: 'transparent', stroke: 'black', strokeWidth: 2 }); canvas.add(newObject); } }
+            if (currentMode === 'wall' && currentLine) { currentLine.set({selectable: true}).setCoords(); newObject = currentLine; } 
+            else if (currentMode === 'rect' && currentLine) { canvas.remove(currentLine); const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if (width > 2 && height > 2) { newObject = new fabric.Rect({ left: Math.min(startX, pointer.x), top: Math.min(startY, pointer.y), width, height, fill: 'transparent', stroke: 'black', strokeWidth: 2 }); canvas.add(newObject); } }
             if(newObject) { setMode('select'); canvas.setActiveObject(newObject); }
             isDrawing = false; currentLine = null;
         });
@@ -333,7 +332,6 @@
         undoBtn.addEventListener('click', () => history.undo()); redoBtn.addEventListener('click', () => history.redo()); deleteBtn.addEventListener('click', deleteSelectedObjects);
         function deleteSelectedObjects() { canvas.getActiveObjects().forEach(obj => canvas.remove(obj)); canvas.discardActiveObject().renderAll(); }
         
-        // ======[업데이트된 코드]======
         // 드래그 앤 드롭 기능
         const draggableElements = ['door-btn', 'window-btn', 'sliding-door-btn', 'stairs-btn'];
         draggableElements.forEach(id => {
@@ -347,16 +345,30 @@
             e.preventDefault();
         });
 
+        // ======[업데이트된 코드]======
         canvasContainer.addEventListener('drop', (e) => {
             e.preventDefault();
             const type = e.dataTransfer.getData('text/plain');
-            const pointer = canvas.getPointer(e);
+
+            // 현재 보이는 화면(뷰포트)의 중앙 좌표 계산
+            const zoom = canvas.getZoom();
+            const panX = canvas.viewportTransform[4];
+            const panY = canvas.viewportTransform[5];
+            
+            // 캔버스 요소의 중앙
+            const viewCenterX = canvas.width / 2;
+            const viewCenterY = canvas.height / 2;
+            
+            // 뷰포트 중앙 좌표를 캔버스의 절대 좌표로 변환
+            const centerX = (viewCenterX - panX) / zoom;
+            const centerY = (viewCenterY - panY) / zoom;
+
             let newObject = null;
             switch(type) {
-                case 'door': newObject = createDoor(pointer.x, pointer.y); break;
-                case 'window': newObject = createWindow(pointer.x, pointer.y); break;
-                case 'sliding-door': newObject = createSlidingDoor(pointer.x, pointer.y); break;
-                case 'stairs': newObject = createStairs(pointer.x, pointer.y); break;
+                case 'door': newObject = createDoor(centerX, centerY); break;
+                case 'window': newObject = createWindow(centerX, centerY); break;
+                case 'sliding-door': newObject = createSlidingDoor(centerX, centerY); break; // id가 다르므로 'sliding-door'로 수정
+                case 'stairs': newObject = createStairs(centerX, centerY); break;
             }
             if (newObject) {
                 canvas.add(newObject);
