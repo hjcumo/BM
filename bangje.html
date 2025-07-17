@@ -332,7 +332,7 @@
                 <h3>스냅 설정</h3>
                 <div class="snap-control">
                     <label>스냅 간격:</label>
-                    <input type="number" id="snap-interval" min="0.1" max="10" value="0.2" step="0.1">
+                    <input type="number" id="snap-interval" min="0.1" max="50" value="5" step="0.1">
                     <span class="unit">mm</span>
                     <div class="info-text">벽 모드에서만 활성화됩니다</div>
                 </div>
@@ -460,8 +460,8 @@
         const canvas = new fabric.Canvas('canvas', { backgroundColor: 'white', selection: true, stopContextMenu: true, fireRightClick: true, uniScaleTransform: true, });
 
         // ======= 스냅 기능 관련 변수 =======
-        let snapInterval = 0.2; // 기본 스냅 간격 (mm)
-        let snapRadius = 10; // 스냅 반경 (픽셀)
+        let snapInterval = 5; // 기본 스냅 간격 (mm) - 약 19픽셀
+        let snapRadius = 15; // 스냅 반경 (픽셀)
         let snapEnabled = false; // 스냅 활성화 상태
         let snapPoints = []; // 모든 스냅 포인트 저장
         let currentSnapPoint = null; // 현재 활성화된 스냅 포인트
@@ -477,9 +477,9 @@
         
         // 스냅 간격 변경 이벤트
         snapIntervalInput.addEventListener('change', (e) => {
-            snapInterval = parseFloat(e.target.value) || 0.2;
+            snapInterval = parseFloat(e.target.value) || 5;
             if (snapInterval < 0.1) snapInterval = 0.1;
-            if (snapInterval > 10) snapInterval = 10;
+            if (snapInterval > 50) snapInterval = 50;
             snapIntervalInput.value = snapInterval;
             updateSnapPoints(); // 스냅 포인트 재계산
         });
@@ -497,18 +497,16 @@
         // 선 위의 스냅 포인트 계산
         function getSnapPointsOnLine(line) {
             const points = [];
-            const x1 = line.x1;
-            const y1 = line.y1;
-            const x2 = line.x2;
-            const y2 = line.y2;
             
-            // 변환 매트릭스 적용
-            const matrix = line.calcTransformMatrix();
-            const p1 = fabric.util.transformPoint({ x: x1, y: y1 }, matrix);
-            const p2 = fabric.util.transformPoint({ x: x2, y: y2 }, matrix);
+            // 선의 실제 좌표 가져오기
+            const coords = line.calcLinePoints();
+            const x1 = coords.x1;
+            const y1 = coords.y1;
+            const x2 = coords.x2;
+            const y2 = coords.y2;
             
             // 선의 길이 계산
-            const length = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+            const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
             
             // 스냅 간격 (픽셀)
             const intervalPixels = mmToPixels(snapInterval);
@@ -518,9 +516,9 @@
             
             // 각 스냅 포인트 계산
             for (let i = 0; i <= numPoints; i++) {
-                const t = i / numPoints;
-                const x = p1.x + (p2.x - p1.x) * t;
-                const y = p1.y + (p2.y - p1.y) * t;
+                const t = numPoints > 0 ? i / numPoints : 0;
+                const x = x1 + (x2 - x1) * t;
+                const y = y1 + (y2 - y1) * t;
                 points.push({ x, y, line: line });
             }
             
@@ -576,6 +574,8 @@
             const zoom = canvas.getZoom();
             const vpt = canvas.viewportTransform;
             
+            // 캔버스 컨테이너의 위치 가져오기
+            const canvasRect = canvasContainer.getBoundingClientRect();
             
             snapIndicator.style.left = (x * zoom + vpt[4] + canvasRect.left) + 'px';
             snapIndicator.style.top = (y * zoom + vpt[5] + canvasRect.top) + 'px';
@@ -714,8 +714,11 @@
                 }
                 hideSnapIndicator();
                 canvas.renderAll();
-                setMode('select'); // 이 부분을 추가하여 선택 모드로 전환합니다.
-
+                // 선택 모드로 자동 전환
+                setMode('select');
+        
+        // 초기 스냅 포인트 업데이트
+        updateSnapPoints();
             }
 
             const isCtrlOrCmd = e.ctrlKey || e.metaKey;
