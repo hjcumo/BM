@@ -371,7 +371,6 @@
                 <strong>사용법</strong>
                 <span class="toggle-icon">▼</span>
             </div>
-            <!-- ======[업데이트된 코드: 스냅 기능 안내 추가]====== -->
             <ul>
                 <li><strong>도구 단축키:</strong> 선택(V), 벽(A), 사각형(R), 삭제(Backspace)</li>
                 <li><strong>스냅 기능:</strong> '벽' 도구 사용 시, 다른 객체의 선이나 모서리 근처로 가면 자동으로 달라붙습니다.</li>
@@ -384,7 +383,6 @@
                 <li><strong>크기/회전:</strong> 객체 모서리 드래그. Shift 키를 누르면 정비율 조절/90도 단위 회전이 됩니다.</li>
                 <li><strong>실행취소/다시실행:</strong> Ctrl+Z / Ctrl+Y 또는 버튼 클릭.</li>
             </ul>
-            <!-- ============================ -->
         </div>
     </div>
 
@@ -417,10 +415,8 @@
         let defaultStrokeWidth = 2;
         let _clipboard = null;
         
-        // ======[업데이트된 코드: 스냅 관련 변수]======
-        const snapThreshold = 10; // 스냅 감지 거리 (픽셀)
+        const snapThreshold = 10;
         let snapIndicator;
-        // ============================
 
         const objectPanelList = document.getElementById('object-panel-list');
         const bgImageBtn = document.getElementById('bg-image-btn'), bgClearBtn = document.getElementById('bg-clear-btn'), bgOpacity = document.getElementById('bg-opacity'), opacityValue = document.getElementById('opacity-value'), opacityControl = document.getElementById('opacity-control');
@@ -476,7 +472,7 @@
         }
         
         function setMode(mode) { 
-            if (snapIndicator) snapIndicator.set({ visible: false }); // 모드 변경 시 스냅 표시기 숨기기
+            if (snapIndicator) snapIndicator.set({ visible: false });
 
             if (['wall', 'rect', 'text'].includes(mode)) {
                 canvas.discardActiveObject().renderAll();
@@ -542,6 +538,72 @@
         const flipBtn = document.getElementById('flip-btn');
         let rightClickedObject = null;
 
+        // ======[업데이트된 코드: 스냅 로직 개선]======
+        function getDistance(p1, p2) {
+            return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+        }
+
+        function getClosestPointOnLineSegment(p, a, b) {
+            const atob = { x: b.x - a.x, y: b.y - a.y };
+            const atop = { x: p.x - a.x, y: p.y - a.y };
+            const lenSq = atob.x * atob.x + atob.y * atob.y;
+            if (lenSq === 0) return a;
+            const dot = atop.x * atob.x + atop.y * atob.y;
+            const t = Math.max(0, Math.min(1, dot / lenSq));
+            return { x: a.x + atob.x * t, y: a.y + atob.y * t };
+        }
+
+        function findSnapPoint(pointer) {
+            let snapPoint = null;
+            let minDist = snapThreshold;
+
+            if (snapIndicator) snapIndicator.set({ visible: false });
+
+            const objectsToSnap = canvas.getObjects().filter(obj => 
+                (obj.type === 'line' || obj.type === 'rect') && obj !== currentLine && !obj.isGridLine
+            );
+            
+            for (const obj of objectsToSnap) {
+                if (obj.type === 'line') {
+                    const points = [new fabric.Point(obj.x1, obj.y1), new fabric.Point(obj.x2, obj.y2)];
+                    obj.transformMatrix && fabric.util.transformPoint(points[0], obj.transformMatrix);
+                    obj.transformMatrix && fabric.util.transformPoint(points[1], obj.transformMatrix);
+
+                    const closest = getClosestPointOnLineSegment(pointer, points[0], points[1]);
+                    const dist = getDistance(pointer, closest);
+
+                    if (dist < minDist) {
+                        minDist = dist;
+                        snapPoint = closest;
+                    }
+                } else if (obj.type === 'rect') {
+                    const oCoords = obj.oCoords;
+                    const lines = [
+                        { p1: oCoords.tl, p2: oCoords.tr },
+                        { p1: oCoords.tr, p2: oCoords.br },
+                        { p1: oCoords.br, p2: oCoords.bl },
+                        { p1: oCoords.bl, p2: oCoords.tl }
+                    ];
+                    lines.forEach(line => {
+                        const closest = getClosestPointOnLineSegment(pointer, line.p1, line.p2);
+                        const dist = getDistance(pointer, closest);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            snapPoint = closest;
+                        }
+                    });
+                }
+            }
+
+            if (snapPoint) {
+                if (snapIndicator) {
+                    snapIndicator.set({ left: snapPoint.x, top: snapPoint.y, visible: true });
+                    canvas.bringToFront(snapIndicator);
+                }
+            }
+            return snapPoint;
+        }
+
         canvas.on('mouse:down', (e) => {
             contextMenu.style.display = 'none';
 
@@ -572,11 +634,32 @@
             }
 
             if (currentMode === 'select' || isDrawing) return;
-            const pointer = canvas.getPointer(e.e); startX = pointer.x; startY = pointer.y; isDrawing = true;
+            const pointer = canvas.getPointer(e.e);
+            const snappedStartPoint = (currentMode === 'wall') ? findSnapPoint(pointer) : null;
+            
+            startX = snappedStartPoint ? snappedStartPoint.x : pointer.x;
+            startY = snappedStartPoint ? snappedStartPoint.y : pointer.y;
+            isDrawing = true;
             
             switch(currentMode) {
-                case 'wall': currentLine = new fabric.Line([startX, startY, startX, startY], { stroke: 'black', strokeWidth: defaultStrokeWidth, strokeLineCap: 'square', selectable: false }); canvas.add(currentLine); break;
-                case 'text': const text = prompt('텍스트를 입력하세요:'); if (text) { const insertedObject = new fabric.Text(text, { left: startX, top: startY, fontSize: 14, fill: 'black' }); canvas.add(insertedObject); setMode('select'); canvas.setActiveObject(insertedObject); } isDrawing = false; break;
+                case 'wall': 
+                    currentLine = new fabric.Line([startX, startY, startX, startY], { stroke: 'black', strokeWidth: defaultStrokeWidth, strokeLineCap: 'square', selectable: false });
+                    canvas.add(currentLine); 
+                    break;
+                case 'rect':
+                     currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, selectable: false });
+                     canvas.add(currentLine);
+                     break;
+                case 'text': 
+                    const text = prompt('텍스트를 입력하세요:'); 
+                    if (text) { 
+                        const insertedObject = new fabric.Text(text, { left: startX, top: startY, fontSize: 14, fill: 'black' }); 
+                        canvas.add(insertedObject); 
+                        setMode('select'); 
+                        canvas.setActiveObject(insertedObject); 
+                    } 
+                    isDrawing = false; 
+                    break;
                 case 'door-left': case 'door-right': case 'window-left': case 'window-right': case 'window-both': case 'door-double':
                     createObject(currentMode, startX, startY, (insertedObject) => {
                         if (insertedObject) { canvas.add(insertedObject); setMode('select'); canvas.setActiveObject(insertedObject); canvas.renderAll(); }
@@ -601,24 +684,6 @@
             }
         });
 
-        // ======[업데이트된 코드: 스냅 로직]======
-        function getDistance(p1, p2) {
-            return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
-        }
-
-        function getClosestPointOnLineSegment(p, a, b) {
-            const atob = { x: b.x - a.x, y: b.y - a.y };
-            const atop = { x: p.x - a.x, y: p.y - a.y };
-            const len = atob.x * atob.x + atob.y * atob.y;
-            let dot = atop.x * atob.x + atop.y * atob.y;
-            const t = Math.min(1, Math.max(0, dot / len));
-            dot = (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
-            return {
-                x: a.x + atob.x * t,
-                y: a.y + atob.y * t
-            };
-        }
-
         canvas.on('mouse:move', (e) => {
             if (isPanning) { const vpt = canvas.viewportTransform; vpt[4] += e.e.clientX - lastPosX; vpt[5] += e.e.clientY - lastPosY; canvas.requestRenderAll(); lastPosX = e.e.clientX; lastPosY = e.e.clientY; return; }
             if (!isDrawing) return;
@@ -626,62 +691,17 @@
             const pointer = canvas.getPointer(e.e);
             let endX = pointer.x;
             let endY = pointer.y;
+            let snapPoint = null;
 
-            if (currentMode === 'wall' && currentLine) {
-                let snapPoint = null;
-                let minDist = snapThreshold;
-
-                if (snapIndicator) snapIndicator.set({ visible: false });
-
-                canvas.getObjects().forEach(obj => {
-                    if (obj === currentLine || obj.isGridLine || obj === snapIndicator) return;
-
-                    if (obj.type === 'line') {
-                        const targetPoints = [{x: obj.x1, y: obj.y1}, {x: obj.x2, y: obj.y2}];
-                        targetPoints.forEach(p => {
-                            const dist = getDistance(pointer, p);
-                            if (dist < minDist) {
-                                minDist = dist;
-                                snapPoint = p;
-                            }
-                        });
-                        const closest = getClosestPointOnLineSegment(pointer, targetPoints[0], targetPoints[1]);
-                        const dist = getDistance(pointer, closest);
-                        if (dist < minDist) {
-                            minDist = dist;
-                            snapPoint = closest;
-                        }
-
-                    } else if (obj.type === 'rect') {
-                        const oCoords = obj.oCoords;
-                        const lines = [
-                            { p1: oCoords.tl, p2: oCoords.tr },
-                            { p1: oCoords.tr, p2: oCoords.br },
-                            { p1: oCoords.br, p2: oCoords.bl },
-                            { p1: oCoords.bl, p2: oCoords.tl }
-                        ];
-                        lines.forEach(line => {
-                            const closest = getClosestPointOnLineSegment(pointer, line.p1, line.p2);
-                            const dist = getDistance(pointer, closest);
-                            if (dist < minDist) {
-                                minDist = dist;
-                                snapPoint = closest;
-                            }
-                        });
-                    }
-                });
-
+            if (currentMode === 'wall') {
+                snapPoint = findSnapPoint(pointer);
                 if (snapPoint) {
                     endX = snapPoint.x;
                     endY = snapPoint.y;
-                    if (snapIndicator) {
-                        snapIndicator.set({ left: endX, top: endY, visible: true });
-                        canvas.bringToFront(snapIndicator);
-                    }
                 }
             }
             
-            if (e.e.shiftKey && !snapPoint) { // 스냅되지 않았을 때만 직교 모드 작동
+            if (e.e.shiftKey && !snapPoint) {
                 const dx = Math.abs(endX - startX);
                 const dy = Math.abs(endY - startY);
                 if (dx > dy) { endY = startY; } else { endX = startX; }
@@ -689,19 +709,17 @@
 
             if (currentMode === 'wall' && currentLine) {
                  currentLine.set({ x2: endX, y2: endY });
-            } else if (currentMode === 'rect' && isDrawing) { 
+            } else if (currentMode === 'rect' && currentLine) { 
                 const width = Math.abs(pointer.x - startX); 
                 const height = Math.abs(pointer.y - startY); 
-                if(!currentLine) { currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, strokeDashArray: [5, 5] }); canvas.add(currentLine); } 
                 currentLine.set({ left: Math.min(pointer.x, startX), top: Math.min(pointer.y, startY), width: width, height: height }); 
             }
             
             canvas.renderAll();
         });
-        // ============================
 
         canvas.on('mouse:up', (e) => {
-            if (snapIndicator) snapIndicator.set({ visible: false }); // 그리기 완료 시 스냅 표시기 숨기기
+            if (snapIndicator) snapIndicator.set({ visible: false });
 
             if (isPanning) { 
                 isPanning = false; 
@@ -711,11 +729,16 @@
             }
             if (!isDrawing) return;
             let newObject = null;
-            if (currentMode === 'wall' && currentLine) { currentLine.set({selectable: true}).setCoords(); newObject = currentLine; } 
-            else if (currentMode === 'rect' && currentLine) { canvas.remove(currentLine); const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if (width > 2 && height > 2) { newObject = new fabric.Rect({ left: Math.min(startX, pointer.x), top: Math.min(startY, pointer.y), width, height, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth }); canvas.add(newObject); } }
+            if (currentMode === 'wall' && currentLine) {
+                 currentLine.set({selectable: true}).setCoords(); newObject = currentLine; 
+            } 
+            else if (currentMode === 'rect' && currentLine) {
+                 currentLine.set({selectable: true}).setCoords(); newObject = currentLine;
+            }
             if(newObject) { setMode('select'); canvas.setActiveObject(newObject); }
             isDrawing = false; currentLine = null;
         });
+        // ============================
 
         function handleRotating(opt) {
             if (opt.e.shiftKey) {
@@ -940,7 +963,6 @@
             infoBanner.classList.toggle('collapsed');
         });
 
-        // ======[업데이트된 코드: 스냅 표시기 초기화]======
         function initSnapIndicator() {
              snapIndicator = new fabric.Circle({
                 radius: 5,
@@ -956,7 +978,6 @@
             canvas.add(snapIndicator);
         }
         initSnapIndicator();
-        // ============================
 
         setMode('select');
     </script>
