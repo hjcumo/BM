@@ -184,7 +184,6 @@
             margin: 0 5px;
         }
         
-        /* ======[업데이트된 코드: 접이식 배너 스타일]====== */
         .info { 
             margin-top: 10px; 
             padding: 0 15px 15px 15px; 
@@ -216,7 +215,6 @@
         .info.collapsed .toggle-icon {
              transform: rotate(-90deg);
         }
-        /* ============================ */
 
         .shortcut { color: #666; font-size: 11px; margin-left: 5px; }
         
@@ -233,14 +231,16 @@
 <body>
     <div class="container">
         <div class="toolbar">
+            <!-- ======[업데이트된 코드: 단축키 표시]====== -->
             <div class="tool-group">
                 <h3>기본 도구</h3>
                 <button id="select-mode" class="active">선택<span class="shortcut">V</span></button>
-                <button id="wall-mode">벽</button>
-                <button id="rect-mode">사각형</button>
+                <button id="wall-mode">벽<span class="shortcut">A</span></button>
+                <button id="rect-mode">사각형<span class="shortcut">R</span></button>
                 <button id="text-mode">텍스트</button>
                 <button id="delete-btn">삭제<span class="shortcut">Backspace</span></button>
             </div>
+            <!-- ============================ -->
             
             <div class="tool-group">
                 <h3>편집</h3>
@@ -345,13 +345,14 @@
             </div>
         </div>
 
-        <!-- ======[업데이트된 코드: 접이식 배너 HTML]====== -->
         <div class="info collapsed" id="info-banner">
             <div class="info-header" id="info-toggle-btn">
                 <strong>사용법</strong>
                 <span class="toggle-icon">▼</span>
             </div>
+            <!-- ======[업데이트된 코드: 사용법 안내]====== -->
             <ul>
+                <li><strong>도구 단축키:</strong> 선택(V), 벽(A), 사각형(R), 삭제(Backspace)</li>
                 <li><strong>화면 이동:</strong> 스페이스바를 누른 채 드래그 또는 마우스 휠(가운데 버튼)을 클릭한 채 드래그합니다.</li>
                 <li><strong>객체 선택:</strong> 캔버스에서 직접 클릭하거나, 우측 '객체 목록' 패널에서 항목을 클릭합니다.</li>
                 <li><strong>복사/붙여넣기:</strong> 객체 선택 후 Ctrl+C / Ctrl+V (Mac: Cmd+C / Cmd+V) 또는 편집 메뉴의 버튼을 사용합니다.</li>
@@ -360,12 +361,10 @@
                 <li><strong>확대/축소:</strong> Ctrl(Windows) 또는 Command(Mac) 키를 누른 채 마우스 휠을 돌려 조절합니다.</li>
                 <li><strong>크기 조절:</strong> 객체 모서리를 드래그하여 조절합니다. Shift 키를 누른 채 드래그하면 정비율로 조절됩니다.</li>
                 <li><strong>객체 회전:</strong> 객체 모서리 바깥쪽을 드래그합니다. Shift 키를 누른 채 드래그하면 90도 단위로 회전합니다.</li>
-                <li><strong>벽/사각형 그리기:</strong> 클릭하고 드래그하여 그립니다. (그리기 완료 후 자동으로 선택 모드 전환)</li>
-                <li><strong>객체 삭제:</strong> 객체 선택 후 Backspace 키 또는 삭제 버튼 클릭.</li>
                 <li><strong>실행취소/다시실행:</strong> Ctrl+Z / Ctrl+Y 또는 버튼 클릭.</li>
             </ul>
+            <!-- ============================ -->
         </div>
-        <!-- ============================ -->
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
@@ -460,6 +459,7 @@
             canvas.renderAll(); 
         }
 
+        // ======[업데이트된 코드: 한/영 무관 단축키]======
         document.addEventListener('keydown', (e) => { 
             if (e.target.tagName === 'INPUT' || e.repeat) return;
             
@@ -473,14 +473,21 @@
 
             const isCtrlOrCmd = e.ctrlKey || e.metaKey;
 
-            if (isCtrlOrCmd && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); history.undo(); } 
-            if (isCtrlOrCmd && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); history.redo(); }
-            if (isCtrlOrCmd && (e.key === 'c' || e.key === 'C')) { e.preventDefault(); copyObject(); }
-            if (isCtrlOrCmd && (e.key === 'v' || e.key === 'V')) { e.preventDefault(); pasteObject(); }
-
-            if (e.key === 'Backspace') { e.preventDefault(); deleteSelectedObjects(); } 
-            if (e.key.toLowerCase() === 'v' && !isCtrlOrCmd) setMode('select'); 
+            if (isCtrlOrCmd) {
+                if (e.key === 'z' || e.key === 'Z') { e.preventDefault(); history.undo(); } 
+                if (e.key === 'y' || e.key === 'Y') { e.preventDefault(); history.redo(); }
+                if (e.key === 'c' || e.key === 'C') { e.preventDefault(); copyObject(); }
+                if (e.key === 'v' || e.key === 'V') { e.preventDefault(); pasteObject(); }
+            } else {
+                switch(e.code) {
+                    case 'Backspace': e.preventDefault(); deleteSelectedObjects(); break;
+                    case 'KeyV': setMode('select'); break;
+                    case 'KeyA': setMode('wall'); break;
+                    case 'KeyR': setMode('rect'); break;
+                }
+            }
         });
+        // ============================
         
         document.addEventListener('keyup', (e) => {
             if (e.code === 'Space') {
@@ -751,7 +758,6 @@
         
         resizeCanvas();
 
-        // ======[업데이트된 코드: 접이식 배너 로직]======
         const infoBanner = document.getElementById('info-banner');
         const infoToggleBtn = document.getElementById('info-toggle-btn');
         const toggleIcon = infoToggleBtn.querySelector('.toggle-icon');
@@ -759,7 +765,6 @@
         infoToggleBtn.addEventListener('click', () => {
             infoBanner.classList.toggle('collapsed');
         });
-        // ============================
 
         setMode('select');
     </script>
