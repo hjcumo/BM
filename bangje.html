@@ -5,27 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAD 스타일 평면도 편집기</title>
     <style>
-        body {
+        /* ======[업데이트된 코드: 전체 화면 레이아웃]====== */
+        html, body {
+            height: 100%;
             margin: 0;
-            padding: 20px;
             font-family: 'Malgun Gothic', sans-serif;
             background-color: #f0f0f0;
+            overflow: hidden; /* 전체 페이지 스크롤 방지 */
         }
 
         .container {
-            max-width: 1400px; /* 너비 확장 */
-            margin: 0 auto;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 20px;
+            box-sizing: border-box;
+            padding: 10px;
         }
+        /* ============================ */
         
         .toolbar {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
+            flex-shrink: 0; /* 툴바 높이 고정 */
         }
         
         .tool-group {
@@ -77,7 +82,7 @@
         }
         
         .icon-btn svg {
-            width: 100%; /* SVG 크기를 버튼에 맞춤 */
+            width: 100%;
             height: 100%;
         }
         
@@ -86,20 +91,24 @@
             margin-top: 2px;
         }
 
+        /* ======[업데이트된 코드: 동적 높이 조절]====== */
         .main-content {
             display: flex;
-            gap: 20px;
+            gap: 10px;
+            flex-grow: 1; /* 남은 세로 공간을 모두 차지 */
+            overflow: hidden; /* 내부 요소가 넘치지 않도록 */
         }
 
         #canvas-container {
-            flex-grow: 1; /* 남은 공간을 모두 차지 */
+            flex-grow: 1; /* 남은 가로 공간을 모두 차지 */
             border: 2px solid #ddd;
             border-radius: 4px;
             background-color: white;
             position: relative;
             overflow: hidden; 
-            height: 700px; 
+            /* 고정 높이 제거 */
         }
+        /* ============================ */
 
         #object-panel {
             width: 240px;
@@ -180,7 +189,17 @@
             margin: 0 5px;
         }
         
-        .info { margin-top: 20px; padding: 15px; background-color: #e8f4f8; border-radius: 4px; font-size: 14px; }
+        .info { 
+            margin-top: 10px; 
+            padding: 15px; 
+            background-color: #e8f4f8; 
+            border-radius: 4px; 
+            font-size: 14px; 
+            flex-shrink: 0; /* 높이 고정 */
+            max-height: 150px; /* 너무 커지지 않게 제한 */
+            overflow-y: auto;
+        }
+
         .shortcut { color: #666; font-size: 11px; margin-left: 5px; }
         
         .history-counter {
@@ -195,8 +214,6 @@
 </head>
 <body>
     <div class="container">
-        <h1>CAD 스타일 평면도 편집기</h1>
-
         <div class="toolbar">
             <div class="tool-group">
                 <h3>기본 도구</h3>
@@ -332,8 +349,7 @@
     <script>
         const canvasContainer = document.getElementById('canvas-container');
         const canvasEl = document.getElementById('canvas');
-        canvasEl.width = canvasContainer.clientWidth;
-        canvasEl.height = canvasContainer.clientHeight;
+        // 캔버스 초기 크기 설정 제거 (resizeCanvas 함수가 처리)
 
         const canvas = new fabric.Canvas('canvas', { backgroundColor: 'white', selection: true, stopContextMenu: true, fireRightClick: true, uniScaleTransform: true, });
 
@@ -422,12 +438,11 @@
             canvas.renderAll(); 
         }
 
-        // ======[업데이트된 코드: 키보드 이벤트 리스너 통합]======
         document.addEventListener('keydown', (e) => { 
             if (e.target.tagName === 'INPUT' || e.repeat) return;
             
             if (e.code === 'Space') {
-                e.preventDefault(); // 스크롤 방지
+                e.preventDefault();
                 spacebarDown = true;
                 if (!isPanning) {
                     canvas.setCursor('grab');
@@ -457,7 +472,6 @@
                 }
             }
         });
-        // ============================
 
         canvas.on('mouse:wheel', (opt) => { 
             if (opt.e.ctrlKey || opt.e.metaKey) { 
@@ -695,6 +709,30 @@
         document.getElementById('save-btn').addEventListener('click', () => { const data = { version: '2.0', canvas: canvas.toJSON(['elementType']), viewport: canvas.viewportTransform, backgroundImage: backgroundImage ? { src: canvas.backgroundImage._element.src, opacity: backgroundImage.opacity, scaleX: backgroundImage.scaleX, scaleY: backgroundImage.scaleY } : null, defaultStrokeWidth: defaultStrokeWidth }; const blob = new Blob([JSON.stringify(data)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.download = '평면도.json'; link.href = url; link.click(); URL.revokeObjectURL(url); });
         document.getElementById('load-btn').addEventListener('click', () => { const input = document.createElement('input'); input.type = 'file'; input.accept = '.json'; input.onchange = (e) => { const reader = new FileReader(); reader.onload = (event) => { const data = JSON.parse(event.target.result); history.isRestoring = true; canvas.loadFromJSON(data.canvas || data, () => { if (data.viewport) canvas.setViewportTransform(data.viewport); if (data.backgroundImage) { fabric.Image.fromURL(data.backgroundImage.src, (img) => { img.set(data.backgroundImage); canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas)); backgroundImage = img; bgClearBtn.disabled = false; opacityControl.style.display = 'block'; bgOpacity.value = (data.backgroundImage.opacity || 1) * 100; opacityValue.textContent = `${Math.round(bgOpacity.value)}%`; }); } if (data.defaultStrokeWidth) { defaultStrokeWidth = data.defaultStrokeWidth; defaultStrokeInput.value = defaultStrokeWidth; } canvas.renderAll(); history.isRestoring = false; history.saveState(); }); }; reader.readAsText(e.target.files[0]); }; input.click(); });
         
+        // ======[업데이트된 코드: 동적 캔버스 리사이즈]======
+        function resizeCanvas() {
+            const container = document.getElementById('canvas-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            canvasEl.width = width;
+            canvasEl.height = height;
+
+            canvas.setWidth(width);
+            canvas.setHeight(height);
+            canvas.renderAll();
+        }
+
+        // ResizeObserver를 사용하여 컨테이너 크기 변경 감지
+        const resizeObserver = new ResizeObserver(entries => {
+            resizeCanvas();
+        });
+        resizeObserver.observe(canvasContainer);
+        
+        // 초기 로드 시 캔버스 크기 설정
+        resizeCanvas();
+        // ============================
+
         setMode('select');
     </script>
 </body>
