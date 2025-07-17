@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAD 스타일 평면도 편집기</title>
     <style>
-        /* ======[업데이트된 코드: 전체 화면 레이아웃]====== */
         html, body {
             height: 100%;
             margin: 0;
@@ -23,7 +22,6 @@
             box-sizing: border-box;
             padding: 10px;
         }
-        /* ============================ */
         
         .toolbar {
             display: flex;
@@ -91,7 +89,6 @@
             margin-top: 2px;
         }
 
-        /* ======[업데이트된 코드: 동적 높이 조절]====== */
         .main-content {
             display: flex;
             gap: 10px;
@@ -106,9 +103,7 @@
             background-color: white;
             position: relative;
             overflow: hidden; 
-            /* 고정 높이 제거 */
         }
-        /* ============================ */
 
         #object-panel {
             width: 240px;
@@ -189,16 +184,39 @@
             margin: 0 5px;
         }
         
+        /* ======[업데이트된 코드: 접이식 배너 스타일]====== */
         .info { 
             margin-top: 10px; 
-            padding: 15px; 
+            padding: 0 15px 15px 15px; 
             background-color: #e8f4f8; 
             border-radius: 4px; 
             font-size: 14px; 
-            flex-shrink: 0; /* 높이 고정 */
-            max-height: 150px; /* 너무 커지지 않게 제한 */
-            overflow-y: auto;
+            flex-shrink: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-out;
         }
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 12px 0;
+        }
+        .toggle-icon {
+            font-size: 12px;
+            transition: transform 0.3s;
+        }
+        .info.collapsed {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .info.collapsed > ul {
+            display: none;
+        }
+        .info.collapsed .toggle-icon {
+             transform: rotate(-90deg);
+        }
+        /* ============================ */
 
         .shortcut { color: #666; font-size: 11px; margin-left: 5px; }
         
@@ -327,8 +345,12 @@
             </div>
         </div>
 
-        <div class="info">
-            <strong>사용법:</strong>
+        <!-- ======[업데이트된 코드: 접이식 배너 HTML]====== -->
+        <div class="info collapsed" id="info-banner">
+            <div class="info-header" id="info-toggle-btn">
+                <strong>사용법</strong>
+                <span class="toggle-icon">▼</span>
+            </div>
             <ul>
                 <li><strong>화면 이동:</strong> 스페이스바를 누른 채 드래그 또는 마우스 휠(가운데 버튼)을 클릭한 채 드래그합니다.</li>
                 <li><strong>객체 선택:</strong> 캔버스에서 직접 클릭하거나, 우측 '객체 목록' 패널에서 항목을 클릭합니다.</li>
@@ -343,13 +365,13 @@
                 <li><strong>실행취소/다시실행:</strong> Ctrl+Z / Ctrl+Y 또는 버튼 클릭.</li>
             </ul>
         </div>
+        <!-- ============================ -->
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <script>
         const canvasContainer = document.getElementById('canvas-container');
         const canvasEl = document.getElementById('canvas');
-        // 캔버스 초기 크기 설정 제거 (resizeCanvas 함수가 처리)
 
         const canvas = new fabric.Canvas('canvas', { backgroundColor: 'white', selection: true, stopContextMenu: true, fireRightClick: true, uniScaleTransform: true, });
 
@@ -709,7 +731,6 @@
         document.getElementById('save-btn').addEventListener('click', () => { const data = { version: '2.0', canvas: canvas.toJSON(['elementType']), viewport: canvas.viewportTransform, backgroundImage: backgroundImage ? { src: canvas.backgroundImage._element.src, opacity: backgroundImage.opacity, scaleX: backgroundImage.scaleX, scaleY: backgroundImage.scaleY } : null, defaultStrokeWidth: defaultStrokeWidth }; const blob = new Blob([JSON.stringify(data)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.download = '평면도.json'; link.href = url; link.click(); URL.revokeObjectURL(url); });
         document.getElementById('load-btn').addEventListener('click', () => { const input = document.createElement('input'); input.type = 'file'; input.accept = '.json'; input.onchange = (e) => { const reader = new FileReader(); reader.onload = (event) => { const data = JSON.parse(event.target.result); history.isRestoring = true; canvas.loadFromJSON(data.canvas || data, () => { if (data.viewport) canvas.setViewportTransform(data.viewport); if (data.backgroundImage) { fabric.Image.fromURL(data.backgroundImage.src, (img) => { img.set(data.backgroundImage); canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas)); backgroundImage = img; bgClearBtn.disabled = false; opacityControl.style.display = 'block'; bgOpacity.value = (data.backgroundImage.opacity || 1) * 100; opacityValue.textContent = `${Math.round(bgOpacity.value)}%`; }); } if (data.defaultStrokeWidth) { defaultStrokeWidth = data.defaultStrokeWidth; defaultStrokeInput.value = defaultStrokeWidth; } canvas.renderAll(); history.isRestoring = false; history.saveState(); }); }; reader.readAsText(e.target.files[0]); }; input.click(); });
         
-        // ======[업데이트된 코드: 동적 캔버스 리사이즈]======
         function resizeCanvas() {
             const container = document.getElementById('canvas-container');
             const width = container.clientWidth;
@@ -723,14 +744,21 @@
             canvas.renderAll();
         }
 
-        // ResizeObserver를 사용하여 컨테이너 크기 변경 감지
         const resizeObserver = new ResizeObserver(entries => {
             resizeCanvas();
         });
         resizeObserver.observe(canvasContainer);
         
-        // 초기 로드 시 캔버스 크기 설정
         resizeCanvas();
+
+        // ======[업데이트된 코드: 접이식 배너 로직]======
+        const infoBanner = document.getElementById('info-banner');
+        const infoToggleBtn = document.getElementById('info-toggle-btn');
+        const toggleIcon = infoToggleBtn.querySelector('.toggle-icon');
+
+        infoToggleBtn.addEventListener('click', () => {
+            infoBanner.classList.toggle('collapsed');
+        });
         // ============================
 
         setMode('select');
