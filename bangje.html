@@ -207,7 +207,6 @@
                 <button id="delete-btn">삭제<span class="shortcut">Backspace</span></button>
             </div>
             
-            <!-- ======[업데이트된 코드]====== -->
             <div class="tool-group">
                 <h3>편집</h3>
                 <button id="copy-btn" disabled>복사<span class="shortcut">Ctrl+C</span></button>
@@ -215,7 +214,6 @@
                 <button id="undo-btn" disabled>실행취소<span class="shortcut">Ctrl+Z</span></button>
                 <button id="redo-btn" disabled>다시실행<span class="shortcut">Ctrl+Y</span></button>
             </div>
-            <!-- ============================ -->
             
             <div class="tool-group">
                 <h3>선 스타일</h3>
@@ -312,7 +310,6 @@
             </div>
         </div>
 
-        <!-- ======[업데이트된 코드]====== -->
         <div class="info">
             <strong>사용법:</strong>
             <ul>
@@ -329,7 +326,6 @@
                 <li><strong>실행취소/다시실행:</strong> Ctrl+Z / Ctrl+Y 또는 버튼 클릭.</li>
             </ul>
         </div>
-        <!-- ============================ -->
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
@@ -357,7 +353,7 @@
         let isPanning = false, lastPosX, lastPosY, spacebarDown = false;
         let backgroundImage = null;
         let defaultStrokeWidth = 2;
-        let _clipboard = null; // 클립보드 변수 추가
+        let _clipboard = null;
         
         const objectPanelList = document.getElementById('object-panel-list');
         const bgImageBtn = document.getElementById('bg-image-btn'), bgClearBtn = document.getElementById('bg-clear-btn'), bgOpacity = document.getElementById('bg-opacity'), opacityValue = document.getElementById('opacity-value'), opacityControl = document.getElementById('opacity-control');
@@ -370,13 +366,11 @@
         const windowBothBtn = document.getElementById('window-both-btn');
         const doorDoubleBtn = document.getElementById('door-double-btn');
 
-        // ======[업데이트된 코드: 편집 버튼]======
         const gridBtn = document.getElementById('grid-btn');
         const copyBtn = document.getElementById('copy-btn');
         const pasteBtn = document.getElementById('paste-btn');
         const undoBtn = document.getElementById('undo-btn');
         const redoBtn = document.getElementById('redo-btn');
-        // ============================
         
         const sizeControls = document.getElementById('size-controls'), widthInput = document.getElementById('width-input'), heightInput = document.getElementById('height-input'), angleInput = document.getElementById('angle-input');
         const defaultStrokeInput = document.getElementById('default-stroke-width');
@@ -414,9 +408,7 @@
             });
         }
         
-        // ======[업데이트된 코드: 도구 변경 시 선택 해제]======
         function setMode(mode) { 
-            // 그리기 도구로 전환 시, 기존 선택 해제
             if (['wall', 'rect', 'text'].includes(mode)) {
                 canvas.discardActiveObject().renderAll();
             }
@@ -430,19 +422,18 @@
             canvas.renderAll(); 
         }
 
-        window.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT' || e.repeat) return;
-            if (e.code === 'Space') { e.preventDefault(); spacebarDown = true; if (!isPanning) canvas.setCursor('grab'); }
-        });
-
-        window.addEventListener('keyup', (e) => {
-            if (e.code === 'Space') { e.preventDefault(); spacebarDown = false; if (isPanning && !e.buttons) { isPanning = false; canvas.setCursor('default'); } else if (!isPanning) { canvas.setCursor('default'); } }
-        });
-
-        // ======[업데이트된 코드: 키보드 이벤트 핸들러]======
+        // ======[업데이트된 코드: 키보드 이벤트 리스너 통합]======
         document.addEventListener('keydown', (e) => { 
-            if (e.target.tagName === 'INPUT') return; 
+            if (e.target.tagName === 'INPUT' || e.repeat) return;
             
+            if (e.code === 'Space') {
+                e.preventDefault(); // 스크롤 방지
+                spacebarDown = true;
+                if (!isPanning) {
+                    canvas.setCursor('grab');
+                }
+            }
+
             const isCtrlOrCmd = e.ctrlKey || e.metaKey;
 
             if (isCtrlOrCmd && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); history.undo(); } 
@@ -453,6 +444,20 @@
             if (e.key === 'Backspace') { e.preventDefault(); deleteSelectedObjects(); } 
             if (e.key.toLowerCase() === 'v' && !isCtrlOrCmd) setMode('select'); 
         });
+        
+        document.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                spacebarDown = false;
+                if (isPanning && !e.buttons) {
+                    isPanning = false;
+                    canvas.setCursor('default');
+                } else if (!isPanning) {
+                    canvas.setCursor('default');
+                }
+            }
+        });
+        // ============================
 
         canvas.on('mouse:wheel', (opt) => { 
             if (opt.e.ctrlKey || opt.e.metaKey) { 
@@ -494,7 +499,7 @@
             if (isPanning) { const vpt = canvas.viewportTransform; vpt[4] += e.e.clientX - lastPosX; vpt[5] += e.e.clientY - lastPosY; canvas.requestRenderAll(); lastPosX = e.e.clientX; lastPosY = e.e.clientY; return; }
             if (!isDrawing) return;
             if (currentMode === 'wall' && currentLine) { const pointer = canvas.getPointer(e.e); let endX = pointer.x, endY = pointer.y; if (e.e.shiftKey) { const dx = Math.abs(pointer.x - startX); const dy = Math.abs(pointer.y - startY); if (dx > dy) { endY = startY; } else { endX = startX; } } currentLine.set({ x2: endX, y2: endY }); canvas.renderAll(); }
-            else if (currentMode === 'rect' && isDrawing) { const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if(!currentLine) { currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, strokeDashArray: [5, 5] }); canvas.add(currentLine); } currentLine.set({ left: Math.min(pointer.x, startY), top: Math.min(pointer.y, startY), width: width, height: height }); canvas.renderAll(); }
+            else if (currentMode === 'rect' && isDrawing) { const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if(!currentLine) { currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, strokeDashArray: [5, 5] }); canvas.add(currentLine); } currentLine.set({ left: Math.min(pointer.x, startX), top: Math.min(pointer.y, startY), width: width, height: height }); canvas.renderAll(); }
         });
 
         canvas.on('mouse:up', (e) => {
@@ -533,7 +538,6 @@
             highlightPanelSelection(); 
             selectedObject = selected.length === 1 ? selected[0] : null; 
             
-            // ======[업데이트된 코드: 복사 버튼 활성화]======
             copyBtn.disabled = !selectedObject;
             
             if (selectedObject) { 
@@ -590,24 +594,21 @@
         selectBtn.addEventListener('click', () => setMode('select')); wallBtn.addEventListener('click', () => setMode('wall')); rectBtn.addEventListener('click', () => setMode('rect')); textBtn.addEventListener('click', () => setMode('text'));
         doorLeftBtn.addEventListener('click', () => setMode('door-left')); doorRightBtn.addEventListener('click', () => setMode('door-right')); windowLeftBtn.addEventListener('click', () => setMode('window-left')); windowRightBtn.addEventListener('click', () => setMode('window-right')); windowBothBtn.addEventListener('click', () => setMode('window-both')); doorDoubleBtn.addEventListener('click', () => setMode('door-double'));
         
-        // ======[업데이트된 코드: 편집 버튼 이벤트]======
         copyBtn.addEventListener('click', copyObject);
         pasteBtn.addEventListener('click', pasteObject);
         undoBtn.addEventListener('click', () => history.undo()); 
         redoBtn.addEventListener('click', () => history.redo()); 
         deleteBtn.addEventListener('click', deleteSelectedObjects);
-        // ============================
 
         function deleteSelectedObjects() { canvas.getActiveObjects().forEach(obj => canvas.remove(obj)); canvas.discardActiveObject().renderAll(); }
         
-        // ======[업데이트된 코드: 복사/붙여넣기 함수]======
         function copyObject() {
             const activeObject = canvas.getActiveObject();
             if (activeObject) {
                 activeObject.clone(function(cloned) {
                     _clipboard = cloned;
-                    pasteBtn.disabled = false; // 붙여넣기 버튼 활성화
-                }, ['elementType']); // 사용자 정의 속성 포함하여 복사
+                    pasteBtn.disabled = false;
+                }, ['elementType']);
             }
         }
 
@@ -615,19 +616,16 @@
             if (!_clipboard) return;
 
             _clipboard.clone(function(clonedObj) {
-                canvas.discardActiveObject(); // 기존 선택 해제
+                canvas.discardActiveObject();
                 
-                // 약간의 오프셋을 주어 붙여넣기
                 clonedObj.set({
                     left: clonedObj.left + 15,
                     top: clonedObj.top + 15,
-                    evented: true, // 붙여넣은 객체가 이벤트를 받을 수 있도록
+                    evented: true,
                 });
 
-                // 그룹 내 객체들의 strokeWidth가 0이 되는 현상 방지
                 if (clonedObj.isType('group')) {
                     clonedObj.getObjects().forEach(function(obj) {
-                        // 원본 그룹에서 strokeWidth를 다시 가져와 설정
                         const originalObj = _clipboard.getObjects().find(o => o.type === obj.type);
                         if(originalObj && originalObj.strokeWidth) {
                              obj.set('strokeWidth', originalObj.strokeWidth);
@@ -636,11 +634,10 @@
                 }
                 
                 canvas.add(clonedObj);
-                canvas.setActiveObject(clonedObj); // 붙여넣은 객체 선택
+                canvas.setActiveObject(clonedObj);
                 canvas.requestRenderAll();
             }, ['elementType']);
         }
-        // ============================
 
         function updateObjectPanel() {
             objectPanelList.innerHTML = '';
