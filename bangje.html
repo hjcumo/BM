@@ -13,7 +13,7 @@
         }
 
         .container {
-            max-width: 1400px; 
+            max-width: 1400px; /* 너비 확장 */
             margin: 0 auto;
             background-color: white;
             border-radius: 8px;
@@ -86,13 +86,14 @@
             margin-top: 2px;
         }
 
+        /* ======[업데이트된 코드]====== */
         .main-content {
             display: flex;
             gap: 20px;
         }
 
         #canvas-container {
-            flex-grow: 1;
+            flex-grow: 1; /* 남은 공간을 모두 차지 */
             border: 2px solid #ddd;
             border-radius: 4px;
             background-color: white;
@@ -103,7 +104,7 @@
 
         #object-panel {
             width: 240px;
-            flex-shrink: 0;
+            flex-shrink: 0; /* 너비 고정 */
             border: 1px solid #ddd;
             border-radius: 4px;
             background-color: #f9f9f9;
@@ -145,6 +146,7 @@
             color: white;
             font-weight: bold;
         }
+        /* ============================ */
         
         .size-controls {
             position: absolute;
@@ -162,6 +164,24 @@
         
         .size-controls label { display: block; margin-bottom: 5px; font-size: 12px; }
         .size-controls input { width: 60px; margin-left: 5px; }
+        
+        /* 선 두께 조절 스타일 추가 */
+        .stroke-control {
+            margin-top: 10px;
+            padding: 5px;
+            background-color: #f5f5f5;
+            border-radius: 3px;
+        }
+        
+        .stroke-control label {
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .stroke-control input[type="number"] {
+            width: 50px;
+            margin: 0 5px;
+        }
         
         .info { margin-top: 20px; padding: 15px; background-color: #e8f4f8; border-radius: 4px; font-size: 14px; }
         .shortcut { color: #666; font-size: 11px; margin-left: 5px; }
@@ -181,7 +201,7 @@
         <h1>CAD 스타일 평면도 편집기</h1>
 
         <div class="toolbar">
-             <div class="tool-group">
+            <div class="tool-group">
                 <h3>기본 도구</h3>
                 <button id="select-mode" class="active">선택<span class="shortcut">V</span></button>
                 <button id="wall-mode">벽</button>
@@ -197,33 +217,27 @@
             </div>
             
             <div class="tool-group">
+                <h3>선 스타일</h3>
+                <div class="stroke-control">
+                    <label>선 두께: 
+                        <input type="number" id="default-stroke-width" min="1" max="20" value="2" step="1">px
+                    </label>
+                </div>
+            </div>
+            
+            <div class="tool-group">
                 <h3>건축 요소</h3>
-                <button id="door-btn" class="icon-btn" title="문" draggable="true"><svg viewBox="0 0 60 60"><line x1="10" y1="50" x2="50" y2="50" stroke="black" stroke-width="3"/><path d="M 10 50 Q 30 30, 50 50" stroke="black" stroke-width="2" fill="none"/></svg></button>
-                <button id="window-btn" class="icon-btn" title="창문" draggable="true"><svg viewBox="0 0 60 60"><rect x="10" y="25" width="40" height="10" fill="none" stroke="black" stroke-width="2"/><line x1="10" y1="30" x2="50" y2="30" stroke="black" stroke-width="1"/></svg></button>
-                <button id="sliding-door-btn" class="icon-btn" title="미닫이문" draggable="true"><svg viewBox="0 0 60 60"><line x1="10" y1="30" x2="50" y2="30" stroke="black" stroke-width="3"/><rect x="15" y="25" width="15" height="10" fill="none" stroke="black" stroke-width="2"/><rect x="30" y="25" width="15" height="10" fill="none" stroke="black" stroke-width="2"/></svg></button>
-                <button id="stairs-btn" class="icon-btn" title="계단" draggable="true"><svg viewBox="0 0 60 60"><g><line x1="10" y1="15" x2="50" y2="15" stroke="black" stroke-width="1"/><line x1="10" y1="25" x2="50" y2="25" stroke="black" stroke-width="1"/><line x1="10" y1="35" x2="50" y2="35" stroke="black" stroke-width="1"/><line x1="10" y1="45" x2="50" y2="45" stroke="black" stroke-width="1"/><polygon points="25,10 30,20 20,20" fill="black"/></g></svg></button>
-                <button id="door-window-btn" class="icon-btn" title="문+창" draggable="true">
-                    <svg viewBox="0 0 60 60">
-                        <path d="M 5 30 Q 5 10 25 10" stroke="black" stroke-width="2" fill="none"/>
-                        <rect x="5" y="30" width="50" height="5" stroke="black" stroke-width="2" fill="white"/>
-                        <line x1="30" y1="30" x2="30" y2="35" stroke="black" stroke-width="2"/>
-                        <line x1="32" y1="31" x2="53" y2="31" stroke="black" stroke-width="1"/>
-                        <line x1="32" y1="34" x2="53" y2="34" stroke="black" stroke-width="1"/>
-                    </svg>
+                <button id="door-btn" class="icon-btn" title="문 (클릭 또는 드래그)" draggable="true">
+                    <svg viewBox="0 0 60 60"><line x1="10" y1="50" x2="50" y2="50" stroke="black" stroke-width="3"/><path d="M 10 50 Q 30 30, 50 50" stroke="black" stroke-width="2" fill="none"/></svg>
                 </button>
-                <button id="curtain-wall-btn" class="icon-btn" title="커튼월" draggable="true">
-                    <svg viewBox="0 0 60 60">
-                        <rect x="25" y="5" width="10" height="50" stroke="black" stroke-width="2" fill="white"/>
-                        <line x1="30" y1="5" x2="30" y2="55" stroke="black" stroke-width="1"/>
-                        <rect x="15" y="28" width="5" height="5" fill="black"/>
-                    </svg>
+                <button id="window-btn" class="icon-btn" title="창문 (클릭 또는 드래그)" draggable="true">
+                    <svg viewBox="0 0 60 60"><rect x="10" y="25" width="40" height="10" fill="none" stroke="black" stroke-width="2"/><line x1="10" y1="30" x2="50" y2="30" stroke="black" stroke-width="1"/></svg>
                 </button>
-                 <button id="system-window-btn" class="icon-btn" title="시스템창" draggable="true">
-                    <svg viewBox="0 0 60 60">
-                         <rect x="25" y="5" width="10" height="50" stroke="black" stroke-width="2" fill="white"/>
-                         <polygon points="30,15 26,25 34,25" fill="black"/>
-                         <polygon points="30,45 26,35 34,35" fill="black"/>
-                    </svg>
+                <button id="sliding-door-btn" class="icon-btn" title="미닫이문 (클릭 또는 드래그)" draggable="true">
+                    <svg viewBox="0 0 60 60"><line x1="10" y1="30" x2="50" y2="30" stroke="black" stroke-width="3"/><rect x="15" y="25" width="15" height="10" fill="none" stroke="black" stroke-width="2"/><rect x="30" y="25" width="15" height="10" fill="none" stroke="black" stroke-width="2"/></svg>
+                </button>
+                <button id="stairs-btn" class="icon-btn" title="계단 (클릭 또는 드래그)" draggable="true">
+                    <svg viewBox="0 0 60 60"><g><line x1="10" y1="15" x2="50" y2="15" stroke="black" stroke-width="1"/><line x1="10" y1="25" x2="50" y2="25" stroke="black" stroke-width="1"/><line x1="10" y1="35" x2="50" y2="35" stroke="black" stroke-width="1"/><line x1="10" y1="45" x2="50" y2="45" stroke="black" stroke-width="1"/><polygon points="25,10 30,20 20,20" fill="black"/></g></svg>
                 </button>
             </div>
             
@@ -239,7 +253,12 @@
                 <h3>배경 이미지</h3>
                 <button id="bg-image-btn">이미지 불러오기</button>
                 <button id="bg-clear-btn" disabled>이미지 제거</button>
-                <div style="margin-top: 10px; display: none;" id="opacity-control"><label style="font-size: 12px;">불투명도: <input type="range" id="bg-opacity" min="10" max="100" value="50" style="width: 100px; vertical-align: middle;"><span id="opacity-value">50%</span></label></div>
+                <div style="margin-top: 10px; display: none;" id="opacity-control">
+                    <label style="font-size: 12px;">불투명도: 
+                        <input type="range" id="bg-opacity" min="10" max="100" value="50" style="width: 100px; vertical-align: middle;">
+                        <span id="opacity-value">50%</span>
+                    </label>
+                </div>
             </div>
             
             <div class="tool-group">
@@ -248,32 +267,40 @@
             </div>
         </div>
         
+        <!-- ======[업데이트된 코드]====== -->
         <div class="main-content">
             <div id="canvas-container">
                 <canvas id="canvas"></canvas>
                 <div class="size-controls" id="size-controls">
-                    <label id="stroke-width-control">두께: <input type="number" id="stroke-width-input" min="1" step="1"></label>
                     <label>너비: <input type="number" id="width-input" min="10" step="5"></label>
                     <label>높이: <input type="number" id="height-input" min="10" step="5"></label>
                     <label>각도: <input type="number" id="angle-input" min="0" max="360" step="15"></label>
+                    <label id="stroke-width-control" style="display:none;">선 두께: <input type="number" id="stroke-width-input" min="1" max="20" step="1"></label>
                 </div>
                 <div class="history-counter" id="history-counter"></div>
             </div>
 
             <div id="object-panel">
                 <div id="object-panel-header">객체 목록</div>
-                <ul id="object-panel-list"></ul>
+                <ul id="object-panel-list">
+                    <!-- 객체 목록이 여기에 동적으로 추가됩니다 -->
+                </ul>
             </div>
         </div>
+        <!-- ============================ -->
 
         <div class="info">
             <strong>사용법:</strong>
             <ul>
-                <li>새로운 건축 요소(문+창, 커튼월, 시스템창)가 추가되었습니다.</li>
-                <li>선 두께 조절: 벽 또는 사각형 선택 시 나타나는 패널에서 두께를 조절합니다.</li>
-                <li>화면 이동: 스페이스바를 누른 채 드래그 또는 마우스 휠(가운데 버튼)을 클릭한 채 드래그합니다.</li>
-                <li>객체 선택: 캔버스에서 직접 클릭하거나, 우측 '객체 목록' 패널에서 항목을 클릭합니다.</li>
-                <li>벽/사각형 그리기: 클릭하고 드래그하여 그립니다. (기본 두께 2, 그리기 완료 후 자동 선택 모드 전환)</li>
+                <li><strong>화면 이동: 스페이스바를 누른 채 드래그</strong> 또는 마우스 휠(가운데 버튼)을 클릭한 채 드래그합니다.</li>
+                <li><strong>객체 선택: 캔버스에서 직접 클릭하거나, 우측 '객체 목록' 패널에서 항목을 클릭합니다.</strong></li>
+                <li><strong>선 두께 조절: 상단 툴바에서 기본 두께를 설정하거나, 객체 선택 후 나타나는 컨트롤에서 개별 조절합니다.</strong></li>
+                <li>건축 요소 삽입: 아이콘을 클릭 후 캔버스에 클릭하거나, 아이콘을 캔버스로 드래그 앤 드롭합니다. (드롭 시 화면 중앙에 배치)</li>
+                <li>확대/축소: Ctrl 키를 누른 채 마우스 휠을 돌려 조절합니다.</li>
+                <li>크기 조절: 객체 모서리를 드래그하여 조절합니다. Shift 키를 누른 채 드래그하면 정비율로 조절됩니다.</li>
+                <li>벽/사각형 그리기: 클릭하고 드래그하여 그립니다. (그리기 완료 후 자동으로 선택 모드 전환)</li>
+                <li>객체 삭제: 객체 선택 후 Backspace 키 또는 삭제 버튼 클릭.</li>
+                <li>실행취소/다시실행: Ctrl+Z / Ctrl+Y 또는 버튼 클릭.</li>
             </ul>
         </div>
     </div>
@@ -300,128 +327,210 @@
         const gridSize = 20;
         let showGrid = false, currentMode = 'select', isDrawing = false;
         let startX, startY, currentLine = null, selectedObject = null;
-        let isPanning = false, lastPosX, lastPosY, spacebarDown = false;
+        let isPanning = false, lastPosX, lastPosY, spacebarDown = false; // 스페이스바 상태 추가
         let backgroundImage = null;
+        let defaultStrokeWidth = 2; // 기본 선 두께
         
         const objectPanelList = document.getElementById('object-panel-list');
         const bgImageBtn = document.getElementById('bg-image-btn'), bgClearBtn = document.getElementById('bg-clear-btn'), bgOpacity = document.getElementById('bg-opacity'), opacityValue = document.getElementById('opacity-value'), opacityControl = document.getElementById('opacity-control');
         const selectBtn = document.getElementById('select-mode'), wallBtn = document.getElementById('wall-mode'), rectBtn = document.getElementById('rect-mode'), textBtn = document.getElementById('text-mode'), deleteBtn = document.getElementById('delete-btn');
         const doorBtn = document.getElementById('door-btn'), windowBtn = document.getElementById('window-btn'), slidingDoorBtn = document.getElementById('sliding-door-btn'), stairsBtn = document.getElementById('stairs-btn');
-        const doorWindowBtn = document.getElementById('door-window-btn'), curtainWallBtn = document.getElementById('curtain-wall-btn'), systemWindowBtn = document.getElementById('system-window-btn');
         const gridBtn = document.getElementById('grid-btn'), undoBtn = document.getElementById('undo-btn'), redoBtn = document.getElementById('redo-btn');
         const sizeControls = document.getElementById('size-controls'), widthInput = document.getElementById('width-input'), heightInput = document.getElementById('height-input'), angleInput = document.getElementById('angle-input');
-        const strokeWidthControl = document.getElementById('stroke-width-control'), strokeWidthInput = document.getElementById('stroke-width-input');
-        const defaultStrokeWidth = 2;
+        const defaultStrokeInput = document.getElementById('default-stroke-width');
+        const strokeWidthControl = document.getElementById('stroke-width-control');
+        const strokeWidthInput = document.getElementById('stroke-width-input');
+
+        // 기본 선 두께 변경 이벤트
+        defaultStrokeInput.addEventListener('change', (e) => {
+            defaultStrokeWidth = parseInt(e.target.value, 10);
+        });
 
         history.saveState();
 
         canvas.on({ 'object:added': () => { if (!history.isRestoring) history.saveState(); }, 'object:modified': () => history.saveState(), 'object:removed': () => { if (!history.isRestoring) history.saveState(); } });
-        
-        function createObject(type, x, y) {
-            let g = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' });
-            g.elementType = type;
-            switch(type) {
-                case 'door': g.addWithUpdate(new fabric.Rect({ left: -40, top: -3, width: 80, height: 6, fill: 'white', stroke: 'black', strokeWidth: 2 })); g.addWithUpdate(new fabric.Path('M -40 0 Q -40 -40, 0 -40', { fill: '', stroke: 'black', strokeWidth: 2 })); break;
-                case 'window': g.addWithUpdate(new fabric.Rect({ left: -30, top: -4, width: 60, height: 8, fill: 'white', stroke: 'black', strokeWidth: 2 })); g.addWithUpdate(new fabric.Line([-30, 0, 30, 0], { stroke: 'black', strokeWidth: 1 })); break;
-                case 'sliding-door': g.addWithUpdate(new fabric.Line([-40, 0, 40, 0], { stroke: 'black', strokeWidth: 3 })); g.addWithUpdate(new fabric.Rect({ left: -35, top: -5, width: 30, height: 10, fill: 'transparent', stroke: 'black', strokeWidth: 2 })); g.addWithUpdate(new fabric.Rect({ left: -5, top: -5, width: 30, height: 10, fill: 'transparent', stroke: 'black', strokeWidth: 2 })); break;
-                case 'stairs': for (let i = 0; i < 6; i++) { g.addWithUpdate(new fabric.Line([-30, -25 + i * 10, 30, -25 + i * 10], { stroke: 'black', strokeWidth: 1 })); } g.addWithUpdate(new fabric.Polygon([{x: 0, y: -35}, {x: -5, y: -25}, {x: 5, y: -25}], { fill: 'black' })); break;
-                case 'door-window':
-                    g.addWithUpdate(new fabric.Path('M -25 0 Q -25 -20, -5 -20', { stroke: 'black', strokeWidth: 2, fill: 'none'}));
-                    g.addWithUpdate(new fabric.Rect({ left: -25, top: 0, width: 50, height: 5, stroke: 'black', strokeWidth: 2, fill: 'white'}));
-                    g.addWithUpdate(new fabric.Line([0, 0, 0, 5], { stroke: 'black', strokeWidth: 2}));
-                    g.addWithUpdate(new fabric.Line([2, 1, 23, 1], { stroke: 'black', strokeWidth: 1}));
-                    g.addWithUpdate(new fabric.Line([2, 4, 23, 4], { stroke: 'black', strokeWidth: 1}));
-                    break;
-                case 'curtain-wall':
-                    g.set({angle: 90});
-                    g.addWithUpdate(new fabric.Rect({ left: -25, top: -5, width: 50, height: 10, stroke: 'black', strokeWidth: 2, fill: 'white'}));
-                    g.addWithUpdate(new fabric.Line([-25, 0, 25, 0], { stroke: 'black', strokeWidth: 1}));
-                    g.addWithUpdate(new fabric.Rect({ left: -35, top: -2.5, width: 5, height: 5, fill: 'black'}));
-                    break;
-                case 'system-window':
-                    g.set({angle: 90});
-                    g.addWithUpdate(new fabric.Rect({ left: -25, top: -5, width: 50, height: 10, stroke: 'black', strokeWidth: 2, fill: 'white'}));
-                    g.addWithUpdate(new fabric.Polygon([{x: -15, y: 0}, {x: -20, y: -4}, {x: -20, y: 4}], { fill: 'black', angle: 90}));
-                    g.addWithUpdate(new fabric.Polygon([{x: 15, y: 0}, {x: 20, y: -4}, {x: 20, y: 4}], { fill: 'black', angle: -90}));
-                    break;
-                default: return null;
-            }
-            return g;
-        }
 
+        // 건축 요소 생성 함수 (간결화)
+        function createObject(type, x, y) {
+            switch(type) {
+                case 'door': const d = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' }); d.addWithUpdate(new fabric.Rect({ left: -40, top: -3, width: 80, height: 6, fill: 'white', stroke: 'black', strokeWidth: 2 })); d.addWithUpdate(new fabric.Path('M -40 0 Q -40 -40, 0 -40', { fill: '', stroke: 'black', strokeWidth: 2 })); d.elementType = 'door'; return d;
+                case 'window': const w = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' }); w.addWithUpdate(new fabric.Rect({ left: -30, top: -4, width: 60, height: 8, fill: 'white', stroke: 'black', strokeWidth: 2 })); w.addWithUpdate(new fabric.Line([-30, 0, 30, 0], { stroke: 'black', strokeWidth: 1 })); w.elementType = 'window'; return w;
+                case 'sliding-door': const sd = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' }); sd.addWithUpdate(new fabric.Line([-40, 0, 40, 0], { stroke: 'black', strokeWidth: 3 })); sd.addWithUpdate(new fabric.Rect({ left: -35, top: -5, width: 30, height: 10, fill: 'transparent', stroke: 'black', strokeWidth: 2 })); sd.addWithUpdate(new fabric.Rect({ left: -5, top: -5, width: 30, height: 10, fill: 'transparent', stroke: 'black', strokeWidth: 2 })); sd.elementType = 'sliding-door'; return sd;
+                case 'stairs': const st = new fabric.Group([], { left: x, top: y, originX: 'center', originY: 'center' }); for (let i = 0; i < 6; i++) { st.addWithUpdate(new fabric.Line([-30, -25 + i * 10, 30, -25 + i * 10], { stroke: 'black', strokeWidth: 1 })); } st.addWithUpdate(new fabric.Polygon([{x: 0, y: -35}, {x: -5, y: -25}, {x: 5, y: -25}], { fill: 'black' })); st.elementType = 'stairs'; return st;
+            }
+        }
+        
         function setMode(mode) { currentMode = mode; document.querySelectorAll('button.active').forEach(btn => btn.classList.remove('active')); const currentBtn = document.getElementById(mode + '-mode') || document.getElementById(mode + '-btn'); if (currentBtn) currentBtn.classList.add('active'); canvas.selection = mode === 'select'; canvas.forEachObject(obj => { if (!obj.isGridLine) obj.selectable = (mode === 'select'); }); canvas.renderAll(); }
-        
-        window.addEventListener('keydown', (e) => { if (e.target.tagName === 'INPUT' || e.repeat) return; if (e.code === 'Space') { e.preventDefault(); spacebarDown = true; if (!isPanning) canvas.setCursor('grab'); } });
-        window.addEventListener('keyup', (e) => { if (e.code === 'Space') { e.preventDefault(); spacebarDown = false; if (isPanning && !e.buttons) { isPanning = false; canvas.setCursor('default'); } else if (!isPanning) { canvas.setCursor('default'); } } });
+
+        // ======[업데이트된 코드: 스페이스바 팬]======
+        window.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.repeat) return;
+            if (e.code === 'Space') {
+                e.preventDefault();
+                spacebarDown = true;
+                if (!isPanning) canvas.setCursor('grab');
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                spacebarDown = false;
+                if (isPanning && !e.buttons) { // 마우스 버튼이 눌려있지 않을 때만 팬 종료
+                    isPanning = false;
+                    canvas.setCursor('default');
+                } else if (!isPanning) {
+                    canvas.setCursor('default');
+                }
+            }
+        });
+        // ============================
+
         document.addEventListener('keydown', (e) => { if (e.target.tagName === 'INPUT') return; if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); history.undo(); } if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); history.redo(); } if (e.key === 'Backspace') { e.preventDefault(); deleteSelectedObjects(); } if (e.key.toLowerCase() === 'v' && !e.ctrlKey) setMode('select'); });
+
         canvas.on('mouse:wheel', (opt) => { if (opt.e.ctrlKey) { const delta = opt.e.deltaY; let zoom = canvas.getZoom(); zoom *= 0.999 ** delta; if (zoom > 20) zoom = 20; if (zoom < 0.1) zoom = 0.1; canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom); opt.e.preventDefault(); opt.e.stopPropagation(); } });
-        
+
         canvas.on('mouse:down', (e) => {
-            const isMiddleClick = e.e.button === 1; const isSpacebarPan = spacebarDown && e.e.button === 0;
-            if (isMiddleClick || isSpacebarPan) { isPanning = true; lastPosX = e.e.clientX; lastPosY = e.e.clientY; canvas.setCursor('grabbing'); canvas.selection = false; return; }
+            const isMiddleClick = e.e.button === 1;
+            const isSpacebarPan = spacebarDown && e.e.button === 0;
+
+            if (isMiddleClick || isSpacebarPan) {
+                isPanning = true;
+                lastPosX = e.e.clientX;
+                lastPosY = e.e.clientY;
+                canvas.setCursor('grabbing');
+                canvas.selection = false;
+                return;
+            }
+
             if (currentMode === 'select' || isDrawing) return;
             const pointer = canvas.getPointer(e.e); startX = pointer.x; startY = pointer.y; isDrawing = true;
             let insertedObject = null;
             switch(currentMode) {
                 case 'wall': currentLine = new fabric.Line([startX, startY, startX, startY], { stroke: 'black', strokeWidth: defaultStrokeWidth, strokeLineCap: 'square', selectable: false }); canvas.add(currentLine); break;
                 case 'text': const text = prompt('텍스트를 입력하세요:'); if (text) { insertedObject = new fabric.Text(text, { left: startX, top: startY, fontSize: 14, fill: 'black' }); canvas.add(insertedObject); } isDrawing = false; break;
-                case 'door': case 'window': case 'sliding-door': case 'stairs': case 'door-window': case 'curtain-wall': case 'system-window': 
-                    insertedObject = createObject(currentMode, startX, startY); if (insertedObject) canvas.add(insertedObject); isDrawing = false; break;
+                case 'door': case 'window': case 'sliding-door': case 'stairs': insertedObject = createObject(currentMode, startX, startY); if (insertedObject) canvas.add(insertedObject); isDrawing = false; break;
             }
             if (insertedObject) { setMode('select'); canvas.setActiveObject(insertedObject); }
         });
         
-        canvas.on('mouse:move', (e) => { if (isPanning) { const vpt = canvas.viewportTransform; vpt[4] += e.e.clientX - lastPosX; vpt[5] += e.e.clientY - lastPosY; canvas.requestRenderAll(); lastPosX = e.e.clientX; lastPosY = e.e.clientY; return; } if (!isDrawing) return; if (currentMode === 'wall' && currentLine) { const pointer = canvas.getPointer(e.e); let endX = pointer.x, endY = pointer.y; if (e.e.shiftKey) { const dx = Math.abs(pointer.x - startX); const dy = Math.abs(pointer.y - startY); if (dx > dy) { endY = startY; } else { endX = startX; } } currentLine.set({ x2: endX, y2: endY }); canvas.renderAll(); } else if (currentMode === 'rect' && isDrawing) { const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if(!currentLine) { currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, strokeDashArray: [5, 5] }); canvas.add(currentLine); } currentLine.set({ left: Math.min(pointer.x, startX), top: Math.min(pointer.y, startY), width: width, height: height }); canvas.renderAll(); } });
-        canvas.on('mouse:up', (e) => { if (isPanning) { isPanning = false; canvas.selection = (currentMode === 'select'); canvas.setCursor(spacebarDown ? 'grab' : 'default'); return; } if (!isDrawing) return; let newObject = null; if (currentMode === 'wall' && currentLine) { currentLine.set({selectable: true}).setCoords(); newObject = currentLine; }  else if (currentMode === 'rect' && currentLine) { canvas.remove(currentLine); const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if (width > 2 && height > 2) { newObject = new fabric.Rect({ left: Math.min(startX, pointer.x), top: Math.min(startY, pointer.y), width, height, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth }); canvas.add(newObject); } } if(newObject) { setMode('select'); canvas.setActiveObject(newObject); } isDrawing = false; currentLine = null; });
+        canvas.on('mouse:move', (e) => {
+            if (isPanning) { const vpt = canvas.viewportTransform; vpt[4] += e.e.clientX - lastPosX; vpt[5] += e.e.clientY - lastPosY; canvas.requestRenderAll(); lastPosX = e.e.clientX; lastPosY = e.e.clientY; return; }
+            if (!isDrawing) return;
+            if (currentMode === 'wall' && currentLine) { const pointer = canvas.getPointer(e.e); let endX = pointer.x, endY = pointer.y; if (e.e.shiftKey) { const dx = Math.abs(pointer.x - startX); const dy = Math.abs(pointer.y - startY); if (dx > dy) { endY = startY; } else { endX = startX; } } currentLine.set({ x2: endX, y2: endY }); canvas.renderAll(); }
+            else if (currentMode === 'rect' && isDrawing) { const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if(!currentLine) { currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, strokeDashArray: [5, 5] }); canvas.add(currentLine); } currentLine.set({ left: Math.min(pointer.x, startX), top: Math.min(pointer.y, startY), width: width, height: height }); canvas.renderAll(); }
+        });
 
-        canvas.on({ 'selection:created': (e) => updateSelection(e.selected), 'selection:updated': (e) => updateSelection(e.selected), 'selection:cleared': () => updateSelection([]), 'object:scaling': updateSizeControls, 'object:rotating': updateSizeControls, 'object:moving': updateSizeControls });
+        canvas.on('mouse:up', (e) => {
+            if (isPanning) { isPanning = false; canvas.selection = (currentMode === 'select'); canvas.setCursor(spacebarDown ? 'grab' : 'default'); return; }
+            if (!isDrawing) return;
+            let newObject = null;
+            if (currentMode === 'wall' && currentLine) { currentLine.set({selectable: true}).setCoords(); newObject = currentLine; } 
+            else if (currentMode === 'rect' && currentLine) { canvas.remove(currentLine); const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if (width > 2 && height > 2) { newObject = new fabric.Rect({ left: Math.min(startX, pointer.x), top: Math.min(startY, pointer.y), width, height, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth }); canvas.add(newObject); } }
+            if(newObject) { setMode('select'); canvas.setActiveObject(newObject); }
+            isDrawing = false; currentLine = null;
+        });
 
-        function updateSelection(selected) { highlightPanelSelection(); selectedObject = selected.length === 1 ? selected[0] : null; if (selectedObject) { sizeControls.classList.add('show'); updateSizeControls(); } else { sizeControls.classList.remove('show'); } }
-
-        function updateSizeControls() {
-            if (selectedObject) {
-                const isStrokable = selectedObject.type === 'line' || selectedObject.type === 'rect';
-                strokeWidthControl.style.display = isStrokable ? 'block' : 'none';
-                if (isStrokable) { strokeWidthInput.value = selectedObject.strokeWidth; }
-                widthInput.value = Math.round(selectedObject.getScaledWidth());
-                heightInput.value = Math.round(selectedObject.getScaledHeight());
-                angleInput.value = Math.round(selectedObject.angle);
-            }
+        // 객체 선택 및 패널 동기화
+        canvas.on({ 'selection:created': (e) => updateSelection(e.selected), 'selection:updated': (e) => updateSelection(e.selected), 'selection:cleared': () => updateSelection([]), 'object:scaling': updateSizeControls, 'object:rotating': updateSizeControls, });
+        function updateSelection(selected) { 
+            highlightPanelSelection(); 
+            selectedObject = selected.length === 1 ? selected[0] : null; 
+            if (selectedObject) { 
+                sizeControls.classList.add('show'); 
+                updateSizeControls(); 
+                // 벽이나 사각형일 때 선 두께 컨트롤 표시
+                if (selectedObject.type === 'line' || selectedObject.type === 'rect') {
+                    strokeWidthControl.style.display = 'block';
+                    strokeWidthInput.value = selectedObject.strokeWidth;
+                } else {
+                    strokeWidthControl.style.display = 'none';
+                }
+            } else { 
+                sizeControls.classList.remove('show'); 
+            } 
         }
-        
-        strokeWidthInput.addEventListener('input', () => { if (selectedObject && (selectedObject.type === 'line' || selectedObject.type === 'rect')) { const newWidth = parseInt(strokeWidthInput.value, 10) || 1; selectedObject.set('strokeWidth', Math.max(1, newWidth)); canvas.renderAll(); } });
+        function updateSizeControls() { 
+            if (selectedObject) { 
+                widthInput.value = Math.round(selectedObject.getScaledWidth()); 
+                heightInput.value = Math.round(selectedObject.getScaledHeight()); 
+                angleInput.value = Math.round(selectedObject.angle); 
+                if (selectedObject.type === 'line' || selectedObject.type === 'rect') {
+                    strokeWidthInput.value = selectedObject.strokeWidth;
+                }
+            } 
+        }
         widthInput.addEventListener('input', () => { if (selectedObject) { selectedObject.scaleToWidth(parseInt(widthInput.value, 10)); canvas.renderAll(); }});
         heightInput.addEventListener('input', () => { if (selectedObject) { selectedObject.scaleToHeight(parseInt(heightInput.value, 10)); canvas.renderAll(); }});
         angleInput.addEventListener('input', () => { if (selectedObject) { selectedObject.set('angle', parseInt(angleInput.value, 10)).setCoords(); canvas.renderAll(); }});
         
+        // 선 두께 변경 이벤트
+        strokeWidthInput.addEventListener('input', () => {
+            if (selectedObject && (selectedObject.type === 'line' || selectedObject.type === 'rect')) {
+                selectedObject.set('strokeWidth', parseInt(strokeWidthInput.value, 10));
+                canvas.renderAll();
+                history.saveState();
+            }
+        });
+        
         selectBtn.addEventListener('click', () => setMode('select')); wallBtn.addEventListener('click', () => setMode('wall')); rectBtn.addEventListener('click', () => setMode('rect')); textBtn.addEventListener('click', () => setMode('text'));
         doorBtn.addEventListener('click', () => setMode('door')); windowBtn.addEventListener('click', () => setMode('window')); slidingDoorBtn.addEventListener('click', () => setMode('sliding-door')); stairsBtn.addEventListener('click', () => setMode('stairs'));
-        doorWindowBtn.addEventListener('click', () => setMode('door-window')); curtainWallBtn.addEventListener('click', () => setMode('curtain-wall')); systemWindowBtn.addEventListener('click', () => setMode('system-window'));
         undoBtn.addEventListener('click', () => history.undo()); redoBtn.addEventListener('click', () => history.redo()); deleteBtn.addEventListener('click', deleteSelectedObjects);
         function deleteSelectedObjects() { canvas.getActiveObjects().forEach(obj => canvas.remove(obj)); canvas.discardActiveObject().renderAll(); }
         
+        // ======[업데이트된 코드: 객체 패널]======
         function updateObjectPanel() {
             objectPanelList.innerHTML = '';
             const objects = canvas.getObjects().filter(obj => !obj.isGridLine);
+            
             objects.forEach((obj, index) => {
                 const li = document.createElement('li');
                 let name = obj.elementType || obj.type || '객체';
-                const typeMap = { 'text': `텍스트: ${obj.text.substring(0, 10)}...`, 'line': `벽`, 'rect': `사각형`, 'door': `문`, 'window': `창문`, 'sliding-door': '미닫이문', 'stairs': '계단', 'door-window': '문+창', 'curtain-wall': '커튼월', 'system-window': '시스템창' };
-                name = typeMap[name] ? `${typeMap[name]} ${index + 1}` : `${name} ${index + 1}`;
+                if(obj.type === 'text') name = `텍스트: ${obj.text.substring(0, 10)}...`;
+                else if(obj.type === 'line') name = `벽 ${index + 1}`;
+                else if(obj.type === 'rect') name = `사각형 ${index + 1}`;
+                else name = `${name.charAt(0).toUpperCase() + name.slice(1)} ${index + 1}`;
+
                 li.textContent = name;
-                li.dataset.objectIndex = canvas.getObjects().indexOf(obj);
-                li.addEventListener('click', () => { canvas.discardActiveObject(); canvas.setActiveObject(obj).renderAll(); });
+                li.dataset.objectIndex = canvas.getObjects().indexOf(obj); // 전체 배열에서의 인덱스
+
+                li.addEventListener('click', () => {
+                    canvas.discardActiveObject();
+                    canvas.setActiveObject(obj);
+                    canvas.renderAll();
+                });
                 objectPanelList.appendChild(li);
             });
             highlightPanelSelection();
         }
 
-        function highlightPanelSelection() { const activeObjects = canvas.getActiveObjects(); const listItems = objectPanelList.querySelectorAll('li'); listItems.forEach(li => { const objIndex = parseInt(li.dataset.objectIndex, 10); const obj = canvas.getObjects()[objIndex]; li.classList.toggle('selected', activeObjects.includes(obj)); }); }
+        function highlightPanelSelection() {
+            const activeObjects = canvas.getActiveObjects();
+            const listItems = objectPanelList.querySelectorAll('li');
+            listItems.forEach(li => {
+                const objIndex = parseInt(li.dataset.objectIndex, 10);
+                const obj = canvas.getObjects()[objIndex];
+                if (activeObjects.includes(obj)) {
+                    li.classList.add('selected');
+                } else {
+                    li.classList.remove('selected');
+                }
+            });
+        }
+        // ============================
 
-        const draggableElements = ['door-btn', 'window-btn', 'sliding-door-btn', 'stairs-btn', 'door-window-btn', 'curtain-wall-btn', 'system-window-btn'];
+        const draggableElements = ['door-btn', 'window-btn', 'sliding-door-btn', 'stairs-btn'];
         draggableElements.forEach(id => { const el = document.getElementById(id); el.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/plain', id.replace('-btn', '')); }); });
         canvasContainer.addEventListener('dragover', (e) => e.preventDefault());
-        canvasContainer.addEventListener('drop', (e) => { e.preventDefault(); const type = e.dataTransfer.getData('text/plain'); const zoom = canvas.getZoom(); const panX = canvas.viewportTransform[4]; const panY = canvas.viewportTransform[5]; const centerX = (canvas.width / 2 - panX) / zoom; const centerY = (canvas.height / 2 - panY) / zoom; const newObject = createObject(type, centerX, centerY); if (newObject) { canvas.add(newObject); setMode('select'); canvas.setActiveObject(newObject); canvas.renderAll(); } });
+        canvasContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const type = e.dataTransfer.getData('text/plain');
+            const zoom = canvas.getZoom();
+            const panX = canvas.viewportTransform[4]; const panY = canvas.viewportTransform[5];
+            const centerX = (canvas.width / 2 - panX) / zoom; const centerY = (canvas.height / 2 - panY) / zoom;
+            const newObject = createObject(type.replace('-',''), centerX, centerY);
+            if (newObject) { canvas.add(newObject); setMode('select'); canvas.setActiveObject(newObject); canvas.renderAll(); }
+        });
         
         document.getElementById('clear-btn').addEventListener('click', () => { if (confirm('모든 내용을 삭제하시겠습니까?\n(배경 이미지도 함께 제거됩니다)')) { history.isRestoring = true; canvas.clear(); canvas.setViewportTransform([1, 0, 0, 1, 0, 0]); canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas)); canvas.backgroundColor = 'white'; backgroundImage = null; bgClearBtn.disabled = true; opacityControl.style.display = 'none'; if (showGrid) drawGrid(); history.isRestoring = false; history.saveState(); } });
         bgImageBtn.addEventListener('click', () => { const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.onchange = (e) => { const reader = new FileReader(); reader.onload = (event) => { fabric.Image.fromURL(event.target.result, (img) => { const scale = Math.min(canvas.width / img.width, canvas.height / img.height); img.set({ scaleX: scale, scaleY: scale, opacity: bgOpacity.value / 100 }); canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), { originX: 'left', originY: 'top' }); backgroundImage = img; bgClearBtn.disabled = false; opacityControl.style.display = 'block'; }); }; reader.readAsDataURL(e.target.files[0]); }; input.click(); });
@@ -433,8 +542,8 @@
         gridBtn.addEventListener('click', () => { showGrid = !showGrid; gridBtn.classList.toggle('active', showGrid); if (!showGrid) { canvas.getObjects().forEach(o => { if(o.isGridLine) canvas.remove(o) }); } canvas.renderAll(); });
         
         document.getElementById('export-btn').addEventListener('click', () => { const link = document.createElement('a'); link.download = '평면도.png'; link.href = canvas.toDataURL({format: 'png', quality: 1}); link.click(); });
-        document.getElementById('save-btn').addEventListener('click', () => { const data = { version: '2.0', canvas: canvas.toJSON(['elementType']), viewport: canvas.viewportTransform, backgroundImage: backgroundImage ? { src: canvas.backgroundImage._element.src, opacity: backgroundImage.opacity, scaleX: backgroundImage.scaleX, scaleY: backgroundImage.scaleY } : null }; const blob = new Blob([JSON.stringify(data)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.download = '평면도.json'; link.href = url; link.click(); URL.revokeObjectURL(url); });
-        document.getElementById('load-btn').addEventListener('click', () => { const input = document.createElement('input'); input.type = 'file'; input.accept = '.json'; input.onchange = (e) => { const reader = new FileReader(); reader.onload = (event) => { const data = JSON.parse(event.target.result); history.isRestoring = true; canvas.loadFromJSON(data.canvas || data, () => { if (data.viewport) canvas.setViewportTransform(data.viewport); if (data.backgroundImage) { fabric.Image.fromURL(data.backgroundImage.src, (img) => { img.set(data.backgroundImage); canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas)); backgroundImage = img; bgClearBtn.disabled = false; opacityControl.style.display = 'block'; bgOpacity.value = (data.backgroundImage.opacity || 1) * 100; opacityValue.textContent = `${Math.round(bgOpacity.value)}%`; }); } canvas.renderAll(); history.isRestoring = false; history.saveState(); }); }; reader.readAsText(e.target.files[0]); }; input.click(); });
+        document.getElementById('save-btn').addEventListener('click', () => { const data = { version: '2.0', canvas: canvas.toJSON(['elementType']), viewport: canvas.viewportTransform, backgroundImage: backgroundImage ? { src: canvas.backgroundImage._element.src, opacity: backgroundImage.opacity, scaleX: backgroundImage.scaleX, scaleY: backgroundImage.scaleY } : null, defaultStrokeWidth: defaultStrokeWidth }; const blob = new Blob([JSON.stringify(data)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.download = '평면도.json'; link.href = url; link.click(); URL.revokeObjectURL(url); });
+        document.getElementById('load-btn').addEventListener('click', () => { const input = document.createElement('input'); input.type = 'file'; input.accept = '.json'; input.onchange = (e) => { const reader = new FileReader(); reader.onload = (event) => { const data = JSON.parse(event.target.result); history.isRestoring = true; canvas.loadFromJSON(data.canvas || data, () => { if (data.viewport) canvas.setViewportTransform(data.viewport); if (data.backgroundImage) { fabric.Image.fromURL(data.backgroundImage.src, (img) => { img.set(data.backgroundImage); canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas)); backgroundImage = img; bgClearBtn.disabled = false; opacityControl.style.display = 'block'; bgOpacity.value = (data.backgroundImage.opacity || 1) * 100; opacityValue.textContent = `${Math.round(bgOpacity.value)}%`; }); } if (data.defaultStrokeWidth) { defaultStrokeWidth = data.defaultStrokeWidth; defaultStrokeInput.value = defaultStrokeWidth; } canvas.renderAll(); history.isRestoring = false; history.saveState(); }); }; reader.readAsText(e.target.files[0]); }; input.click(); });
         
         setMode('select');
     </script>
