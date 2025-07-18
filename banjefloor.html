@@ -184,6 +184,39 @@
             margin: 0 5px;
         }
         
+        /* 스냅 컨트롤 스타일 */
+        .snap-control {
+            margin-top: 10px;
+            padding: 8px;
+            background-color: #e8f4f8;
+            border-radius: 3px;
+            border: 1px solid #b3d9e8;
+        }
+        
+        .snap-control label {
+            font-size: 12px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .snap-control input[type="number"] {
+            width: 60px;
+            margin: 0 5px;
+            padding: 3px;
+        }
+        
+        .snap-control .unit {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .snap-control .info-text {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
         .info { 
             margin-top: 10px; 
             padding: 0 15px 15px 15px; 
@@ -227,7 +260,7 @@
             z-index: 10;
         }
 
-        /* ======[업데이트된 코드: 컨텍스트 메뉴 스타일]====== */
+        /* 컨텍스트 메뉴 스타일 */
         #context-menu {
             position: absolute;
             display: none;
@@ -250,7 +283,28 @@
         #context-menu button:hover {
             background-color: #f0f0f0;
         }
-        /* ============================ */
+        
+        /* 스냅 포인트 하이라이트 스타일 */
+        .snap-indicator {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 3px solid #ff4444;
+            border-radius: 50%;
+            background-color: rgba(255, 68, 68, 0.2);
+            pointer-events: none;
+            z-index: 1000;
+            transform: translate(-50%, -50%);
+            display: none;
+            box-shadow: 0 0 8px rgba(255, 68, 68, 0.6);
+            animation: snapPulse 1s infinite;
+        }
+        
+        @keyframes snapPulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+        }
     </style>
 </head>
 <body>
@@ -265,7 +319,7 @@
                 <button id="delete-btn">삭제<span class="shortcut">Backspace</span></button>
             </div>
             
-            <div class="tool-group">
+            <div class="tool-group" style="display: none;">
                 <h3>편집</h3>
                 <button id="copy-btn" disabled>복사<span class="shortcut">Ctrl+C</span></button>
                 <button id="paste-btn" disabled>붙여넣기<span class="shortcut">Ctrl+V</span></button>
@@ -277,8 +331,18 @@
                 <h3>선 스타일</h3>
                 <div class="stroke-control">
                     <label>선 두께: 
-                        <input type="number" id="default-stroke-width" min="1" max="20" value="2" step="1">px
+                        <input type="number" id="default-stroke-width" min="1" max="20" value="5" step="1">px
                     </label>
+                </div>
+            </div>
+            
+            <div class="tool-group">
+                <h3>격자/스냅 설정</h3>
+                <div class="snap-control">
+                    <label>격자 간격:</label>
+                    <input type="number" id="snap-interval" min="0.1" max="10" value="0.5" step="0.1">
+                    <span class="unit">mm</span>
+                    <div class="info-text">격자와 스냅이 통합 제어됩니다</div>
                 </div>
             </div>
             
@@ -286,38 +350,136 @@
                 <h3>건축 요소</h3>
                 <button id="door-left-btn" class="icon-btn" title="왼쪽 여닫이문" draggable="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="55" height="49" fill="none" viewBox="0 0 55 49">
-                      <g clip-path="url(#a-1)"><path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6v-6Zm47 0h-6v6h6v-6Zm-6 0H7v6h41v-6ZM7 1v45"/><path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/><path stroke="#000" d="M7 45.1h41"/></g>
-                      <defs><clipPath id="a-1"><path fill="#fff" d="M0 0h55v49H0z"/></clipPath></defs>
+                      <g clip-path="url(#a)">
+                        <g clip-path="url(#b)">
+                          <mask id="c" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <path fill="#fff" d="M0 0h55v49H0V0Z"/>
+                          </mask>
+                          <g mask="url(#c)">
+                            <path fill="#fff" d="M7 1.6a41 41 0 0 1 41 41H7v-41Zm-6 40h6v6H1v-6Zm47 0h6v6h-6v-6Z"/>
+                            <path fill="#fff" d="M7 41.6h41v6H7v-6Z"/>
+                            <path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6m0-6v6m0-6h41m-41 6h41m0-6h6v6h-6m0-6v6M7 1v45"/>
+                            <path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/>
+                            <path stroke="#000" d="M7 45.1h41"/>
+                          </g>
+                        </g>
+                      </g>
+                      <defs>
+                        <clipPath id="a">
+                          <path fill="#fff" d="M0 0h55v49H0z"/>
+                        </clipPath>
+                        <clipPath id="b">
+                          <path fill="#fff" d="M0 0h55v49H0z"/>
+                        </clipPath>
+                      </defs>
                     </svg>
                 </button>
                 <button id="door-right-btn" class="icon-btn" title="오른쪽 여닫이문" draggable="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" fill="none" viewBox="0 0 55 48">
-                      <g clip-path="url(#a-2)"><path stroke="#000" stroke-width="1.3" d="M48 41h6v6h-6v-6ZM1 41h6v6H1v-6Zm6 0h41v6H7v-6ZM48 .4v45"/><path stroke="#000" stroke-width="1.3" d="M48 1A41 41 0 0 0 7 42"/><path stroke="#000" d="M48 44.5H7"/></g>
-                      <defs><clipPath id="a-2"><path fill="#fff" d="M55 0H0v48h55z"/></clipPath></defs>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="55" height="49" fill="none" viewBox="0 0 55 49">
+                      <g clip-path="url(#a)">
+                        <g clip-path="url(#b)">
+                          <mask id="c" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <path fill="#fff" d="M55 0H0v49h55V0Z"/>
+                          </mask>
+                          <g mask="url(#c)">
+                            <path fill="#fff" d="M48 1.6a41 41 0 0 0-41 41h41v-41Zm6 40h-6v6h6v-6Zm-47 0H1v6h6v-6Z"/>
+                            <path fill="#fff" d="M48 41.6H7v6h41v-6Z"/>
+                            <path stroke="#000" stroke-width="1.3" d="M48 41.6h6v6h-6m0-6v6m0-6H7m41 6H7m0-6H1v6h6m0-6v6M48 1v45"/>
+                            <path stroke="#000" stroke-width="1.3" d="M48 1.6a41 41 0 0 0-41 41"/>
+                            <path stroke="#000" d="M48 45.1H7"/>
+                          </g>
+                        </g>
+                      </g>
+                      <defs>
+                        <clipPath id="a">
+                          <path fill="#fff" d="M0 0h55v49H0z"/>
+                        </clipPath>
+                        <clipPath id="b">
+                          <path fill="#fff" d="M55 0H0v49h55z"/>
+                        </clipPath>
+                      </defs>
                     </svg>
                 </button>
                  <button id="window-left-btn" class="icon-btn" title="왼쪽 창문" draggable="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21">
-                      <g clip-path="url(#a-3)"><path stroke="#000" stroke-width="1.3" d="M1 1h60m0 0H1v10h60V1Z"/><path fill="#000" d="m13 17 6.5-3.753v7.506L13 17Zm31 0v.65H18.85v-1.3H44V17Z"/></g>
-                      <defs><clipPath id="a-3"><path fill="#fff" d="M0 0h62v21H0z"/></clipPath></defs>
+                      <g clip-path="url(#a)">
+                        <path fill="#fff" d="M0 0h62v21H0z"/>
+                        <path stroke="#000" stroke-width="1.3" d="M1 1h60m0 0H1v10h60V1Z"/>
+                        <path fill="#000" d="m13 17 6.5-3.753v7.506L13 17Zm31 0v.65H18.85v-1.3H44V17Z"/>
+                      </g>
+                      <defs>
+                        <clipPath id="a">
+                          <path fill="#fff" d="M0 0h62v21H0z"/>
+                        </clipPath>
+                      </defs>
                     </svg>
                 </button>
                  <button id="window-right-btn" class="icon-btn" title="오른쪽 창문" draggable="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21">
-                      <g clip-path="url(#a-4)"><path stroke="#000" stroke-width="1.3" d="M1 1h60m0 0H1v10h60V1Z"/><path fill="#000" d="m54 17-6.5-3.753v7.506L54 17Zm-31 0v.65h25.15v-1.3H23V17Z"/></g>
-                      <defs><clipPath id="a-4"><path fill="#fff" d="M0 0h62v21H0z"/></clipPath></defs>
+                      <g clip-path="url(#a)">
+                        <path fill="#fff" d="M0 0h62v21H0z"/>
+                        <path stroke="#000" stroke-width="1.3" d="M1 1h60m0 0H1v10h60V1Z"/>
+                        <path fill="#000" d="m54 17-6.5-3.753v7.506L54 17Zm-31 0v.65h25.15v-1.3H23V17Z"/>
+                      </g>
+                      <defs>
+                        <clipPath id="a">
+                          <path fill="#fff" d="M0 0h62v21H0z"/>
+                        </clipPath>
+                      </defs>
                     </svg>
                 </button>
                  <button id="window-both-btn" class="icon-btn" title="양쪽 창문" draggable="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="66" height="21" fill="none" viewBox="0 0 66 21">
-                      <g clip-path="url(#a-5)"><path stroke="#000" stroke-width="1.3" d="M3 1h60m0 0H3v10h60V1Z"/><path fill="#000" d="m66 17-6.5-3.753v7.506L66 17Zm-31 0v.65h25.15v-1.3H35V17ZM0 17l6.5-3.753v7.506L0 17Zm31 0v.65H5.85v-1.3H31V17Z"/></g>
-                      <defs><clipPath id="a-5"><path fill="#fff" d="M0 0h66v21H0z"/></clipPath></defs>
+                      <g clip-path="url(#a)">
+                        <path stroke="#000" stroke-width="1.3" d="M3 1h60m0 0H3v10h60V1Z"/>
+                        <path fill="#000" d="m66 17-6.5-3.753v7.506L66 17Zm-31 0v.65h25.15v-1.3H35V17ZM0 17l6.5-3.753v7.506L0 17Zm31 0v.65H5.85v-1.3H31V17Z"/>
+                      </g>
+                      <defs>
+                        <clipPath id="a">
+                          <path fill="#fff" d="M0 0h66v21H0z"/>
+                        </clipPath>
+                      </defs>
                     </svg>
                 </button>
-                <button id="door-double-btn" class="icon-btn" title="양개형 여닫이문" draggable="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="96" height="48" fill="none" viewBox="0 0 96 48">
-                      <g clip-path="url(#a-6)"><path stroke="#000" stroke-width="1.3" d="M7 41H1v6h6v-6Zm47 0h-6v6h6v-6Zm-6 0H7v6h41v-6ZM7 .4v45"/><path stroke="#000" stroke-width="1.3" d="M7 1a41 41 0 0 1 41 41"/><path stroke="#000" d="M7 44.5h41"/><path stroke="#000" stroke-width="1.3" d="M89 41h6v6h-6v-6Zm-47 0h6v6h-6v-6Zm6 0h41v6H48v-6ZM89 .4v45"/><path stroke="#000" stroke-width="1.3" d="M89 1a41 41 0 0 0-41 41"/><path stroke="#000" d="M89 44.5H48"/></g>
-                      <defs><clipPath id="a-6"><path fill="#fff" d="M0 0h96v48H0z"/></clipPath></defs>
+                <button id="door-double-btn" class="icon-btn" title="양개형 여닫이문" draggable="true" style="width: 80px; height: 55px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="96" height="49" fill="none" viewBox="0 0 96 49" style="width: 100%; height: 100%; object-fit: contain;">
+                      <g clip-path="url(#a)">
+                        <g clip-path="url(#b)">
+                          <mask id="c" width="55" height="49" x="41" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <path fill="#fff" d="M96 0H41v49h55V0Z"/>
+                          </mask>
+                          <g mask="url(#c)">
+                            <path fill="#fff" d="M89 1.6a41 41 0 0 0-41 41h41v-41Zm6 40h-6v6h6v-6Z"/>
+                            <path fill="#fff" d="M89 41.6H48v6h41v-6Z"/>
+                            <path stroke="#000" stroke-width="1.3" d="M89 41.6h6v6h-6m0-6v6m0-6H48m41 6H48m0-6h-6v6h6m0-6v6M89 1v45"/>
+                            <path stroke="#000" stroke-width="1.3" d="M89 1.6a41 41 0 0 0-41 41"/>
+                            <path stroke="#000" d="M89 45.1H48"/>
+                          </g>
+                        </g>
+                        <g clip-path="url(#d)">
+                          <mask id="e" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <path fill="#fff" d="M0 0h55v49H0V0Z"/>
+                          </mask>
+                          <g mask="url(#e)">
+                            <path fill="#fff" d="M7 1.6a41 41 0 0 1 41 41H7v-41Zm-6 40h6v6H1v-6Z"/>
+                            <path fill="#fff" d="M7 41.6h41v6H7v-6Z"/>
+                            <path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6m0-6v6m0-6h41m-41 6h41m0-6h6v6h-6m0-6v6M7 1v45"/>
+                            <path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/>
+                            <path stroke="#000" d="M7 45.1h41"/>
+                          </g>
+                        </g>
+                      </g>
+                      <defs>
+                        <clipPath id="a">
+                          <path fill="#fff" d="M0 0h96v49H0z"/>
+                        </clipPath>
+                        <clipPath id="b">
+                          <path fill="#fff" d="M96 0H48v49h48z"/>
+                        </clipPath>
+                        <clipPath id="d">
+                          <path fill="#fff" d="M0 0h48v49H0z"/>
+                        </clipPath>
+                      </defs>
                     </svg>
                 </button>
             </div>
@@ -342,7 +504,7 @@
                 </div>
             </div>
             
-            <div class="tool-group">
+            <div class="tool-group" style="display: none;">
                 <h3>보기</h3>
                 <button id="grid-btn">격자 표시</button>
             </div>
@@ -358,6 +520,7 @@
                     <label id="stroke-width-control" style="display:none;">선 두께: <input type="number" id="stroke-width-input" min="1" max="20" step="1"></label>
                 </div>
                 <div class="history-counter" id="history-counter"></div>
+                <div class="snap-indicator" id="snap-indicator"></div>
             </div>
 
             <div id="object-panel">
@@ -376,9 +539,13 @@
             <ul>
                 <li><strong>도구 단축키:</strong> 선택(V), 벽(W), 사각형(R), 삭제(Backspace)</li>
                 <li><strong>화면 이동:</strong> 스페이스바를 누른 채 드래그 합니다.</li>
+                <li><strong>연속 벽 그리기:</strong> 벽 모드에서 첫 선을 드래그로 그은 후, 마우스를 움직이면 자동으로 연장선이 표시됩니다. 클릭하여 벽을 연결하고, ESC 키로 종료합니다.</li>
                 <li><strong>객체 선택:</strong> 캔버스에서 직접 클릭하거나, 우측 '객체 목록' 패널에서 항목을 클릭합니다.</li>
+                <li><strong>방향키 이동:</strong> 객체 선택 후 방향키로 정밀 이동 가능합니다. 기본 0.5mm씩 이동, Shift+방향키로 10mm씩 이동합니다.</li>
                 <li><strong>복사/붙여넣기:</strong> 객체 선택 후 Ctrl+C / Ctrl+V 편집 메뉴의 버튼을 사용합니다.</li>
                 <li><strong>선 두께 조절:</strong> 상단 툴바에서 기본 두께를 설정하거나, 객체 선택 후 나타나는 컨트롤에서 개별 조절합니다.</li>
+                <li><strong>스냅 기능:</strong> 벽과 사각형 모드에서 격자 포인트, 기존 선, 사각형 경계선에 자동으로 스냅됩니다. 격자 간격은 상단에서 조정 가능합니다.</li>
+                <li><strong>프레임 경계 제한:</strong> 사각형 프레임 내에서 벽을 그리면 자동으로 프레임 경계를 넘지 않도록 제한됩니다. 벽이 프레임 경계선과 정확히 일치하게 그려집니다.</li>
                 <li><strong>건축 요소 삽입:</strong> 아이콘을 클릭 후 캔버스에 클릭하거나, 아이콘을 캔버스로 드래그 앤 드롭합니다.</li>
                 <li><strong>확대/축소:</strong> Ctrl(Windows)마우스 휠을 돌려 조절합니다.</li>
                 <li><strong>크기 조절:</strong> 객체 모서리를 드래그하여 조절합니다. Shift 키를 누른 채 드래그하면 자율 조절됩니다.</li>
@@ -388,11 +555,11 @@
         </div>
     </div>
 
-    <!-- ======[업데이트된 코드: 컨텍스트 메뉴 HTML]====== -->
+    <!-- 컨텍스트 메뉴 HTML -->
     <div id="context-menu">
         <button id="flip-btn">좌우 반전</button>
+        <button id="flip-vertical-btn">상하 반전</button>
     </div>
-    <!-- ============================ -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
     <script>
@@ -401,22 +568,404 @@
 
         const canvas = new fabric.Canvas('canvas', { backgroundColor: 'white', selection: true, stopContextMenu: true, fireRightClick: true, uniScaleTransform: true, });
 
+        // ======= 스냅 기능 관련 변수 =======
+        let snapRadius = 10; // 스냅 반경 (픽셀)
+        let snapEnabled = false; // 스냅 활성화 상태
+        let snapPoints = []; // 모든 스냅 포인트 저장 (선 + 격자 포인트)
+        let currentSnapPoint = null; // 현재 활성화된 스냅 포인트
+        const snapIndicator = document.getElementById('snap-indicator');
+        const snapIntervalInput = document.getElementById('snap-interval');
+        
+        // ======= 연속 벽 그리기 관련 변수 =======
+        let continuousDrawing = false; // 연속 그리기 모드
+        let lastWallEndX = null; // 마지막 벽의 끝 X 좌표
+        let lastWallEndY = null; // 마지막 벽의 끝 Y 좌표
+        let previewLine = null; // 미리보기 선
+        // <<< 변경/추가된 부분: Path 객체와 점들을 저장할 변수
+        let currentWallPath = null;
+        let wallPoints = [];
+        
+        // 격자/스냅 간격 변경 이벤트 (통합)
+        snapIntervalInput.addEventListener('change', (e) => {
+            gridSnapInterval = parseFloat(e.target.value) || 1.0;
+            if (gridSnapInterval < 0.1) gridSnapInterval = 0.1;
+            if (gridSnapInterval > 10) gridSnapInterval = 10;
+            snapIntervalInput.value = gridSnapInterval;
+            updateSnapPoints(); // 스냅 포인트 재계산
+            if (showGrid) drawGrid(); // 격자가 표시 중이면 재그리기
+        });
+
+        // mm를 픽셀로 변환 (1mm = 3.78 pixels at 96 DPI)
+        function mmToPixels(mm) {
+            return mm * 3.78;
+        }
+
+        // 픽셀을 mm로 변환
+        function pixelsToMm(pixels) {
+            return pixels / 3.78;
+        }
+
+        // 사각형 경계선의 스냅 포인트 계산
+        function getSnapPointsOnRect(rect) {
+            const points = [];
+            const matrix = rect.calcTransformMatrix();
+            const width = rect.getScaledWidth();
+            const height = rect.getScaledHeight();
+            
+            // 사각형의 네 모서리 좌표 계산
+            const topLeft = fabric.util.transformPoint({ x: rect.left, y: rect.top }, matrix);
+            const topRight = fabric.util.transformPoint({ x: rect.left + width, y: rect.top }, matrix);
+            const bottomLeft = fabric.util.transformPoint({ x: rect.left, y: rect.top + height }, matrix);
+            const bottomRight = fabric.util.transformPoint({ x: rect.left + width, y: rect.top + height }, matrix);
+            
+            const intervalPixels = mmToPixels(gridSnapInterval);
+            
+            // 상단 경계선
+            const topLength = Math.sqrt(Math.pow(topRight.x - topLeft.x, 2) + Math.pow(topRight.y - topLeft.y, 2));
+            const topPoints = Math.max(1, Math.floor(topLength / intervalPixels));
+            for (let i = 0; i <= topPoints; i++) {
+                const t = i / topPoints;
+                const x = topLeft.x + (topRight.x - topLeft.x) * t;
+                const y = topLeft.y + (topRight.y - topLeft.y) * t;
+                points.push({ x, y, line: rect, edge: 'top' });
+            }
+            
+            // 우측 경계선
+            const rightLength = Math.sqrt(Math.pow(bottomRight.x - topRight.x, 2) + Math.pow(bottomRight.y - topRight.y, 2));
+            const rightPoints = Math.max(1, Math.floor(rightLength / intervalPixels));
+            for (let i = 0; i <= rightPoints; i++) {
+                const t = i / rightPoints;
+                const x = topRight.x + (bottomRight.x - topRight.x) * t;
+                const y = topRight.y + (bottomRight.y - topRight.y) * t;
+                points.push({ x, y, line: rect, edge: 'right' });
+            }
+            
+            // 하단 경계선
+            const bottomLength = Math.sqrt(Math.pow(bottomLeft.x - bottomRight.x, 2) + Math.pow(bottomLeft.y - bottomRight.y, 2));
+            const bottomPoints = Math.max(1, Math.floor(bottomLength / intervalPixels));
+            for (let i = 0; i <= bottomPoints; i++) {
+                const t = i / bottomPoints;
+                const x = bottomRight.x + (bottomLeft.x - bottomRight.x) * t;
+                const y = bottomRight.y + (bottomLeft.y - bottomRight.y) * t;
+                points.push({ x, y, line: rect, edge: 'bottom' });
+            }
+            
+            // 좌측 경계선
+            const leftLength = Math.sqrt(Math.pow(topLeft.x - bottomLeft.x, 2) + Math.pow(topLeft.y - bottomLeft.y, 2));
+            const leftPoints = Math.max(1, Math.floor(leftLength / intervalPixels));
+            for (let i = 0; i <= leftPoints; i++) {
+                const t = i / leftPoints;
+                const x = bottomLeft.x + (topLeft.x - bottomLeft.x) * t;
+                const y = bottomLeft.y + (topLeft.y - bottomLeft.y) * t;
+                points.push({ x, y, line: rect, edge: 'left' });
+            }
+            
+            return points;
+        }
+
+        // 선 위의 스냅 포인트 계산
+        function getSnapPointsOnLine(line) {
+            const points = [];
+            
+            if (line.type === 'path' && line.path) {
+                // Path 객체의 경우 변환 매트릭스를 적용해야 함
+                const matrix = line.calcTransformMatrix();
+                const pathPoints = [];
+                
+                // Path 데이터에서 좌표 추출
+                for (let i = 0; i < line.path.length; i++) {
+                    const cmd = line.path[i];
+                    if (cmd[0] === 'M' || cmd[0] === 'L') {
+                        const point = fabric.util.transformPoint({ x: cmd[1], y: cmd[2] }, matrix);
+                        pathPoints.push(point);
+                    }
+                }
+                
+                // 각 선분에 대해 스냅 포인트 생성
+                for(let i = 0; i < pathPoints.length - 1; i++) {
+                    const p1 = pathPoints[i];
+                    const p2 = pathPoints[i+1];
+                    const length = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+                    const intervalPixels = mmToPixels(gridSnapInterval);
+                    const numPoints = Math.max(1, Math.floor(length / intervalPixels));
+                    
+                    for (let j = 0; j <= numPoints; j++) {
+                        const t = j / numPoints;
+                        const x = p1.x + (p2.x - p1.x) * t;
+                        const y = p1.y + (p2.y - p1.y) * t;
+                        points.push({ x, y, line: line });
+                    }
+                }
+                
+                // 끝점도 추가
+                if (pathPoints.length > 0) {
+                    const lastPoint = pathPoints[pathPoints.length - 1];
+                    points.push({ x: lastPoint.x, y: lastPoint.y, line: line });
+                }
+                
+            } else if (line.type === 'line') {
+                const x1 = line.x1, y1 = line.y1, x2 = line.x2, y2 = line.y2;
+                const matrix = line.calcTransformMatrix();
+                const p1 = fabric.util.transformPoint({ x: x1, y: y1 }, matrix);
+                const p2 = fabric.util.transformPoint({ x: x2, y: y2 }, matrix);
+                const length = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+                const intervalPixels = mmToPixels(gridSnapInterval);
+                const numPoints = Math.max(1, Math.floor(length / intervalPixels));
+                
+                for (let i = 0; i <= numPoints; i++) {
+                    const t = i / numPoints;
+                    const x = p1.x + (p2.x - p1.x) * t;
+                    const y = p1.y + (p2.y - p1.y) * t;
+                    points.push({ x, y, line: line });
+                }
+            }
+            return points;
+        }
+
+        // 격자 스냅 포인트 생성
+        function getGridSnapPoints() {
+            const gridPoints = [];
+            const zoom = canvas.getZoom();
+            const vpt = canvas.viewportTransform;
+            const gridPixelSize = mmToPixels(gridSnapInterval);
+            
+            // 현재 보이는 영역 계산
+            const left = (-vpt[4]) / zoom;
+            const top = (-vpt[5]) / zoom;
+            const right = (canvas.width - vpt[4]) / zoom;
+            const bottom = (canvas.height - vpt[5]) / zoom;
+            
+            // 격자 간격으로 스냅 포인트 생성
+            const startX = Math.floor(left / gridPixelSize) * gridPixelSize;
+            const startY = Math.floor(top / gridPixelSize) * gridPixelSize;
+            
+            for (let x = startX; x <= right + gridPixelSize; x += gridPixelSize) {
+                for (let y = startY; y <= bottom + gridPixelSize; y += gridPixelSize) {
+                    gridPoints.push({ x, y, type: 'grid' });
+                }
+            }
+            
+            return gridPoints;
+        }
+
+        // 모든 스냅 포인트 업데이트 (선 + 사각형 경계 + 격자)
+        function updateSnapPoints() {
+            snapPoints = [];
+            
+            // 기존 선들의 스냅 포인트
+            canvas.getObjects().forEach(obj => {
+                if ((obj.type === 'line' || obj.type === 'path') && !obj.isGridLine) {
+                    const points = getSnapPointsOnLine(obj);
+                    snapPoints = snapPoints.concat(points);
+                }
+                // 사각형(프레임) 경계선의 스냅 포인트 추가
+                else if (obj.type === 'rect' && !obj.isGridLine) {
+                    const points = getSnapPointsOnRect(obj);
+                    snapPoints = snapPoints.concat(points);
+                }
+            });
+            
+            // 격자 스냅 포인트 추가 (격자가 표시 중이거나 스냅이 활성화된 경우)
+            if (showGrid || snapEnabled) {
+                const gridPoints = getGridSnapPoints();
+                snapPoints = snapPoints.concat(gridPoints);
+            }
+        }
+
+        // 점이 사각형 내부에 있는지 확인
+        function isPointInsideRect(point, rect) {
+            const matrix = rect.calcTransformMatrix();
+            const width = rect.getScaledWidth();
+            const height = rect.getScaledHeight();
+            
+            // 사각형의 네 모서리 좌표
+            const topLeft = fabric.util.transformPoint({ x: rect.left, y: rect.top }, matrix);
+            const topRight = fabric.util.transformPoint({ x: rect.left + width, y: rect.top }, matrix);
+            const bottomLeft = fabric.util.transformPoint({ x: rect.left, y: rect.top + height }, matrix);
+            const bottomRight = fabric.util.transformPoint({ x: rect.left + width, y: rect.top + height }, matrix);
+            
+            // 점이 사각형 내부에 있는지 확인 (cross product 방법)
+            function sign(p1, p2, p3) {
+                return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+            }
+            
+            const d1 = sign(point, topLeft, topRight);
+            const d2 = sign(point, topRight, bottomRight);
+            const d3 = sign(point, bottomRight, bottomLeft);
+            const d4 = sign(point, bottomLeft, topLeft);
+            
+            const hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0) || (d4 < 0);
+            const hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0) || (d4 > 0);
+            
+            return !(hasNeg && hasPos);
+        }
+
+        // 선분이 사각형과 교차하는 점 찾기
+        function getLineRectIntersection(startPoint, endPoint, rect) {
+            const matrix = rect.calcTransformMatrix();
+            const width = rect.getScaledWidth();
+            const height = rect.getScaledHeight();
+            
+            // 사각형의 네 모서리 좌표
+            const topLeft = fabric.util.transformPoint({ x: rect.left, y: rect.top }, matrix);
+            const topRight = fabric.util.transformPoint({ x: rect.left + width, y: rect.top }, matrix);
+            const bottomLeft = fabric.util.transformPoint({ x: rect.left, y: rect.top + height }, matrix);
+            const bottomRight = fabric.util.transformPoint({ x: rect.left + width, y: rect.top + height }, matrix);
+            
+            const edges = [
+                { start: topLeft, end: topRight },      // 상단
+                { start: topRight, end: bottomRight },  // 우측
+                { start: bottomRight, end: bottomLeft }, // 하단
+                { start: bottomLeft, end: topLeft }     // 좌측
+            ];
+            
+            function lineIntersection(line1Start, line1End, line2Start, line2End) {
+                const x1 = line1Start.x, y1 = line1Start.y;
+                const x2 = line1End.x, y2 = line1End.y;
+                const x3 = line2Start.x, y3 = line2Start.y;
+                const x4 = line2End.x, y4 = line2End.y;
+                
+                const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+                if (Math.abs(denom) < 1e-10) return null;
+                
+                const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
+                const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom;
+                
+                if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+                    return {
+                        x: x1 + t * (x2 - x1),
+                        y: y1 + t * (y2 - y1),
+                        t: t
+                    };
+                }
+                return null;
+            }
+            
+            let closestIntersection = null;
+            let minT = Infinity;
+            
+            edges.forEach(edge => {
+                const intersection = lineIntersection(startPoint, endPoint, edge.start, edge.end);
+                if (intersection && intersection.t < minT) {
+                    minT = intersection.t;
+                    closestIntersection = intersection;
+                }
+            });
+            
+            return closestIntersection;
+        }
+
+        // 벽 그리기 시 프레임 경계 제한 적용
+        function constrainToFrames(startPoint, endPoint) {
+            const frames = canvas.getObjects().filter(obj => 
+                obj.type === 'rect' && !obj.isGridLine && 
+                obj.elementType === '사각형' // 프레임으로 간주할 사각형
+            );
+            
+            if (frames.length === 0) return endPoint;
+            
+            // 시작점이 포함된 프레임 찾기
+            let containingFrame = null;
+            for (const frame of frames) {
+                if (isPointInsideRect(startPoint, frame)) {
+                    containingFrame = frame;
+                    break;
+                }
+            }
+            
+            if (!containingFrame) return endPoint;
+            
+            // 끝점이 프레임 밖에 있으면 경계와의 교차점으로 제한
+            if (!isPointInsideRect(endPoint, containingFrame)) {
+                const intersection = getLineRectIntersection(startPoint, endPoint, containingFrame);
+                if (intersection) {
+                    return { x: intersection.x, y: intersection.y };
+                }
+            }
+            
+            return endPoint;
+        }
+
+        // 가장 가까운 스냅 포인트 찾기 (프레임 경계선 우선)
+        function findNearestSnapPoint(x, y) {
+            let minDistance = Infinity;
+            let nearestPoint = null;
+            
+            // 캔버스 좌표계에서 직접 거리 계산
+            // 줌 레벨에 따라 스냅 반경 조정
+            const zoom = canvas.getZoom();
+            const adjustedSnapRadius = snapRadius / zoom;
+            const frameSnapRadius = adjustedSnapRadius * 1.5; // 프레임은 더 큰 반경
+            
+            // 프레임 경계선 스냅 포인트를 먼저 확인 (우선순위)
+            snapPoints.forEach(point => {
+                const distance = Math.sqrt(
+                    Math.pow(x - point.x, 2) + 
+                    Math.pow(y - point.y, 2)
+                );
+                
+                const isFrameEdge = point.edge; // 사각형 경계선인지 확인
+                const snapRadius = isFrameEdge ? frameSnapRadius : adjustedSnapRadius;
+                
+                if (distance <= snapRadius) {
+                    // 프레임 경계선이면 우선 선택 (거리가 더 멀어도)
+                    if (isFrameEdge && (!nearestPoint || !nearestPoint.edge || distance < minDistance)) {
+                        minDistance = distance;
+                        nearestPoint = point;
+                    }
+                    // 일반 스냅 포인트는 더 가까울 때만
+                    else if (!isFrameEdge && (!nearestPoint || !nearestPoint.edge) && distance < minDistance) {
+                        minDistance = distance;
+                        nearestPoint = point;
+                    }
+                }
+            });
+            
+            return nearestPoint;
+        }
+
+        // 스냅 인디케이터 표시/숨김
+        function showSnapIndicator(x, y, isFrameEdge = false) {
+            const zoom = canvas.getZoom();
+            const vpt = canvas.viewportTransform;
+            snapIndicator.style.left = (x * zoom + vpt[4]) + 'px';
+            snapIndicator.style.top = (y * zoom + vpt[5]) + 'px';
+            
+            // 프레임 경계선 스냅은 다른 색상으로 표시
+            if (isFrameEdge) {
+                snapIndicator.style.borderColor = '#00ff00'; // 녹색
+                snapIndicator.style.backgroundColor = 'rgba(0, 255, 0, 0.2)';
+                snapIndicator.style.boxShadow = '0 0 8px rgba(0, 255, 0, 0.6)';
+            } else {
+                snapIndicator.style.borderColor = '#ff4444'; // 빨간색 (기본)
+                snapIndicator.style.backgroundColor = 'rgba(255, 68, 68, 0.2)';
+                snapIndicator.style.boxShadow = '0 0 8px rgba(255, 68, 68, 0.6)';
+            }
+            
+            snapIndicator.style.display = 'block';
+        }
+
+        function hideSnapIndicator() {
+            snapIndicator.style.display = 'none';
+        }
+
         const history = {
             states: [], currentIndex: -1, maxSize: 50, isRestoring: false,
-            saveState() { if (this.isRestoring) return; this.states = this.states.slice(0, this.currentIndex + 1); const state = JSON.stringify(canvas.toJSON(['elementType'])); this.states.push(state); if (this.states.length > this.maxSize) { this.states.shift(); } else { this.currentIndex++; } this.updateButtons(); this.updateCounter(); updateObjectPanel(); },
+            saveState() { if (this.isRestoring) return; this.states = this.states.slice(0, this.currentIndex + 1); const state = JSON.stringify(canvas.toJSON(['elementType'])); this.states.push(state); if (this.states.length > this.maxSize) { this.states.shift(); } else { this.currentIndex++; } this.updateButtons(); this.updateCounter(); updateObjectPanel(); updateSnapPoints(); },
             undo() { if (this.currentIndex > 0) { this.currentIndex--; this.restore(this.states[this.currentIndex]); } },
             redo() { if (this.currentIndex < this.states.length - 1) { this.currentIndex++; this.restore(this.states[this.currentIndex]); } },
-            restore(state) { this.isRestoring = true; const vpt = canvas.viewportTransform; canvas.loadFromJSON(state, () => { canvas.viewportTransform = vpt; canvas.renderAll(); if (showGrid) drawGrid(); updateObjectPanel(); this.isRestoring = false; this.updateButtons(); this.updateCounter(); }); },
+            restore(state) { this.isRestoring = true; const vpt = canvas.viewportTransform; canvas.loadFromJSON(state, () => { canvas.viewportTransform = vpt; canvas.renderAll(); if (showGrid) drawGrid(); updateObjectPanel(); updateSnapPoints(); this.isRestoring = false; this.updateButtons(); this.updateCounter(); }); },
             updateButtons() { undoBtn.disabled = this.currentIndex <= 0; redoBtn.disabled = this.currentIndex >= this.states.length - 1; },
             updateCounter() { const counter = document.getElementById('history-counter'); counter.textContent = `${this.currentIndex + 1} / ${this.states.length}`; }
         };
 
-        const gridSize = 20;
+        // ======= 통일된 격자/스냅 시스템 =======
+        let gridSnapInterval = 1.0; // mm 단위로 통일 (격자와 스냅 모두 동일)
         let showGrid = false, currentMode = 'select', isDrawing = false;
         let startX, startY, currentLine = null, selectedObject = null;
         let isPanning = false, lastPosX, lastPosY, spacebarDown = false;
         let backgroundImage = null;
-        let defaultStrokeWidth = 2;
+        let defaultStrokeWidth = 5;
         let _clipboard = null;
         
         const objectPanelList = document.getElementById('object-panel-list');
@@ -447,27 +996,168 @@
 
         history.saveState();
 
-        canvas.on({ 'object:added': () => { if (!history.isRestoring) history.saveState(); }, 'object:modified': () => history.saveState(), 'object:removed': () => { if (!history.isRestoring) history.saveState(); } });
+        // 기존 단순한 히스토리 이벤트 리스너로 되돌리기
+        canvas.on({ 
+            'object:added': () => { if (!history.isRestoring) history.saveState(); }, 
+            'object:modified': () => history.saveState(), 
+            'object:removed': () => { if (!history.isRestoring) history.saveState(); } 
+        });
         
         function createObject(type, x, y, callback) {
             let svgString = '';
-            let defaultWidth = 80;
+            let targetWidth = 80; // 기본값
+            let targetHeight = 70; // 기본값
             let elementType = type;
 
             switch(type) {
-                case 'door-left': svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="55" height="49" fill="none" viewBox="0 0 55 49"><g><path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6v-6Zm47 0h-6v6h6v-6Zm-6 0H7v6h41v-6ZM7 1v45"/><path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/><path stroke="#000" d="M7 45.1h41"/></g></svg>`; elementType = '왼쪽 여닫이문'; break;
-                case 'door-right': svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="55" height="48" fill="none" viewBox="0 0 55 48"><g><path stroke="#000" stroke-width="1.3" d="M48 41h6v6h-6v-6ZM1 41h6v6H1v-6Zm6 0h41v6H7v-6ZM48 .4v45"/><path stroke="#000" stroke-width="1.3" d="M48 1A41 41 0 0 0 7 42"/><path stroke="#000" d="M48 44.5H7"/></g></svg>`; elementType = '오른쪽 여닫이문'; break;
-                case 'window-left': svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21"><g><path stroke="#000" stroke-width="1.3" d="M1 1h60m0 0H1v10h60V1Z"/><path fill="#000" d="m13 17 6.5-3.753v7.506L13 17Zm31 0v.65H18.85v-1.3H44V17Z"/></g></svg>`; elementType = '왼쪽 창문'; break;
-                case 'window-right': svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21"><g><path stroke="#000" stroke-width="1.3" d="M1 1h60m0 0H1v10h60V1Z"/><path fill="#000" d="m54 17-6.5-3.753v7.506L54 17Zm-31 0v.65h25.15v-1.3H23V17Z"/></g></svg>`; elementType = '오른쪽 창문'; break;
-                case 'window-both': svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="66" height="21" fill="none" viewBox="0 0 66 21"><g><path stroke="#000" stroke-width="1.3" d="M3 1h60m0 0H3v10h60V1Z"/><path fill="#000" d="m66 17-6.5-3.753v7.506L66 17Zm-31 0v.65h25.15v-1.3H35V17ZM0 17l6.5-3.753v7.506L0 17Zm31 0v.65H5.85v-1.3H31V17Z"/></g></svg>`; elementType = '양쪽 창문'; break;
-                case 'door-double': svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="48" fill="none" viewBox="0 0 96 48"><g><path stroke="#000" stroke-width="1.3" d="M7 41H1v6h6v-6Zm47 0h-6v6h6v-6Zm-6 0H7v6h41v-6ZM7 .4v45"/><path stroke="#000" stroke-width="1.3" d="M7 1a41 41 0 0 1 41 41"/><path stroke="#000" d="M7 44.5h41"/><path stroke="#000" stroke-width="1.3" d="M89 41h6v6h-6v-6Zm-47 0h6v6h-6v-6Zm6 0h41v6H48v-6ZM89 .4v45"/><path stroke="#000" stroke-width="1.3" d="M89 1a41 41 0 0 0-41 41"/><path stroke="#000" d="M89 44.5H48"/></g></svg>`; defaultWidth = 120; elementType = '양개형 여닫이문'; break;
+                case 'door-left': 
+                    targetWidth = 34;    // 왼쪽 여닫이문 너비
+                    targetHeight = 31;   // 왼쪽 여닫이문 높이
+                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="55" height="49" fill="none" viewBox="0 0 55 49">
+  <g clip-path="url(#a)">
+    <g clip-path="url(#b)">
+      <mask id="c" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+        <path fill="#fff" d="M0 0h55v49H0V0Z"/>
+      </mask>
+      <g mask="url(#c)">
+        <path fill="#fff" d="M7 1.6a41 41 0 0 1 41 41H7v-41Zm-6 40h6v6H1v-6Zm47 0h6v6h-6v-6Z"/>
+        <path fill="#fff" d="M7 41.6h41v6H7v-6Z"/>
+        <path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6m0-6v6m0-6h41m-41 6h41m0-6h6v6h-6m0-6v6M7 1v45"/>
+        <path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/>
+        <path stroke="#000" d="M7 45.1h41"/>
+      </g>
+    </g>
+  </g>
+  <defs>
+    <clipPath id="a">
+      <path fill="#fff" d="M0 0h55v49H0z"/>
+    </clipPath>
+    <clipPath id="b">
+      <path fill="#fff" d="M0 0h55v49H0z"/>
+    </clipPath>
+  </defs>
+</svg>`; elementType = '왼쪽 여닫이문'; break;
+                case 'door-right': 
+                    targetWidth = 34;    // 오른쪽 여닫이문 너비
+                    targetHeight = 31;   // 오른쪽 여닫이문 높이
+                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="55" height="49" fill="none" viewBox="0 0 55 49">
+  <g clip-path="url(#a)">
+    <g clip-path="url(#b)">
+      <mask id="c" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+        <path fill="#fff" d="M55 0H0v49h55V0Z"/>
+      </mask>
+      <g mask="url(#c)">
+        <path fill="#fff" d="M48 1.6a41 41 0 0 0-41 41h41v-41Zm6 40h-6v6h6v-6Zm-47 0H1v6h6v-6Z"/>
+        <path fill="#fff" d="M48 41.6H7v6h41v-6Z"/>
+        <path stroke="#000" stroke-width="1.3" d="M48 41.6h6v6h-6m0-6v6m0-6H7m41 6H7m0-6H1v6h6m0-6v6M48 1v45"/>
+        <path stroke="#000" stroke-width="1.3" d="M48 1.6a41 41 0 0 0-41 41"/>
+        <path stroke="#000" d="M48 45.1H7"/>
+      </g>
+    </g>
+  </g>
+  <defs>
+    <clipPath id="a">
+      <path fill="#fff" d="M0 0h55v49H0z"/>
+    </clipPath>
+    <clipPath id="b">
+      <path fill="#fff" d="M55 0H0v49h55z"/>
+    </clipPath>
+  </defs>
+</svg>`; elementType = '오른쪽 여닫이문'; break;
+                case 'window-left': 
+                    targetWidth = 35;    // 왼쪽 창문 너비
+                    targetHeight = 12;   // 왼쪽 창문 높이
+                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21">
+  <g clip-path="url(#a)">
+    <path fill="#fff" d="M0 0h62v21H0z"/>
+    <path stroke="#000" stroke-width="1.3" d="M1 1h60m0 0H1v10h60V1Z"/>
+    <path fill="#000" d="m13 17 6.5-3.753v7.506L13 17Zm31 0v.65H18.85v-1.3H44V17Z"/>
+  </g>
+  <defs>
+    <clipPath id="a">
+      <path fill="#fff" d="M0 0h62v21H0z"/>
+    </clipPath>
+  </defs>
+</svg>`; elementType = '왼쪽 슬라이딩도어'; break;
+                case 'window-right': 
+                    targetWidth = 35;    // 오른쪽 창문 너비
+                    targetHeight = 12;   // 오른쪽 창문 높이
+                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21">
+  <g clip-path="url(#a)">
+    <path fill="#fff" d="M0 0h62v21H0z"/>
+    <path stroke="#000" stroke-width="1.3" d="M1 1h60m0 0H1v10h60V1Z"/>
+    <path fill="#000" d="m54 17-6.5-3.753v7.506L54 17Zm-31 0v.65h25.15v-1.3H23V17Z"/>
+  </g>
+  <defs>
+    <clipPath id="a">
+      <path fill="#fff" d="M0 0h62v21H0z"/>
+    </clipPath>
+  </defs>
+</svg>`; elementType = '오른쪽 슬라이딩도어'; break;
+                case 'window-both': 
+                    targetWidth = 35;    // 양쪽 창문 너비
+                    targetHeight = 12;   // 양쪽 창문 높이
+                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="66" height="21" fill="none" viewBox="0 0 66 21"><g><path stroke="#000" stroke-width="1.3" d="M3 1h60m0 0H3v10h60V1Z"/><path fill="#000" d="m66 17-6.5-3.753v7.506L66 17Zm-31 0v.65h25.15v-1.3H35V17ZM0 17l6.5-3.753v7.506L0 17Zm31 0v.65H5.85v-1.3H31V17Z"/></g></svg>`; elementType = '양쪽 슬라이딩도어'; break;
+                case 'door-double': 
+                    targetWidth = 59;   // 양개형 여닫이문 너비
+                    targetHeight = 30;   // 양개형 여닫이문 높이
+                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="49" fill="none" viewBox="0 0 96 49">
+  <g clip-path="url(#a)">
+    <g clip-path="url(#b)">
+      <mask id="c" width="55" height="49" x="41" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+        <path fill="#fff" d="M96 0H41v49h55V0Z"/>
+      </mask>
+      <g mask="url(#c)">
+        <path fill="#fff" d="M89 1.6a41 41 0 0 0-41 41h41v-41Zm6 40h-6v6h6v-6Z"/>
+        <path fill="#fff" d="M89 41.6H48v6h41v-6Z"/>
+        <path stroke="#000" stroke-width="1.3" d="M89 41.6h6v6h-6m0-6v6m0-6H48m41 6H48m0-6h-6v6h6m0-6v6M89 1v45"/>
+        <path stroke="#000" stroke-width="1.3" d="M89 1.6a41 41 0 0 0-41 41"/>
+        <path stroke="#000" d="M89 45.1H48"/>
+      </g>
+    </g>
+    <g clip-path="url(#d)">
+      <mask id="e" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+        <path fill="#fff" d="M0 0h55v49H0V0Z"/>
+      </mask>
+      <g mask="url(#e)">
+        <path fill="#fff" d="M7 1.6a41 41 0 0 1 41 41H7v-41Zm-6 40h6v6H1v-6Z"/>
+        <path fill="#fff" d="M7 41.6h41v6H7v-6Z"/>
+        <path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6m0-6v6m0-6h41m-41 6h41m0-6h6v6h-6m0-6v6M7 1v45"/>
+        <path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/>
+        <path stroke="#000" d="M7 45.1h41"/>
+      </g>
+    </g>
+  </g>
+  <defs>
+    <clipPath id="a">
+      <path fill="#fff" d="M0 0h96v49H0z"/>
+    </clipPath>
+    <clipPath id="b">
+      <path fill="#fff" d="M96 0H48v49h48z"/>
+    </clipPath>
+    <clipPath id="d">
+      <path fill="#fff" d="M0 0h48v49H0z"/>
+    </clipPath>
+  </defs>
+</svg>`; elementType = '양개형 여닫이문'; break;
                 default: callback(null); return;
             }
 
             fabric.loadSVGFromString(svgString, (objects, options) => {
-                objects.forEach(obj => { if (obj.stroke) obj.set('strokeWidth', defaultStrokeWidth); });
-                const group = new fabric.Group(objects, { left: x, top: y, originX: 'center', originY: 'center', elementType: elementType });
-                group.scaleToWidth(defaultWidth);
+                objects.forEach(obj => { if (obj.stroke) obj.set('strokeWidth', 2); }); // 건축 요소는 항상 2px 고정
+                
+                // 이미 SVG에 흰색 배경이 포함되어 있으므로 간단하게 그룹만 생성
+                const group = new fabric.Group(objects, { 
+                    left: x, 
+                    top: y, 
+                    originX: 'center', 
+                    originY: 'center', 
+                    elementType: elementType
+                });
+                
+                // 너비와 높이를 모두 설정
+                group.scaleToWidth(targetWidth);
+                group.scaleToHeight(targetHeight);
                 callback(group);
             });
         }
@@ -478,6 +1168,31 @@
             }
             
             currentMode = mode; 
+            
+            snapEnabled = (['wall', 'rect'].includes(mode)); // 벽과 사각형 모드에서 스냅 활성화
+            if (!snapEnabled) {
+                hideSnapIndicator();
+            } else {
+                // 벽 모드 진입 시 스냅 포인트 업데이트
+                updateSnapPoints();
+            }
+            
+            // <<< 변경된 부분: 벽 모드가 아니면 Path 그리기 관련 변수 초기화
+            if (mode !== 'wall') {
+                continuousDrawing = false;
+                lastWallEndX = null;
+                lastWallEndY = null;
+                wallPoints = []; 
+                if (previewLine) {
+                    canvas.remove(previewLine);
+                    previewLine = null;
+                }
+                if(currentWallPath) {
+                    currentWallPath.set({ selectable: true });
+                    currentWallPath = null;
+                }
+            }
+            
             document.querySelectorAll('button.active').forEach(btn => btn.classList.remove('active')); 
             const currentBtn = document.getElementById(mode + '-mode') || document.getElementById(mode + '-btn'); 
             if (currentBtn) currentBtn.classList.add('active'); 
@@ -495,6 +1210,63 @@
                 if (!isPanning) {
                     canvas.setCursor('grab');
                 }
+            }
+            
+            // <<< 변경된 부분: ESC 키 누를 때 Path 그리기 종료 처리
+            if (e.code === 'Escape' && currentMode === 'wall' && continuousDrawing) {
+                e.preventDefault();
+                continuousDrawing = false;
+                lastWallEndX = null;
+                lastWallEndY = null;
+                
+                if (previewLine) {
+                    canvas.remove(previewLine);
+                    previewLine = null;
+                }
+                if (currentWallPath) {
+                    currentWallPath.set({ selectable: true, evented: true });
+                    // Path가 최종 확정되면 히스토리 저장하고 스냅 포인트 업데이트
+                    history.saveState();
+                    updateSnapPoints();
+                }
+                
+                wallPoints = [];
+                currentWallPath = null;
+
+                hideSnapIndicator();
+                canvas.renderAll();
+                setMode('select');
+            }
+
+            // 방향키로 선택된 객체 이동
+            if (selectedObject && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+                e.preventDefault();
+                
+                // 이동 거리 계산: 기본 0.5mm, Shift키 누르면 10mm
+                const moveDistanceMm = e.shiftKey ? 10 : gridSnapInterval; // gridSnapInterval는 현재 0.5mm
+                const moveDistancePixels = mmToPixels(moveDistanceMm);
+                
+                let deltaX = 0, deltaY = 0;
+                
+                switch(e.code) {
+                    case 'ArrowUp': deltaY = -moveDistancePixels; break;
+                    case 'ArrowDown': deltaY = moveDistancePixels; break;
+                    case 'ArrowLeft': deltaX = -moveDistancePixels; break;
+                    case 'ArrowRight': deltaX = moveDistancePixels; break;
+                }
+                
+                // 객체 이동
+                selectedObject.set({
+                    left: selectedObject.left + deltaX,
+                    top: selectedObject.top + deltaY
+                });
+                
+                selectedObject.setCoords(); // 좌표 업데이트
+                canvas.renderAll();
+                updateSizeControls(); // 크기 조절 패널 위치 업데이트
+                updateObjectPanel(); // 객체 패널 업데이트
+                history.saveState(); // 히스토리 저장
+                return;
             }
 
             const isCtrlOrCmd = e.ctrlKey || e.metaKey;
@@ -533,19 +1305,16 @@
             } 
         });
         
-        // ======[업데이트된 코드: 우클릭 이벤트 처리]======
         const contextMenu = document.getElementById('context-menu');
         const flipBtn = document.getElementById('flip-btn');
+        const flipVerticalBtn = document.getElementById('flip-vertical-btn');
         let rightClickedObject = null;
 
+        // <<< 변경된 부분: 벽 그리기 로직을 Path 기반으로 전면 수정
         canvas.on('mouse:down', (e) => {
-            // 메뉴 숨기기
             contextMenu.style.display = 'none';
-
-            // 우클릭 처리
             if (e.button === 3) {
                 const target = e.target;
-                // 건축 요소(그룹) 위에서 우클릭한 경우
                 if (target && target.isType('group') && target.elementType) {
                     e.e.preventDefault();
                     rightClickedObject = target;
@@ -555,10 +1324,8 @@
                     return;
                 }
             }
-
             const isMiddleClick = e.e.button === 1;
             const isSpacebarPan = spacebarDown && e.e.button === 0;
-
             if (isMiddleClick || isSpacebarPan) {
                 isPanning = true;
                 lastPosX = e.e.clientX;
@@ -569,12 +1336,107 @@
                 canvas.renderAll();
                 return;
             }
-
-            if (currentMode === 'select' || isDrawing) return;
-            const pointer = canvas.getPointer(e.e); startX = pointer.x; startY = pointer.y; isDrawing = true;
+            if (currentMode === 'select') return;
             
+            const pointer = canvas.getPointer(e.e); 
+            
+            // 벽(Path) 그리기 로직
+            if (currentMode === 'wall') {
+                let currentX = pointer.x;
+                let currentY = pointer.y;
+
+                // 연속 그리기 중이고 Shift 키가 눌렸다면 일직선으로 보정
+                if (continuousDrawing && e.e.shiftKey && lastWallEndX !== null && lastWallEndY !== null) {
+                    const dx = Math.abs(currentX - lastWallEndX);
+                    const dy = Math.abs(currentY - lastWallEndY);
+                    if (dx > dy) { 
+                        currentY = lastWallEndY; // 수평선
+                    } else { 
+                        currentX = lastWallEndX; // 수직선
+                    }
+                }
+
+                // 프레임 경계 제한 적용 (연속 그리기 중일 때)
+                if (continuousDrawing && lastWallEndX !== null && lastWallEndY !== null) {
+                    const constrainedPoint = constrainToFrames(
+                        { x: lastWallEndX, y: lastWallEndY }, 
+                        { x: currentX, y: currentY }
+                    );
+                    currentX = constrainedPoint.x;
+                    currentY = constrainedPoint.y;
+                }
+
+                if (snapEnabled) {
+                    const snapPoint = findNearestSnapPoint(currentX, currentY);
+                    if (snapPoint) {
+                        currentX = snapPoint.x;
+                        currentY = snapPoint.y;
+                    }
+                }
+
+                // 연속 그리기를 시작 (첫 클릭)
+                if (!continuousDrawing) {
+                    continuousDrawing = true;
+                    wallPoints.push({ x: currentX, y: currentY });
+                    lastWallEndX = currentX;
+                    lastWallEndY = currentY;
+                    // 미리보기 선을 생성
+                    previewLine = new fabric.Line([lastWallEndX, lastWallEndY, lastWallEndX, lastWallEndY], {
+                        stroke: 'gray', strokeWidth: defaultStrokeWidth, strokeDashArray: [5, 5],
+                        selectable: false, evented: false,
+                    });
+                    canvas.add(previewLine);
+                } 
+                // 연속해서 점을 추가 (두 번째 클릭부터)
+                else {
+                    wallPoints.push({ x: currentX, y: currentY });
+                    
+                    // 기존 Path가 있으면 제거
+                    if (currentWallPath) {
+                        canvas.remove(currentWallPath);
+                    }
+                    
+                    // Path 데이터 생성 (M x1 y1 L x2 y2 ...)
+                    const pathData = wallPoints.map((p, i) => (i === 0 ? 'M' : 'L') + ` ${p.x} ${p.y}`).join(' ');
+
+                    currentWallPath = new fabric.Path(pathData, {
+                        stroke: 'black',
+                        strokeWidth: defaultStrokeWidth,
+                        strokeLineJoin: 'miter', // 모서리를 날카롭게!
+                        fill: 'transparent', // 채우기 없음
+                        selectable: false, // 그리는 중에는 선택 안되게
+                        evented: false,
+                        elementType: '벽'
+                    });
+                    canvas.add(currentWallPath);
+                    
+                    lastWallEndX = currentX;
+                    lastWallEndY = currentY;
+                    
+                    // 미리보기 선의 시작점을 새로운 위치로 업데이트
+                    if (previewLine) {
+                        previewLine.set({ x1: currentX, y1: currentY, x2: currentX, y2: currentY });
+                    }
+                }
+                canvas.renderAll();
+                return;
+            }
+            
+            // 다른 모드들 처리
+            let snapX = pointer.x, snapY = pointer.y;
+            
+            // 스냅 적용 (사각형 등)
+            if (snapEnabled) {
+                const snapPoint = findNearestSnapPoint(pointer.x, pointer.y);
+                if (snapPoint) {
+                    snapX = snapPoint.x;
+                    snapY = snapPoint.y;
+                }
+            }
+            
+            startX = snapX; startY = snapY; isDrawing = true;
             switch(currentMode) {
-                case 'wall': currentLine = new fabric.Line([startX, startY, startX, startY], { stroke: 'black', strokeWidth: defaultStrokeWidth, strokeLineCap: 'square', selectable: false }); canvas.add(currentLine); break;
+                case 'rect': currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, strokeDashArray: [5, 5] }); canvas.add(currentLine); break;
                 case 'text': const text = prompt('텍스트를 입력하세요:'); if (text) { const insertedObject = new fabric.Text(text, { left: startX, top: startY, fontSize: 14, fill: 'black' }); canvas.add(insertedObject); setMode('select'); canvas.setActiveObject(insertedObject); } isDrawing = false; break;
                 case 'door-left': case 'door-right': case 'window-left': case 'window-right': case 'window-both': case 'door-double':
                     createObject(currentMode, startX, startY, (insertedObject) => {
@@ -594,21 +1456,79 @@
             contextMenu.style.display = 'none';
         });
 
-        // 컨텍스트 메뉴 바깥 클릭 시 숨기기
+        flipVerticalBtn.addEventListener('click', () => {
+            if (rightClickedObject) {
+                rightClickedObject.set('flipY', !rightClickedObject.flipY);
+                canvas.renderAll();
+                history.saveState();
+            }
+            contextMenu.style.display = 'none';
+        });
+
         window.addEventListener('click', (e) => {
             if (!contextMenu.contains(e.target)) {
                 contextMenu.style.display = 'none';
             }
         });
-        // ============================
 
         canvas.on('mouse:move', (e) => {
             if (isPanning) { const vpt = canvas.viewportTransform; vpt[4] += e.e.clientX - lastPosX; vpt[5] += e.e.clientY - lastPosY; canvas.requestRenderAll(); lastPosX = e.e.clientX; lastPosY = e.e.clientY; return; }
+            
+            const pointer = canvas.getPointer(e.e);
+            
+            // <<< 변경된 부분: 벽 그리기 시 미리보기 선만 업데이트
+            if (currentMode === 'wall' && continuousDrawing && previewLine) {
+                let endX = pointer.x, endY = pointer.y;
+                
+                // Shift 키로 일직선 보정
+                if (e.e.shiftKey) {
+                    const dx = Math.abs(endX - lastWallEndX);
+                    const dy = Math.abs(endY - lastWallEndY);
+                    if (dx > dy) { endY = lastWallEndY; } else { endX = lastWallEndX; }
+                }
+                
+                // 프레임 경계 제한 적용
+                const constrainedPoint = constrainToFrames(
+                    { x: lastWallEndX, y: lastWallEndY }, 
+                    { x: endX, y: endY }
+                );
+                endX = constrainedPoint.x;
+                endY = constrainedPoint.y;
+                
+                // 스냅 적용 (프레임 제한 후)
+                if (snapEnabled) {
+                    const snapPoint = findNearestSnapPoint(endX, endY);
+                    if (snapPoint) { 
+                        endX = snapPoint.x; 
+                        endY = snapPoint.y; 
+                        showSnapIndicator(endX, endY, snapPoint.edge); 
+                    } 
+                    else { hideSnapIndicator(); }
+                }
+                
+                previewLine.set({ x2: endX, y2: endY });
+                canvas.renderAll();
+                return;
+            }
+            
+            if (snapEnabled && currentMode === 'wall' && !continuousDrawing) {
+                const snapPoint = findNearestSnapPoint(pointer.x, pointer.y);
+                if (snapPoint) { showSnapIndicator(snapPoint.x, snapPoint.y, snapPoint.edge); currentSnapPoint = snapPoint; } 
+                else { hideSnapIndicator(); currentSnapPoint = null; }
+            }
+            
             if (!isDrawing) return;
-            if (currentMode === 'wall' && currentLine) { const pointer = canvas.getPointer(e.e); let endX = pointer.x, endY = pointer.y; if (e.e.shiftKey) { const dx = Math.abs(pointer.x - startX); const dy = Math.abs(pointer.y - startY); if (dx > dy) { endY = startY; } else { endX = startX; } } currentLine.set({ x2: endX, y2: endY }); canvas.renderAll(); }
-            else if (currentMode === 'rect' && isDrawing) { const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if(!currentLine) { currentLine = new fabric.Rect({ left: startX, top: startY, width: 0, height: 0, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, strokeDashArray: [5, 5] }); canvas.add(currentLine); } currentLine.set({ left: Math.min(pointer.x, startX), top: Math.min(pointer.y, startY), width: width, height: height }); canvas.renderAll(); }
+            
+            // 사각형 그리기 로직 (벽 그리기는 mouse:down에서 처리되므로 여기선 제외)
+            if (currentMode === 'rect' && currentLine) { 
+                const width = Math.abs(pointer.x - startX); 
+                const height = Math.abs(pointer.y - startY); 
+                currentLine.set({ left: Math.min(pointer.x, startX), top: Math.min(pointer.y, startY), width: width, height: height }); 
+                canvas.renderAll(); 
+            }
         });
 
+        // <<< 변경된 부분: mouse:up은 이제 사각형 그리기만 처리
         canvas.on('mouse:up', (e) => {
             if (isPanning) { 
                 isPanning = false; 
@@ -617,11 +1537,26 @@
                 return; 
             }
             if (!isDrawing) return;
+            
             let newObject = null;
-            if (currentMode === 'wall' && currentLine) { currentLine.set({selectable: true}).setCoords(); newObject = currentLine; } 
-            else if (currentMode === 'rect' && currentLine) { canvas.remove(currentLine); const pointer = canvas.getPointer(e.e); const width = Math.abs(pointer.x - startX); const height = Math.abs(pointer.y - startY); if (width > 2 && height > 2) { newObject = new fabric.Rect({ left: Math.min(startX, pointer.x), top: Math.min(startY, pointer.y), width, height, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth }); canvas.add(newObject); } }
-            if(newObject) { setMode('select'); canvas.setActiveObject(newObject); }
-            isDrawing = false; currentLine = null;
+            if (currentMode === 'rect' && currentLine) { 
+                canvas.remove(currentLine); 
+                const pointer = canvas.getPointer(e.e); 
+                const width = Math.abs(pointer.x - startX); 
+                const height = Math.abs(pointer.y - startY); 
+                if (width > 2 && height > 2) { 
+                    newObject = new fabric.Rect({ left: Math.min(startX, pointer.x), top: Math.min(startY, pointer.y), width, height, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, elementType: '사각형' }); 
+                    canvas.add(newObject); 
+                } 
+            }
+            
+            if(newObject) { 
+                setMode('select'); 
+                canvas.setActiveObject(newObject); 
+            }
+            
+            isDrawing = false; 
+            currentLine = null;
         });
 
         function handleRotating(opt) {
@@ -650,7 +1585,8 @@
             if (selectedObject) { 
                 sizeControls.classList.add('show'); 
                 updateSizeControls(); 
-                if (selectedObject.type === 'line' || selectedObject.type === 'rect' || selectedObject.isType('group')) {
+                // Path 객체도 선 두께 조절 가능
+                if (selectedObject.type === 'line' || selectedObject.type === 'rect' || selectedObject.isType('group') || selectedObject.type === 'path') {
                     strokeWidthControl.style.display = 'block';
                 } else {
                     strokeWidthControl.style.display = 'none';
@@ -666,7 +1602,7 @@
                 heightInput.value = Math.round(selectedObject.getScaledHeight()); 
                 angleInput.value = Math.round(selectedObject.angle); 
                 
-                if (selectedObject.type === 'line' || selectedObject.type === 'rect') {
+                if (selectedObject.type === 'line' || selectedObject.type === 'rect' || selectedObject.type === 'path') {
                     strokeWidthInput.value = selectedObject.strokeWidth;
                 } else if (selectedObject.isType('group')) {
                     const firstStroked = selectedObject.getObjects().find(o => o.stroke);
@@ -685,7 +1621,7 @@
             const newWidth = parseInt(strokeWidthInput.value, 10);
             if(isNaN(newWidth) || newWidth < 1) return;
 
-            if (selectedObject.type === 'line' || selectedObject.type === 'rect') {
+            if (selectedObject.type === 'line' || selectedObject.type === 'rect' || selectedObject.type === 'path') {
                 selectedObject.set('strokeWidth', newWidth);
             } else if (selectedObject.isType('group')) {
                 selectedObject.getObjects().forEach(obj => {
@@ -707,7 +1643,10 @@
         redoBtn.addEventListener('click', () => history.redo()); 
         deleteBtn.addEventListener('click', deleteSelectedObjects);
 
-        function deleteSelectedObjects() { canvas.getActiveObjects().forEach(obj => canvas.remove(obj)); canvas.discardActiveObject().renderAll(); }
+        function deleteSelectedObjects() { 
+            canvas.getActiveObjects().forEach(obj => canvas.remove(obj)); 
+            canvas.discardActiveObject().renderAll(); 
+        }
         
         function copyObject() {
             const activeObject = canvas.getActiveObject();
@@ -753,7 +1692,8 @@
                 const li = document.createElement('li');
                 let name = obj.elementType || obj.type || '객체';
                 if(obj.type === 'text') name = `텍스트: ${obj.text.substring(0, 10)}...`;
-                else if(obj.type === 'line') name = `벽 ${index + 1}`;
+                // Path 객체도 '벽'으로 표시
+                else if(obj.type === 'path' && obj.elementType === '벽') name = `벽 ${index + 1}`;
                 else if(obj.type === 'rect') name = `사각형 ${index + 1}`;
                 else name = `${name} ${index + 1}`;
                 li.textContent = name;
@@ -794,69 +1734,182 @@
         bgClearBtn.addEventListener('click', () => { canvas.setBackgroundImage(null, canvas.renderAll.bind(canvas)); backgroundImage = null; bgClearBtn.disabled = true; opacityControl.style.display = 'none'; });
         bgOpacity.addEventListener('input', (e) => { const opacity = e.target.value; opacityValue.textContent = opacity + '%'; if (backgroundImage) { backgroundImage.set('opacity', opacity / 100); canvas.renderAll(); } });
         
-        function drawGrid() { canvas.getObjects().forEach(o => { if (o.isGridLine) canvas.remove(o) }); const zoom = canvas.getZoom(); const panX = canvas.viewportTransform[4]; const panY = canvas.viewportTransform[5]; for (let i = Math.floor(-panX / (gridSize * zoom)); i * gridSize < canvas.width / zoom; i++) { const x = i * gridSize; const line = new fabric.Line([x, -panY / zoom, x, (canvas.height - panY) / zoom], { stroke: '#e0e0e0', strokeWidth: 1, selectable: false, evented: false, isGridLine: true }); canvas.add(line); } for (let i = Math.floor(-panY / (gridSize * zoom)); i * gridSize < canvas.height / zoom; i++) { const y = i * gridSize; const line = new fabric.Line([-panX / zoom, y, (canvas.width - panX) / zoom, y], { stroke: '#e0e0e0', strokeWidth: 1, selectable: false, evented: false, isGridLine: true }); canvas.add(line); } canvas.getObjects().filter(o => o.isGridLine).forEach(o => canvas.sendToBack(o)); }
+        // 통합된 격자 그리기 (mm 단위)
+        function drawGrid() {
+            // 기존 격자 선 제거
+            canvas.getObjects().forEach(o => { 
+                if (o.isGridLine) canvas.remove(o);
+            });
+            
+            const zoom = canvas.getZoom();
+            const vpt = canvas.viewportTransform;
+            const gridPixelSize = mmToPixels(gridSnapInterval);
+            
+            // 현재 보이는 영역 계산
+            const left = (-vpt[4]) / zoom;
+            const top = (-vpt[5]) / zoom;
+            const right = (canvas.width - vpt[4]) / zoom;
+            const bottom = (canvas.height - vpt[5]) / zoom;
+            
+            // 격자 시작점 계산
+            const startX = Math.floor(left / gridPixelSize) * gridPixelSize;
+            const startY = Math.floor(top / gridPixelSize) * gridPixelSize;
+            
+            // 세로 격자 선
+            for (let x = startX; x <= right + gridPixelSize; x += gridPixelSize) {
+                const line = new fabric.Line([x, top - gridPixelSize, x, bottom + gridPixelSize], {
+                    stroke: '#e0e0e0',
+                    strokeWidth: 1,
+                    selectable: false,
+                    evented: false,
+                    isGridLine: true
+                });
+                canvas.add(line);
+            }
+            
+            // 가로 격자 선
+            for (let y = startY; y <= bottom + gridPixelSize; y += gridPixelSize) {
+                const line = new fabric.Line([left - gridPixelSize, y, right + gridPixelSize, y], {
+                    stroke: '#e0e0e0',
+                    strokeWidth: 1,
+                    selectable: false,
+                    evented: false,
+                    isGridLine: true
+                });
+                canvas.add(line);
+            }
+            
+            // 격자를 맨 뒤로 보내기
+            canvas.getObjects().filter(o => o.isGridLine).forEach(o => canvas.sendToBack(o));
+        }
         canvas.on('after:render', () => { if (showGrid) drawGrid(); });
-        gridBtn.addEventListener('click', () => { showGrid = !showGrid; gridBtn.classList.toggle('active', showGrid); if (!showGrid) { canvas.getObjects().forEach(o => { if(o.isGridLine) canvas.remove(o) }); } canvas.renderAll(); });
+        gridBtn.addEventListener('click', () => { 
+            showGrid = !showGrid; 
+            gridBtn.classList.toggle('active', showGrid); 
+            if (!showGrid) { 
+                canvas.getObjects().forEach(o => { 
+                    if(o.isGridLine) canvas.remove(o); 
+                }); 
+            } else {
+                drawGrid();
+            }
+            updateSnapPoints(); // 격자 스냅 포인트 업데이트
+            canvas.renderAll(); 
+        });
         
-        // ======[업데이트된 코드: 배경 없는 이미지 내보내기]======
         document.getElementById('export-btn').addEventListener('click', () => {
             const tempBg = canvas.backgroundImage;
-            
-            // 내보내기 함수
-            const doExport = () => {
-                const link = document.createElement('a');
-                link.download = '평면도.png';
-                link.href = canvas.toDataURL({ format: 'png', quality: 1 });
-                link.click();
-            };
-
-            if (tempBg) {
-                // 1. 배경을 잠시 제거
-                canvas.setBackgroundImage(null, () => {
-                    // 2. 캔버스가 다시 그려진 후 내보내기 실행
-                    doExport();
-                    // 3. 원래 배경으로 복원
-                    canvas.setBackgroundImage(tempBg, canvas.renderAll.bind(canvas));
-                });
-            } else {
-                // 배경이 없으면 바로 내보내기
-                doExport();
-            }
+            const doExport = () => { const link = document.createElement('a'); link.download = '평면도.png'; link.href = canvas.toDataURL({ format: 'png', quality: 1 }); link.click(); };
+            if (tempBg) { canvas.setBackgroundImage(null, () => { doExport(); canvas.setBackgroundImage(tempBg, canvas.renderAll.bind(canvas)); }); } 
+            else { doExport(); }
         });
-        // ============================
 
-        document.getElementById('save-btn').addEventListener('click', () => { const data = { version: '2.0', canvas: canvas.toJSON(['elementType']), viewport: canvas.viewportTransform, backgroundImage: backgroundImage ? { src: canvas.backgroundImage._element.src, opacity: backgroundImage.opacity, scaleX: backgroundImage.scaleX, scaleY: backgroundImage.scaleY } : null, defaultStrokeWidth: defaultStrokeWidth }; const blob = new Blob([JSON.stringify(data)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.download = '평면도.json'; link.href = url; link.click(); URL.revokeObjectURL(url); });
-        document.getElementById('load-btn').addEventListener('click', () => { const input = document.createElement('input'); input.type = 'file'; input.accept = '.json'; input.onchange = (e) => { const reader = new FileReader(); reader.onload = (event) => { const data = JSON.parse(event.target.result); history.isRestoring = true; canvas.loadFromJSON(data.canvas || data, () => { if (data.viewport) canvas.setViewportTransform(data.viewport); if (data.backgroundImage) { fabric.Image.fromURL(data.backgroundImage.src, (img) => { img.set(data.backgroundImage); canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas)); backgroundImage = img; bgClearBtn.disabled = false; opacityControl.style.display = 'block'; bgOpacity.value = (data.backgroundImage.opacity || 1) * 100; opacityValue.textContent = `${Math.round(bgOpacity.value)}%`; }); } if (data.defaultStrokeWidth) { defaultStrokeWidth = data.defaultStrokeWidth; defaultStrokeInput.value = defaultStrokeWidth; } canvas.renderAll(); history.isRestoring = false; history.saveState(); }); }; reader.readAsText(e.target.files[0]); }; input.click(); });
+        document.getElementById('save-btn').addEventListener('click', () => { 
+            const data = { 
+                version: '3.0', canvas: canvas.toJSON(['elementType']), viewport: canvas.viewportTransform, 
+                backgroundImage: backgroundImage ? { src: canvas.backgroundImage._element.src, opacity: backgroundImage.opacity, scaleX: backgroundImage.scaleX, scaleY: backgroundImage.scaleY } : null, 
+                defaultStrokeWidth: defaultStrokeWidth, gridSnapInterval: gridSnapInterval 
+            }; 
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' }); 
+            const url = URL.createObjectURL(blob); 
+            const link = document.createElement('a'); link.download = '평면도.json'; link.href = url; link.click(); 
+            URL.revokeObjectURL(url); 
+        });
+        
+        document.getElementById('load-btn').addEventListener('click', () => { 
+            const input = document.createElement('input'); input.type = 'file'; input.accept = '.json'; 
+            input.onchange = (e) => { 
+                const reader = new FileReader(); 
+                reader.onload = (event) => { 
+                    const data = JSON.parse(event.target.result); 
+                    history.isRestoring = true; 
+                    canvas.loadFromJSON(data.canvas || data, () => { 
+                        if (data.viewport) canvas.setViewportTransform(data.viewport); 
+                        if (data.backgroundImage) { 
+                            fabric.Image.fromURL(data.backgroundImage.src, (img) => { 
+                                img.set(data.backgroundImage); canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas)); 
+                                backgroundImage = img; bgClearBtn.disabled = false; opacityControl.style.display = 'block'; 
+                                bgOpacity.value = (data.backgroundImage.opacity || 1) * 100; 
+                                opacityValue.textContent = `${Math.round(bgOpacity.value)}%`; 
+                            }); 
+                        } 
+                        if (data.defaultStrokeWidth) { defaultStrokeWidth = data.defaultStrokeWidth; defaultStrokeInput.value = defaultStrokeWidth; }
+                        if (data.gridSnapInterval) { gridSnapInterval = data.gridSnapInterval; snapIntervalInput.value = gridSnapInterval; }
+                        // 이전 버전 호환성
+                        if (data.snapInterval && !data.gridSnapInterval) { gridSnapInterval = data.snapInterval; snapIntervalInput.value = gridSnapInterval; }
+                        canvas.renderAll(); updateSnapPoints(); history.isRestoring = false; history.saveState(); 
+                    }); 
+                }; 
+                reader.readAsText(e.target.files[0]); 
+            }; 
+            input.click(); 
+        });
         
         function resizeCanvas() {
             const container = document.getElementById('canvas-container');
             const width = container.clientWidth;
             const height = container.clientHeight;
-
-            canvasEl.width = width;
-            canvasEl.height = height;
-
-            canvas.setWidth(width);
-            canvas.setHeight(height);
+            canvasEl.width = width; canvasEl.height = height;
+            canvas.setWidth(width); canvas.setHeight(height);
             canvas.renderAll();
         }
 
-        const resizeObserver = new ResizeObserver(entries => {
-            resizeCanvas();
-        });
+        const resizeObserver = new ResizeObserver(entries => { resizeCanvas(); });
         resizeObserver.observe(canvasContainer);
-        
         resizeCanvas();
 
         const infoBanner = document.getElementById('info-banner');
         const infoToggleBtn = document.getElementById('info-toggle-btn');
-        const toggleIcon = infoToggleBtn.querySelector('.toggle-icon');
-
-        infoToggleBtn.addEventListener('click', () => {
-            infoBanner.classList.toggle('collapsed');
-        });
+        infoToggleBtn.addEventListener('click', () => { infoBanner.classList.toggle('collapsed'); });
 
         setMode('select');
+        
+        // 초기 로드 시 스냅 포인트 계산
+        updateSnapPoints();
+
+        // ======= 건축요소 레이어 관리 기능 =======
+        // 건축 요소를 항상 최상단에 표시
+        function bringArchitecturalElementsToFront() {
+            canvas.getObjects().forEach(obj => {
+                if (obj.elementType && (obj.elementType.includes('문') || obj.elementType.includes('창문'))) {
+                    canvas.bringToFront(obj);
+                }
+            });
+            canvas.renderAll();
+        }
+
+        // 건축 요소가 추가되거나 이동될 때 최상단으로 이동
+        canvas.on('object:added', (e) => {
+            const obj = e.target;
+            if (obj && obj.elementType && (obj.elementType.includes('문') || obj.elementType.includes('창문'))) {
+                console.log('건축 요소 추가됨:', obj.elementType);
+                // 약간의 지연 후 최상단으로 이동
+                setTimeout(() => {
+                    canvas.bringToFront(obj);
+                    canvas.renderAll();
+                }, 50);
+            }
+        });
+
+        // 건축 요소가 이동했을 때도 최상단 유지
+        canvas.on('object:modified', (e) => {
+            const obj = e.target;
+            if (obj && obj.elementType && (obj.elementType.includes('문') || obj.elementType.includes('창문'))) {
+                console.log('건축 요소 이동됨:', obj.elementType);
+                bringArchitecturalElementsToFront();
+            }
+        });
+        
+        // 다른 객체가 추가되거나 수정될 때도 건축 요소를 최상단에 유지
+        canvas.on('object:added', (e) => {
+            const obj = e.target;
+            if (!obj.elementType || (!obj.elementType.includes('문') && !obj.elementType.includes('창문'))) {
+                // 건축 요소가 아닌 객체가 추가되면 모든 건축 요소를 다시 최상단으로
+                setTimeout(() => {
+                    bringArchitecturalElementsToFront();
+                }, 100);
+            }
+        });
     </script>
 </body>
 </html>
