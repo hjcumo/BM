@@ -582,6 +582,8 @@
         let lastWallEndY = null; // 마지막 벽의 끝 Y 좌표
         let previewLine = null; // 미리보기 선
         // 연속 벽 그리기 관련 변수들
+        let currentWallPath = null;
+        let wallPoints = [];
         
         // 격자/스냅 간격 변경 이벤트 (통합)
         snapIntervalInput.addEventListener('change', (e) => {
@@ -665,7 +667,43 @@
         function getSnapPointsOnLine(line) {
             const points = [];
             
-            if (line.type === 'line') {
+            if (line.type === 'path' && line.path) {
+                // Path 객체의 경우 변환 매트릭스를 적용해야 함
+                const matrix = line.calcTransformMatrix();
+                const pathPoints = [];
+                
+                // Path 데이터에서 좌표 추출
+                for (let i = 0; i < line.path.length; i++) {
+                    const cmd = line.path[i];
+                    if (cmd[0] === 'M' || cmd[0] === 'L') {
+                        const point = fabric.util.transformPoint({ x: cmd[1], y: cmd[2] }, matrix);
+                        pathPoints.push(point);
+                    }
+                }
+                
+                // 각 선분에 대해 스냅 포인트 생성
+                for(let i = 0; i < pathPoints.length - 1; i++) {
+                    const p1 = pathPoints[i];
+                    const p2 = pathPoints[i+1];
+                    const length = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+                    const intervalPixels = mmToPixels(gridSnapInterval);
+                    const numPoints = Math.max(1, Math.floor(length / intervalPixels));
+                    
+                    for (let j = 0; j <= numPoints; j++) {
+                        const t = j / numPoints;
+                        const x = p1.x + (p2.x - p1.x) * t;
+                        const y = p1.y + (p2.y - p1.y) * t;
+                        points.push({ x, y, line: line });
+                    }
+                }
+                
+                // 끝점도 추가
+                if (pathPoints.length > 0) {
+                    const lastPoint = pathPoints[pathPoints.length - 1];
+                    points.push({ x: lastPoint.x, y: lastPoint.y, line: line });
+                }
+                
+            } else if (line.type === 'line') {
                 const x1 = line.x1, y1 = line.y1, x2 = line.x2, y2 = line.y2;
                 const matrix = line.calcTransformMatrix();
                 const p1 = fabric.util.transformPoint({ x: x1, y: y1 }, matrix);
@@ -716,7 +754,7 @@
             
             // 기존 선들의 스냅 포인트
             canvas.getObjects().forEach(obj => {
-                if (obj.type === 'line' && !obj.isGridLine && !obj.isPreviewLine) {
+                if ((obj.type === 'line' || obj.type === 'path') && !obj.isGridLine && !obj.isPreviewLine) {
                     const points = getSnapPointsOnLine(obj);
                     snapPoints = snapPoints.concat(points);
                 }
@@ -925,9 +963,13 @@
                     continuousDrawing = false;
                     lastWallEndX = null;
                     lastWallEndY = null;
+                    wallPoints = [];
                     if (previewLine) {
                         canvas.remove(previewLine);
                         previewLine = null;
+                    }
+                    if (currentWallPath) {
+                        currentWallPath = null;
                     }
                     hideSnapIndicator();
                     setMode('select');
@@ -1199,12 +1241,12 @@
                     previewLine = null;
                 }
                 
-                // 연속 그리기 중에 생성된 모든 벽 세그먼트를 선택 가능하게 변경
-                canvas.getObjects().forEach(obj => {
-                    if (obj.type === 'line' && obj.elementType === '벽' && !obj.selectable) {
-                        obj.set({ selectable: true, evented: true });
-                    }
-                });
+                if (currentWallPath) {
+                    currentWallPath.set({ selectable: true, evented: true });
+                }
+                
+                wallPoints = [];
+                currentWallPath = null;
                 
                 hideSnapIndicator();
             }
@@ -1240,12 +1282,12 @@
                     previewLine = null;
                 }
                 
-                // 연속 그리기 중에 생성된 모든 벽 세그먼트를 선택 가능하게 변경
-                canvas.getObjects().forEach(obj => {
-                    if (obj.type === 'line' && obj.elementType === '벽' && !obj.selectable) {
-                        obj.set({ selectable: true, evented: true });
-                    }
-                });
+                if (currentWallPath) {
+                    currentWallPath.set({ selectable: true, evented: true });
+                }
+                
+                wallPoints = [];
+                currentWallPath = null;
 
                 hideSnapIndicator();
                 canvas.renderAll();
@@ -1391,6 +1433,7 @@
                 // 연속 그리기를 시작 (첫 클릭)
                 if (!continuousDrawing) {
                     continuousDrawing = true;
+                    wallPoints = [{ x: currentX, y: currentY }];
                     lastWallEndX = currentX;
                     lastWallEndY = currentY;
                     // 미리보기 선을 생성 (객체 목록에서 제외하기 위해 isPreviewLine 플래그 추가)
@@ -1402,18 +1445,27 @@
                 } 
                 // 연속해서 점을 추가 (두 번째 클릭부터)
                 else {
-                    // 새로운 벽 세그먼트 생성 (이전 점에서 현재 점까지)
-                    const newWallSegment = new fabric.Line([lastWallEndX, lastWallEndY, currentX, currentY], {
+                    wallPoints.push({ x: currentX, y: currentY });
+                    
+                    // 기존 Path가 있으면 제거
+                    if (currentWallPath) {
+                        canvas.remove(currentWallPath);
+                    }
+                    
+                    // Path 데이터 생성 (M x1 y1 L x2 y2 ...)
+                    const pathData = wallPoints.map((p, i) => (i === 0 ? 'M' : 'L') + ` ${p.x} ${p.y}`).join(' ');
+
+                    currentWallPath = new fabric.Path(pathData, {
                         stroke: 'black',
                         strokeWidth: defaultStrokeWidth,
-                        strokeLineCap: 'square',
-                        strokeLineJoin: 'miter',
-                        selectable: false, // 연속 그리기 중에는 선택 불가
+                        strokeLineCap: 'butt',
+                        strokeLineJoin: 'miter', // 연결점을 매끄럽게
+                        fill: 'transparent',
+                        selectable: false, // 그리는 중에는 선택 안되게
                         evented: false,
                         elementType: '벽'
                     });
-                    
-                    canvas.add(newWallSegment);
+                    canvas.add(currentWallPath);
                     
                     // 벽 세그먼트가 추가될 때마다 히스토리 저장
                     history.saveState();
@@ -1594,8 +1646,8 @@
             if (selectedObject) { 
                 sizeControls.classList.add('show'); 
                 updateSizeControls(); 
-                // 벽(Line), 사각형, 그룹 객체는 선 두께 조절 가능
-                if (selectedObject.type === 'line' || selectedObject.type === 'rect' || selectedObject.isType('group')) {
+                // 벽(Line/Path), 사각형, 그룹 객체는 선 두께 조절 가능
+                if (selectedObject.type === 'line' || selectedObject.type === 'path' || selectedObject.type === 'rect' || selectedObject.isType('group')) {
                     strokeWidthControl.style.display = 'block';
                 } else {
                     strokeWidthControl.style.display = 'none';
@@ -1611,7 +1663,7 @@
                 heightInput.value = Math.round(selectedObject.getScaledHeight()); 
                 angleInput.value = Math.round(selectedObject.angle); 
                 
-                if (selectedObject.type === 'line' || selectedObject.type === 'rect') {
+                if (selectedObject.type === 'line' || selectedObject.type === 'path' || selectedObject.type === 'rect') {
                     strokeWidthInput.value = selectedObject.strokeWidth;
                 } else if (selectedObject.isType('group')) {
                     const firstStroked = selectedObject.getObjects().find(o => o.stroke);
@@ -1630,7 +1682,7 @@
             const newWidth = parseInt(strokeWidthInput.value, 10);
             if(isNaN(newWidth) || newWidth < 1) return;
 
-            if (selectedObject.type === 'line' || selectedObject.type === 'rect') {
+            if (selectedObject.type === 'line' || selectedObject.type === 'path' || selectedObject.type === 'rect') {
                 selectedObject.set('strokeWidth', newWidth);
             } else if (selectedObject.isType('group')) {
                 selectedObject.getObjects().forEach(obj => {
@@ -1701,7 +1753,7 @@
                 const li = document.createElement('li');
                 let name = obj.elementType || obj.type || '객체';
                 if(obj.type === 'text') name = `텍스트: ${obj.text.substring(0, 10)}...`;
-                else if(obj.type === 'line' && obj.elementType === '벽') name = `벽 ${index + 1}`;
+                else if((obj.type === 'line' || obj.type === 'path') && obj.elementType === '벽') name = `벽 ${index + 1}`;
                 else if(obj.type === 'rect') name = `사각형 ${index + 1}`;
                 else name = `${name} ${index + 1}`;
                 li.textContent = name;
