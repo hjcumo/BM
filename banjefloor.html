@@ -29,7 +29,6 @@
             margin-bottom: 10px;
             flex-wrap: wrap;
             flex-shrink: 0; /* 툴바 높이 고정 */
-            align-items: flex-start; /* 그룹들이 상단에 정렬되도록 */
         }
         
         .tool-group {
@@ -37,45 +36,12 @@
             border-radius: 4px;
             padding: 10px;
             background-color: #f9f9f9;
-            align-self: flex-start; 
         }
         
         .tool-group h3 {
-            margin: -10px -10px 10px -10px;
-            padding: 8px 10px;
+            margin: 0 0 10px 0;
             font-size: 14px;
             color: #333;
-            background-color: #eee;
-            border-bottom: 1px solid #ddd;
-        }
-
-        /* 접기/펴기 기능이 있는 헤더 스타일 */
-        .tool-group.collapsible > h3 {
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* 접혔을 때의 스타일 최적화 */
-        .tool-group.collapsible.collapsed {
-            padding: 0;
-            background-color: white;
-        }
-        .tool-group.collapsible.collapsed > h3 {
-            margin: 0;
-            padding: 8px 15px; /* 다른 버튼과 높이를 맞춤 */
-            border: none;
-            background-color: transparent;
-            font-weight: normal; /* 일반 버튼과 같은 폰트 두께 */
-        }
-        .tool-group.collapsible.collapsed > h3:hover {
-            background-color: #e0e0e0;
-            border-radius: 4px;
-        }
-
-        .tool-group.collapsed > .tool-group-content {
-            display: none;
         }
         
         button {
@@ -126,12 +92,12 @@
         .main-content {
             display: flex;
             gap: 10px;
-            flex-grow: 1; 
-            overflow: hidden; 
+            flex-grow: 1; /* 남은 세로 공간을 모두 차지 */
+            overflow: hidden; /* 내부 요소가 넘치지 않도록 */
         }
 
         #canvas-container {
-            flex-grow: 1; 
+            flex-grow: 1; /* 남은 가로 공간을 모두 차지 */
             border: 2px solid #ddd;
             border-radius: 4px;
             background-color: white;
@@ -141,7 +107,7 @@
 
         #object-panel {
             width: 240px;
-            flex-shrink: 0; 
+            flex-shrink: 0; /* 너비 고정 */
             border: 1px solid #ddd;
             border-radius: 4px;
             background-color: #f9f9f9;
@@ -172,7 +138,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            user-select: none; 
         }
 
         #object-panel-list li:hover {
@@ -219,6 +184,7 @@
             margin: 0 5px;
         }
         
+        /* 스냅 컨트롤 스타일 */
         .snap-control {
             margin-top: 10px;
             padding: 8px;
@@ -268,21 +234,16 @@
             cursor: pointer;
             padding: 12px 0;
         }
-        .info-header .toggle-icon {
+        .toggle-icon {
             font-size: 12px;
             transition: transform 0.3s;
         }
         .info.collapsed {
             padding-top: 0;
             padding-bottom: 0;
-            margin-top: 0;
-            border: none;
         }
         .info.collapsed > ul {
             display: none;
-        }
-        .info.collapsed .info-header {
-            padding-bottom: 0;
         }
         .info.collapsed .toggle-icon {
              transform: rotate(-90deg);
@@ -299,6 +260,7 @@
             z-index: 10;
         }
 
+        /* 컨텍스트 메뉴 스타일 */
         #context-menu {
             position: absolute;
             display: none;
@@ -322,6 +284,7 @@
             background-color: #f0f0f0;
         }
         
+        /* 스냅 포인트 하이라이트 스타일 */
         .snap-indicator {
             position: absolute;
             width: 16px;
@@ -343,6 +306,7 @@
             100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
         }
         
+        /* 정렬선 스타일 */
         .alignment-line {
             position: absolute;
             background-color: #00ff00;
@@ -367,89 +331,205 @@
         <div class="toolbar">
             <div class="tool-group">
                 <h3>기본 도구</h3>
-                <div class="tool-group-content">
-                    <button id="select-mode" class="active">선택<span class="shortcut">V</span></button>
-                    <button id="wall-mode">벽<span class="shortcut">W</span></button>
-                    <button id="rect-mode">사각형<span class="shortcut">R</span></button>
-                    <button id="text-mode">텍스트</button>
-                    <button id="delete-btn">삭제<span class="shortcut">Backspace</span></button>
-                </div>
+                <button id="select-mode" class="active">선택<span class="shortcut">V</span></button>
+                <button id="wall-mode">벽<span class="shortcut">W</span></button>
+                <button id="rect-mode">사각형<span class="shortcut">R</span></button>
+                <button id="text-mode">텍스트</button>
+                <button id="delete-btn">삭제<span class="shortcut">Backspace</span></button>
             </div>
             
             <div class="tool-group">
                 <h3>편집</h3>
-                <div class="tool-group-content">
-                    <button id="copy-btn" disabled>복사<span class="shortcut">Ctrl+C</span></button>
-                    <button id="paste-btn" disabled>붙여넣기<span class="shortcut">Ctrl+V</span></button>
-                    <button id="undo-btn" disabled>실행취소<span class="shortcut">Ctrl+Z</span></button>
-                    <button id="redo-btn" disabled>다시실행<span class="shortcut">Ctrl+Y</span></button>
-                </div>
+                <button id="copy-btn" disabled>복사<span class="shortcut">Ctrl+C</span></button>
+                <button id="paste-btn" disabled>붙여넣기<span class="shortcut">Ctrl+V</span></button>
+                <button id="undo-btn" disabled>실행취소<span class="shortcut">Ctrl+Z</span></button>
+                <button id="redo-btn" disabled>다시실행<span class="shortcut">Ctrl+Y</span></button>
             </div>
             
             <div class="tool-group">
                 <h3>선 스타일</h3>
-                <div class="tool-group-content">
-                    <div class="stroke-control">
-                        <label>선 두께: 
-                            <input type="number" id="default-stroke-width" min="1" max="20" value="5" step="1">px
-                        </label>
-                    </div>
+                <div class="stroke-control">
+                    <label>선 두께: 
+                        <input type="number" id="default-stroke-width" min="1" max="20" value="5" step="1">px
+                    </label>
                 </div>
             </div>
             
             <div class="tool-group">
                 <h3>격자/스냅 설정</h3>
-                <div class="tool-group-content">
-                    <div class="snap-control">
-                        <label>격자 간격:</label>
-                        <input type="number" id="snap-interval" min="0.1" max="10" value="0.5" step="0.1">
-                        <span class="unit">mm</span>
-                        <div class="info-text">격자와 스냅이 통합 제어됩니다</div>
-                    </div>
+                <div class="snap-control">
+                    <label>격자 간격:</label>
+                    <input type="number" id="snap-interval" min="0.1" max="10" value="0.5" step="0.1">
+                    <span class="unit">mm</span>
+                    <div class="info-text">격자와 스냅이 통합 제어됩니다</div>
                 </div>
             </div>
             
             <div class="tool-group">
                 <h3>건축 요소</h3>
-                <div class="tool-group-content">
-                    <button id="door-left-btn" class="icon-btn" title="왼쪽 여닫이문" draggable="true"><svg xmlns="http://www.w3.org/2000/svg" width="55" height="49" fill="none" viewBox="0 0 55 49"><g clip-path="url(#a-1)"><g clip-path="url(#b-1)"><mask id="c-1" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M0 0h55v49H0V0Z"/></mask><g mask="url(#c-1)"><path fill="#fff" d="M7 1.6a41 41 0 0 1 41 41H7v-41Zm-6 40h6v6H1v-6Zm47 0h6v6h-6v-6Z"/><path fill="#fff" d="M7 41.6h41v6H7v-6Z"/><path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6m0-6v6m0-6h41m-41 6h41m0-6h6v6h-6m0-6v6M7 1v45"/><path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/><path stroke="#000" d="M7 45.1h41"/></g></g></g><defs><clipPath id="a-1"><path fill="#fff" d="M0 0h55v49H0z"/></clipPath><clipPath id="b-1"><path fill="#fff" d="M0 0h55v49H0z"/></clipPath></defs></svg></button>
-                    <button id="door-right-btn" class="icon-btn" title="오른쪽 여닫이문" draggable="true"><svg xmlns="http://www.w3.org/2000/svg" width="55" height="49" fill="none" viewBox="0 0 55 49"><g clip-path="url(#a-2)"><g clip-path="url(#b-2)"><mask id="c-2" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M55 0H0v49h55V0Z"/></mask><g mask="url(#c-2)"><path fill="#fff" d="M48 1.6a41 41 0 0 0-41 41h41v-41Zm6 40h-6v6h6v-6Zm-47 0H1v6h6v-6Z"/><path fill="#fff" d="M48 41.6H7v6h41v-6Z"/><path stroke="#000" stroke-width="1.3" d="M48 41.6h6v6h-6m0-6v6m0-6H7m41 6H7m0-6H1v6h6m0-6v6M48 1v45"/><path stroke="#000" stroke-width="1.3" d="M48 1.6a41 41 0 0 0-41 41"/><path stroke="#000" d="M48 45.1H7"/></g></g></g><defs><clipPath id="a-2"><path fill="#fff" d="M0 0h55v49H0z"/></clipPath><clipPath id="b-2"><path fill="#fff" d="M55 0H0v49h55z"/></clipPath></defs></svg></button>
-                     <button id="window-left-btn" class="icon-btn" title="왼쪽 창문" draggable="true"><svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21"><g clip-path="url(#a-3)"><path fill="#fff" stroke="#000" stroke-width="1.3" d="M1 1h60Zm60 0H1v10h60V1Z"/><path fill="#000" d="m3 17 6.5-3.754v7.506L3 17Z"/><path fill="#000" d="M34 17v.65H8.85v-1.3H34V17Z"/></g><defs><clipPath id="a-3"><path fill="#fff" d="M0 0h62v21H0z"/></clipPath></defs></svg></button>
-                     <button id="window-right-btn" class="icon-btn" title="오른쪽 창문" draggable="true"><svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21"><g clip-path="url(#a-4)"><path fill="#fff" stroke="#000" stroke-width="1.3" d="M61 1H1ZM1 1h60v10H1V1Z"/><path fill="#000" d="m59 17-6.5-3.754v7.506L59 17Z"/><path fill="#000" d="M28 17v.65h25.15v-1.3H28V17Z"/></g><defs><clipPath id="a-4"><path fill="#fff" d="M62 0H0v21h62z"/></clipPath></defs></svg></button>
-                     <button id="window-both-btn" class="icon-btn" title="양쪽 창문" draggable="true"><svg xmlns="http://www.w3.org/2000/svg" width="66" height="21" fill="none" viewBox="0 0 66 21"><g clip-path="url(#a-5)"><mask id="b-5" width="66" height="21" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M0 0h66v21H0V0Z"/></mask><g mask="url(#b-5)"><path fill="#fff" stroke="#000" stroke-width="1.3" d="M3 1h60Zm60 0H3v10h60V1Z"/><path fill="#000" d="m66 17-6.5-3.754v7.506L66 17Z"/><path fill="#000" d="M35 17v.65h25.15v-1.3H35V17ZM0 17l6.5-3.754v7.506L0 17Z"/><path fill="#000" d="M31 17v.65H5.85v-1.3H31V17Z"/></g></g><defs><clipPath id="a-5"><path fill="#fff" d="M0 0h66v21H0z"/></clipPath></defs></svg></button>
-                    <button id="door-double-btn" class="icon-btn" title="양개형 여닫이문" draggable="true" style="width: 80px; height: 55px;"><svg xmlns="http://www.w3.org/2000/svg" width="96" height="49" fill="none" viewBox="0 0 96 49" style="width: 100%; height: 100%; object-fit: contain;"><g clip-path="url(#a-6)"><g clip-path="url(#b-6)"><mask id="c-6" width="55" height="49" x="41" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M96 0H41v49h55V0Z"/></mask><g mask="url(#c-6)"><path fill="#fff" d="M89 1.6a41 41 0 0 0-41 41h41v-41Zm6 40h-6v6h6v-6Z"/><path fill="#fff" d="M89 41.6H48v6h41v-6Z"/><path stroke="#000" stroke-width="1.3" d="M89 41.6h6v6h-6m0-6v6m0-6H48m41 6H48m0-6h-6v6h6m0-6v6M89 1v45"/><path stroke="#000" stroke-width="1.3" d="M89 1.6a41 41 0 0 0-41 41"/><path stroke="#000" d="M89 45.1H48"/></g></g><g clip-path="url(#d-6)"><mask id="e-6" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M0 0h55v49H0V0Z"/></mask><g mask="url(#e-6)"><path fill="#fff" d="M7 1.6a41 41 0 0 1 41 41H7v-41Zm-6 40h6v6H1v-6Z"/><path fill="#fff" d="M7 41.6h41v6H7v-6Z"/><path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6m0-6v6m0-6h41m-41 6h41m0-6h6v6h-6m0-6v6M7 1v45"/><path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/><path stroke="#000" d="M7 45.1h41"/></g></g></g><defs><clipPath id="a-6"><path fill="#fff" d="M0 0h96v49H0z"/></clipPath><clipPath id="b-6"><path fill="#fff" d="M96 0H48v49h48z"/></clipPath><clipPath id="d-6"><path fill="#fff" d="M0 0h48v49H0z"/></clipPath></defs></svg></button>
-                </div>
+                <button id="door-left-btn" class="icon-btn" title="왼쪽 여닫이문" draggable="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="55" height="49" fill="none" viewBox="0 0 55 49">
+                      <g clip-path="url(#a-1)">
+                        <g clip-path="url(#b-1)">
+                          <mask id="c-1" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <path fill="#fff" d="M0 0h55v49H0V0Z"/>
+                          </mask>
+                          <g mask="url(#c-1)">
+                            <path fill="#fff" d="M7 1.6a41 41 0 0 1 41 41H7v-41Zm-6 40h6v6H1v-6Zm47 0h6v6h-6v-6Z"/>
+                            <path fill="#fff" d="M7 41.6h41v6H7v-6Z"/>
+                            <path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6m0-6v6m0-6h41m-41 6h41m0-6h6v6h-6m0-6v6M7 1v45"/>
+                            <path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/>
+                            <path stroke="#000" d="M7 45.1h41"/>
+                          </g>
+                        </g>
+                      </g>
+                      <defs>
+                        <clipPath id="a-1">
+                          <path fill="#fff" d="M0 0h55v49H0z"/>
+                        </clipPath>
+                        <clipPath id="b-1">
+                          <path fill="#fff" d="M0 0h55v49H0z"/>
+                        </clipPath>
+                      </defs>
+                    </svg>
+                </button>
+                <button id="door-right-btn" class="icon-btn" title="오른쪽 여닫이문" draggable="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="55" height="49" fill="none" viewBox="0 0 55 49">
+                      <g clip-path="url(#a-2)">
+                        <g clip-path="url(#b-2)">
+                          <mask id="c-2" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <path fill="#fff" d="M55 0H0v49h55V0Z"/>
+                          </mask>
+                          <g mask="url(#c-2)">
+                            <path fill="#fff" d="M48 1.6a41 41 0 0 0-41 41h41v-41Zm6 40h-6v6h6v-6Zm-47 0H1v6h6v-6Z"/>
+                            <path fill="#fff" d="M48 41.6H7v6h41v-6Z"/>
+                            <path stroke="#000" stroke-width="1.3" d="M48 41.6h6v6h-6m0-6v6m0-6H7m41 6H7m0-6H1v6h6m0-6v6M48 1v45"/>
+                            <path stroke="#000" stroke-width="1.3" d="M48 1.6a41 41 0 0 0-41 41"/>
+                            <path stroke="#000" d="M48 45.1H7"/>
+                          </g>
+                        </g>
+                      </g>
+                      <defs>
+                        <clipPath id="a-2">
+                          <path fill="#fff" d="M0 0h55v49H0z"/>
+                        </clipPath>
+                        <clipPath id="b-2">
+                          <path fill="#fff" d="M55 0H0v49h55z"/></clipPath>
+                      </defs>
+                    </svg>
+                </button>
+                 <button id="window-left-btn" class="icon-btn" title="왼쪽 창문" draggable="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21">
+                      <g clip-path="url(#a-3)">
+                        <path fill="#fff" stroke="#000" stroke-width="1.3" d="M1 1h60Zm60 0H1v10h60V1Z"/>
+                        <path fill="#000" d="m3 17 6.5-3.754v7.506L3 17Z"/>
+                        <path fill="#000" d="M34 17v.65H8.85v-1.3H34V17Z"/>
+                      </g>
+                      <defs>
+                        <clipPath id="a-3">
+                          <path fill="#fff" d="M0 0h62v21H0z"/>
+                        </clipPath>
+                      </defs>
+                    </svg>
+                </button>
+                 <button id="window-right-btn" class="icon-btn" title="오른쪽 창문" draggable="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21">
+                      <g clip-path="url(#a-4)">
+                        <path fill="#fff" stroke="#000" stroke-width="1.3" d="M61 1H1ZM1 1h60v10H1V1Z"/>
+                        <path fill="#000" d="m59 17-6.5-3.754v7.506L59 17Z"/>
+                        <path fill="#000" d="M28 17v.65h25.15v-1.3H28V17Z"/>
+                      </g>
+                      <defs>
+                        <clipPath id="a-4">
+                          <path fill="#fff" d="M62 0H0v21h62z"/>
+                        </clipPath>
+                      </defs>
+                    </svg>
+                </button>
+                 <button id="window-both-btn" class="icon-btn" title="양쪽 창문" draggable="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="66" height="21" fill="none" viewBox="0 0 66 21">
+                      <g clip-path="url(#a-5)">
+                        <mask id="b-5" width="66" height="21" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                          <path fill="#fff" d="M0 0h66v21H0V0Z"/>
+                        </mask>
+                        <g mask="url(#b-5)">
+                          <path fill="#fff" stroke="#000" stroke-width="1.3" d="M3 1h60Zm60 0H3v10h60V1Z"/>
+                          <path fill="#000" d="m66 17-6.5-3.754v7.506L66 17Z"/>
+                          <path fill="#000" d="M35 17v.65h25.15v-1.3H35V17ZM0 17l6.5-3.754v7.506L0 17Z"/>
+                          <path fill="#000" d="M31 17v.65H5.85v-1.3H31V17Z"/>
+                        </g>
+                      </g>
+                      <defs>
+                        <clipPath id="a-5">
+                          <path fill="#fff" d="M0 0h66v21H0z"/>
+                        </clipPath>
+                      </defs>
+                    </svg>
+                </button>
+                <button id="door-double-btn" class="icon-btn" title="양개형 여닫이문" draggable="true" style="width: 80px; height: 55px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="96" height="49" fill="none" viewBox="0 0 96 49" style="width: 100%; height: 100%; object-fit: contain;">
+                      <g clip-path="url(#a-6)">
+                        <g clip-path="url(#b-6)">
+                          <mask id="c-6" width="55" height="49" x="41" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <path fill="#fff" d="M96 0H41v49h55V0Z"/>
+                          </mask>
+                          <g mask="url(#c-6)">
+                            <path fill="#fff" d="M89 1.6a41 41 0 0 0-41 41h41v-41Zm6 40h-6v6h6v-6Z"/>
+                            <path fill="#fff" d="M89 41.6H48v6h41v-6Z"/>
+                            <path stroke="#000" stroke-width="1.3" d="M89 41.6h6v6h-6m0-6v6m0-6H48m41 6H48m0-6h-6v6h6m0-6v6M89 1v45"/>
+                            <path stroke="#000" stroke-width="1.3" d="M89 1.6a41 41 0 0 0-41 41"/>
+                            <path stroke="#000" d="M89 45.1H48"/>
+                          </g>
+                        </g>
+                        <g clip-path="url(#d-6)">
+                          <mask id="e-6" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <path fill="#fff" d="M0 0h55v49H0V0Z"/>
+                          </mask>
+                          <g mask="url(#e-6)">
+                            <path fill="#fff" d="M7 1.6a41 41 0 0 1 41 41H7v-41Zm-6 40h6v6H1v-6Z"/>
+                            <path fill="#fff" d="M7 41.6h41v6H7v-6Z"/>
+                            <path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6m0-6v6m0-6h41m-41 6h41m0-6h6v6h-6m0-6v6M7 1v45"/>
+                            <path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/>
+                            <path stroke="#000" d="M7 45.1h41"/>
+                          </g>
+                        </g>
+                      </g>
+                      <defs>
+                        <clipPath id="a-6">
+                          <path fill="#fff" d="M0 0h96v49H0z"/>
+                        </clipPath>
+                        <clipPath id="b-6">
+                          <path fill="#fff" d="M96 0H48v49h48z"/></clipPath>
+                        <clipPath id="d-6">
+                          <path fill="#fff" d="M0 0h48v49H0z"/></clipPath>
+                      </defs>
+                    </svg>
+                </button>
             </div>
 
-            <div class="tool-group collapsible collapsed">
-                <h3>파일 ▶</h3>
-                <div class="tool-group-content">
-                    <button id="save-btn">저장</button>
-                    <button id="load-btn">불러오기</button>
-                    <button id="export-btn">이미지 내보내기</button>
-                    <button id="clear-btn">전체 삭제</button>
-                </div>
+            <div class="tool-group">
+                <h3>파일</h3>
+                <button id="save-btn">저장</button>
+                <button id="load-btn">불러오기</button>
+                <button id="export-btn">이미지 내보내기</button>
+                <button id="clear-btn">전체 삭제</button>
             </div>
             
-            <div class="tool-group collapsible collapsed">
-                <h3>배경 이미지 ▶</h3>
-                <div class="tool-group-content">
-                    <button id="bg-image-btn">이미지 불러오기</button>
-                    <button id="bg-clear-btn" disabled>이미지 제거</button>
-                    <div style="margin-top: 10px; display: none;" id="opacity-control">
-                        <label style="font-size: 12px;">불투명도: 
-                            <input type="range" id="bg-opacity" min="10" max="100" value="50" style="width: 100px; vertical-align: middle;">
-                            <span id="opacity-value">50%</span>
-                        </label>
-                    </div>
+            <div class="tool-group">
+                <h3>배경 이미지</h3>
+                <button id="bg-image-btn">이미지 불러오기</button>
+                <button id="bg-clear-btn" disabled>이미지 제거</button>
+                <div style="margin-top: 10px; display: none;" id="opacity-control">
+                    <label style="font-size: 12px;">불투명도: 
+                        <input type="range" id="bg-opacity" min="10" max="100" value="50" style="width: 100px; vertical-align: middle;">
+                        <span id="opacity-value">50%</span>
+                    </label>
                 </div>
             </div>
             
             <div class="tool-group" style="display: none;">
                 <h3>보기</h3>
-                <div class="tool-group-content">
-                    <button id="grid-btn">격자 표시</button>
-                </div>
+                <button id="grid-btn">격자 표시</button>
             </div>
         </div>
         
@@ -471,6 +551,7 @@
             <div id="object-panel">
                 <div id="object-panel-header">객체 목록</div>
                 <ul id="object-panel-list">
+                    <!-- 객체 목록이 여기에 동적으로 추가됩니다 -->
                 </ul>
             </div>
         </div>
@@ -485,15 +566,14 @@
                 <li><strong>화면 이동:</strong> 스페이스바를 누른 채 드래그 합니다.</li>
                 <li><strong>연속 벽 그리기:</strong> 벽 모드에서 첫 선을 드래그로 그은 후, 마우스를 움직이면 자동으로 연장선이 표시됩니다. 클릭하여 벽을 연결하고, ESC 키로 종료합니다.</li>
                 <li><strong>객체 선택:</strong> 캔버스에서 직접 클릭하거나, 우측 '객체 목록' 패널에서 항목을 클릭합니다.</li>
-                <li><strong>다중 선택:</strong> 객체 목록에서 Shift + 클릭으로 범위 선택, Ctrl/Cmd + 클릭으로 개별 선택/해제합니다.</li>
                 <li><strong>객체 미세 이동:</strong> 객체 선택 후 방향키로 0.1mm씩 이동, Shift+방향키로 0.5mm씩 이동합니다.</li>
                 <li><strong>복사/붙여넣기:</strong> 객체 선택 후 Ctrl+C / Ctrl+V 편집 메뉴의 버튼을 사용합니다.</li>
                 <li><strong>선 두께 조절:</strong> 상단 툴바에서 기본 두께를 설정하거나, 객체 선택 후 나타나는 컨트롤에서 개별 조절합니다.</li>
                 <li><strong>스냅 기능:</strong> 벽과 사각형 모드에서 격자 포인트, 기존 선, 사각형 경계선에 자동으로 스냅됩니다. 격자 간격은 상단에서 조정 가능합니다.</li>
-                <li><strong>프레임 경계 제한:</strong> 사각형 프레임 내에서 벽을 그리면 자동으로 프레임 경계를 넘지 않도록 제한됩니다.</li>
+                <li><strong>프레임 경계 제한:</strong> 사각형 프레임 내에서 벽을 그리면 자동으로 프레임 경계를 넘지 않도록 제한됩니다. 벽이 프레임 경계선과 정확히 일치하게 그려집니다.</li>
                 <li><strong>건축 요소 삽입:</strong> 아이콘을 클릭 후 캔버스에 클릭하거나, 아이콘을 캔버스로 드래그 앤 드롭합니다.</li>
-                <li><strong>객체 자동 정렬:</strong> 사각형이나 건축 요소를 드래그할 때 근처의 벽이나 다른 객체에 자동으로 달라붙습니다.</li>
-                <li><strong>확대/축소:</strong> Ctrl(Windows)/Cmd(Mac) + 마우스 휠을 돌려 조절합니다.</li>
+                <li><strong>객체 자동 정렬:</strong> 사각형이나 건축 요소를 드래그할 때 근처의 벽이나 다른 객체에 자동으로 달라붙습니다. 녹색 정렬선이 표시됩니다.</li>
+                <li><strong>확대/축소:</strong> Ctrl(Windows)마우스 휠을 돌려 조절합니다.</li>
                 <li><strong>크기 조절:</strong> 객체 모서리를 드래그하여 조절합니다. Shift 키를 누른 채 드래그하면 자율 조절됩니다.</li>
                 <li><strong>객체 회전:</strong> 객체 모서리 바깥쪽을 드래그합니다. Shift 키를 누른 채 드래그하면 90도 단위로 회전합니다.</li>
                 <li><strong>실행취소/다시실행:</strong> Ctrl+Z / Ctrl+Y 또는 버튼 클릭.</li>
@@ -501,6 +581,7 @@
         </div>
     </div>
 
+    <!-- 컨텍스트 메뉴 HTML -->
     <div id="context-menu">
         <button id="flip-btn">좌우 반전</button>
         <button id="flip-vertical-btn">상하 반전</button>
@@ -517,25 +598,25 @@
             stopContextMenu: true,
             fireRightClick: true,
             uniScaleTransform: true,
-            preserveObjectStacking: true 
+            preserveObjectStacking: true // 객체 선택 시 스태킹 순서 유지
         });
     
-        let snapRadius = 10; 
-        let snapEnabled = false;
-        let snapPoints = []; 
-        let currentSnapPoint = null; 
+        // ======= 스냅 기능 관련 변수 =======
+        let snapRadius = 10; // 스냅 반경 (픽셀)
+        let snapEnabled = false; // 스냅 활성화 상태
+        let snapPoints = []; // 모든 스냅 포인트 저장 (선 + 격자 포인트)
+        let currentSnapPoint = null; // 현재 활성화된 스냅 포인트
         const snapIndicator = document.getElementById('snap-indicator');
         const snapIntervalInput = document.getElementById('snap-interval');
-        let objectSnapRadius = 15;
+        let objectSnapRadius = 15; // 객체 드래그 시 스냅 반경
     
-        let continuousDrawing = false;
-        let lastWallEndX = null; 
-        let lastWallEndY = null; 
-        let previewLine = null; 
+        // ======= 연속 벽 그리기 관련 변수 =======
+        let continuousDrawing = false; // 연속 그리기 모드
+        let lastWallEndX = null; // 마지막 벽의 끝 X 좌표
+        let lastWallEndY = null; // 마지막 벽의 끝 Y 좌표
+        let previewLine = null; // 미리보기 선
         let currentWallPath = null;
         let wallPoints = [];
-    
-        let lastSelectedPanelIndex = -1;
     
         snapIntervalInput.addEventListener('change', (e) => {
             gridSnapInterval = parseFloat(e.target.value) || 1.0;
@@ -635,9 +716,9 @@
         function updateSnapPoints() {
             snapPoints = [];
             canvas.getObjects().forEach(obj => {
-                if ((obj.type === 'line' || obj.type === 'path') && !obj.isGridLine) {
+                if ((obj.type === 'line' || obj.type === 'path') && !obj.isGridLine && !obj.isBackground) {
                     snapPoints.push(...getSnapPointsOnLine(obj));
-                } else if (obj.type === 'rect' && !obj.isGridLine) {
+                } else if (obj.type === 'rect' && !obj.isGridLine && !obj.isBackground) {
                     snapPoints.push(...getSnapPointsOnRect(obj));
                 }
             });
@@ -743,6 +824,7 @@
     
         function hideSnapIndicator() { snapIndicator.style.display = 'none'; }
     
+        // 정렬선 관련 변수와 함수
         const horizontalAlignmentLine = document.getElementById('horizontal-alignment-line');
         const verticalAlignmentLine = document.getElementById('vertical-alignment-line');
     
@@ -768,6 +850,7 @@
             verticalAlignmentLine.style.display = 'none';
         }
     
+        // 객체 드래그 시 스냅을 위한 함수들
         function getObjectEdges(obj) {
             if (obj.isType('group')) {
                 const width = obj.getScaledWidth();
@@ -775,14 +858,21 @@
                 const left = obj.left - width / 2;
                 const top = obj.top - height / 2;
                 return {
-                    left: left, top: top, right: left + width,
-                    bottom: top + height, centerX: obj.left, centerY: obj.top
+                    left: left,
+                    top: top,
+                    right: left + width,
+                    bottom: top + height,
+                    centerX: obj.left,
+                    centerY: obj.top
                 };
             } else {
                 const coords = obj.getBoundingRect(true, true);
                 return {
-                    left: coords.left, top: coords.top, right: coords.left + coords.width,
-                    bottom: coords.top + coords.height, centerX: coords.left + coords.width / 2,
+                    left: coords.left,
+                    top: coords.top,
+                    right: coords.left + coords.width,
+                    bottom: coords.top + coords.height,
+                    centerX: coords.left + coords.width / 2,
                     centerY: coords.top + coords.height / 2
                 };
             }
@@ -864,7 +954,7 @@
         let gridSnapInterval = 1.0, showGrid = false, currentMode = 'select', isDrawing = false;
         let startX, startY, currentLine = null, selectedObject = null;
         let isPanning = false, lastPosX, lastPosY, spacebarDown = false;
-        let backgroundImage = null, defaultStrokeWidth = 5, _clipboard = null;
+        let backgroundImageObject = null, defaultStrokeWidth = 5, _clipboard = null;
     
         const objectPanelList = document.getElementById('object-panel-list');
         const bgImageBtn = document.getElementById('bg-image-btn'), bgClearBtn = document.getElementById('bg-clear-btn'), bgOpacity = document.getElementById('bg-opacity'), opacityValue = document.getElementById('opacity-value'), opacityControl = document.getElementById('opacity-control');
@@ -878,39 +968,119 @@
     
         history.saveState();
     
+        // [추가] 건축 요소를 최상위 레이어로 이동시키는 함수
         function bringArchitecturalElementsToFront() {
+            // 먼저 배경 이미지를 맨 뒤로 보냄
+            const bgImg = canvas.getObjects().find(obj => obj.isBackground);
+            if (bgImg) {
+                canvas.sendToBack(bgImg);
+            }
+            
+            // 그 다음 격자선을 배경 이미지보다 뒤로
+            canvas.getObjects().filter(o => o.isGridLine).forEach(o => canvas.sendToBack(o));
+            
+            // 건축 요소들을 최상위로
             const architecturalElements = [];
             canvas.getObjects().forEach(obj => {
                 if (obj.elementType && (obj.elementType.includes('문') || obj.elementType.includes('창문'))) {
                     architecturalElements.push(obj);
                 }
             });
-            architecturalElements.forEach(obj => canvas.bringToFront(obj));
+    
+            // 찾은 건축 요소들을 하나씩 최상위로 보냅니다.
+            architecturalElements.forEach(obj => {
+                canvas.bringToFront(obj);
+            });
+    
             canvas.renderAll();
         }
     
+    
         canvas.on({
-            'object:added': (e) => { if (!history.isRestoring) { history.saveState(); setTimeout(bringArchitecturalElementsToFront, 10); } },
-            'object:modified': () => { history.saveState(); bringArchitecturalElementsToFront(); },
-            'object:removed': () => { if (!history.isRestoring) history.saveState(); }
+            'object:added': (e) => {
+                if (!history.isRestoring) {
+                    history.saveState();
+                    // [추가] 객체가 추가될 때마다 건축 요소 레이어를 정리합니다.
+                    // 약간의 딜레이를 주어 렌더링이 완료된 후 실행되도록 합니다.
+                    setTimeout(() => {
+                        bringArchitecturalElementsToFront();
+                    }, 10);
+                }
+            },
+            'object:modified': () => {
+                history.saveState();
+                // [추가] 객체가 수정된 후에도 건축 요소 레이어를 정리합니다.
+                bringArchitecturalElementsToFront();
+            },
+            'object:removed': () => {
+                if (!history.isRestoring) history.saveState();
+            }
         });
     
         function createObject(type, x, y, callback) {
             let svgString = '', defaultWidth = 80, elementType = type;
+    
             switch(type) {
-                case 'door-left': svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="55" height="49" fill="none" viewBox="0 0 55 49"><g clip-path="url(#a)"><g clip-path="url(#b)"><mask id="c" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M0 0h55v49H0V0Z"/></mask><g mask="url(#c)"><path fill="#fff" d="M7 1.6a41 41 0 0 1 41 41H7v-41Zm-6 40h6v6H1v-6Zm47 0h6v6h-6v-6Z"/><path fill="#fff" d="M7 41.6h41v6H7v-6Z"/><path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6m0-6v6m0-6h41m-41 6h41m0-6h6v6h-6m0-6v6M7 1v45"/><path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/><path stroke="#000" d="M7 45.1h41"/></g></g></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h55v49H0z"/></clipPath><clipPath id="b"><path fill="#fff" d="M0 0h55v49H0z"/></clipPath></defs></svg>`; elementType = '왼쪽 여닫이문'; break;
-                case 'door-right': svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="55" height="49" fill="none" viewBox="0 0 55 49"><g clip-path="url(#a)"><g clip-path="url(#b)"><mask id="c" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M55 0H0v49h55V0Z"/></mask><g mask="url(#c)"><path fill="#fff" d="M48 1.6a41 41 0 0 0-41 41h41v-41Zm6 40h-6v6h6v-6Zm-47 0H1v6h6v-6Z"/><path fill="#fff" d="M48 41.6H7v6h41v-6Z"/><path stroke="#000" stroke-width="1.3" d="M48 41.6h6v6h-6m0-6v6m0-6H7m41 6H7m0-6H1v6h6m0-6v6M48 1v45"/><path stroke="#000" stroke-width="1.3" d="M48 1.6a41 41 0 0 0-41 41"/><path stroke="#000" d="M48 45.1H7"/></g></g></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h55v49H0z"/></clipPath><clipPath id="b"><path fill="#fff" d="M55 0H0v49h55z"/></clipPath></defs></svg>`; elementType = '오른쪽 여닫이문'; break;
-                case 'window-left': svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21"><g clip-path="url(#a)"><path fill="#fff" stroke="#000" stroke-width="1.3" d="M1 1h60Zm60 0H1v10h60V1Z"/><path fill="#000" d="m3 17 6.5-3.754v7.506L3 17Z"/><path fill="#000" d="M34 17v.65H8.85v-1.3H34V17Z"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h62v21H0z"/></clipPath></defs></svg>`; elementType = '왼쪽 창문'; break;
-                case 'window-right': svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21"><g clip-path="url(#a)"><path fill="#fff" stroke="#000" stroke-width="1.3" d="M61 1H1ZM1 1h60v10H1V1Z"/><path fill="#000" d="m59 17-6.5-3.754v7.506L59 17Z"/><path fill="#000" d="M28 17v.65h25.15v-1.3H28V17Z"/></g><defs><clipPath id="a"><path fill="#fff" d="M62 0H0v21h62z"/></clipPath></defs></svg>`; elementType = '오른쪽 창문'; break;
-                case 'window-both': svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="66" height="21" fill="none" viewBox="0 0 66 21"><g clip-path="url(#a)"><mask id="b" width="66" height="21" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M0 0h66v21H0V0Z"/></mask><g mask="url(#b)"><path fill="#fff" stroke="#000" stroke-width="1.3" d="M3 1h60Zm60 0H3v10h60V1Z"/><path fill="#000" d="m66 17-6.5-3.754v7.506L66 17Z"/><path fill="#000" d="M35 17v.65h25.15v-1.3H35V17ZM0 17l6.5-3.754v7.506L0 17Z"/><path fill="#000" d="M31 17v.65H5.85v-1.3H31V17Z"/></g></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h66v21H0z"/></clipPath></defs></svg>`; elementType = '양쪽 창문'; break;
-                case 'door-double': svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="49" fill="none" viewBox="0 0 96 49"><g clip-path="url(#a)"><g clip-path="url(#b)"><mask id="c" width="55" height="49" x="41" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M96 0H41v49h55V0Z"/></mask><g mask="url(#c)"><path fill="#fff" d="M89 1.6a41 41 0 0 0-41 41h41v-41Zm6 40h-6v6h6v-6Z"/><path fill="#fff" d="M89 41.6H48v6h41v-6Z"/><path stroke="#000" stroke-width="1.3" d="M89 41.6h6v6h-6m0-6v6m0-6H48m41 6H48m0-6h-6v6h6m0-6v6M89 1v45"/><path stroke="#000" stroke-width="1.3" d="M89 1.6a41 41 0 0 0-41 41"/><path stroke="#000" d="M89 45.1H48"/></g></g><g clip-path="url(#d)"><mask id="e" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M0 0h55v49H0V0Z"/></mask><g mask="url(#e)"><path fill="#fff" d="M7 1.6a41 41 0 0 1 41 41H7v-41Zm-6 40h6v6H1v-6Z"/><path fill="#fff" d="M7 41.6h41v6H7v-6Z"/><path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6m0-6v6m0-6h41m-41 6h41m0-6h6v6h-6m0-6v6M7 1v45"/><path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/><path stroke="#000" d="M7 45.1h41"/></g></g></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h96v49H0z"/></clipPath><clipPath id="b"><path fill="#fff" d="M96 0H48v49h48z"/></clipPath><clipPath id="d"><path fill="#fff" d="M0 0h48v49H0z"/></clipPath></defs></svg>`; defaultWidth = 120; elementType = '양개형 여닫이문'; break;
+                case 'door-left': 
+                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="55" height="49" fill="none" viewBox="0 0 55 49"><g clip-path="url(#a)"><g clip-path="url(#b)"><mask id="c" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M0 0h55v49H0V0Z"/></mask><g mask="url(#c)"><path fill="#fff" d="M7 1.6a41 41 0 0 1 41 41H7v-41Zm-6 40h6v6H1v-6Zm47 0h6v6h-6v-6Z"/><path fill="#fff" d="M7 41.6h41v6H7v-6Z"/><path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6m0-6v6m0-6h41m-41 6h41m0-6h6v6h-6m0-6v6M7 1v45"/><path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/><path stroke="#000" d="M7 45.1h41"/></g></g></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h55v49H0z"/></clipPath><clipPath id="b"><path fill="#fff" d="M0 0h55v49H0z"/></clipPath></defs></svg>`; 
+                    elementType = '왼쪽 여닫이문'; 
+                    break;
+                case 'door-right': 
+                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="55" height="49" fill="none" viewBox="0 0 55 49"><g clip-path="url(#a)"><g clip-path="url(#b)"><mask id="c" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M55 0H0v49h55V0Z"/></mask><g mask="url(#c)"><path fill="#fff" d="M48 1.6a41 41 0 0 0-41 41h41v-41Zm6 40h-6v6h6v-6Zm-47 0H1v6h6v-6Z"/><path fill="#fff" d="M48 41.6H7v6h41v-6Z"/><path stroke="#000" stroke-width="1.3" d="M48 41.6h6v6h-6m0-6v6m0-6H7m41 6H7m0-6H1v6h6m0-6v6M48 1v45"/><path stroke="#000" stroke-width="1.3" d="M48 1.6a41 41 0 0 0-41 41"/><path stroke="#000" d="M48 45.1H7"/></g></g></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h55v49H0z"/></clipPath><clipPath id="b"><path fill="#fff" d="M55 0H0v49h55z"/></clipPath></defs></svg>`; 
+                    elementType = '오른쪽 여닫이문'; 
+                    break;
+                case 'window-left': 
+                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21"><g clip-path="url(#a)"><path fill="#fff" stroke="#000" stroke-width="1.3" d="M1 1h60Zm60 0H1v10h60V1Z"/><path fill="#000" d="m3 17 6.5-3.754v7.506L3 17Z"/><path fill="#000" d="M34 17v.65H8.85v-1.3H34V17Z"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h62v21H0z"/></clipPath></defs></svg>`; 
+                    elementType = '왼쪽 창문'; 
+                    break;
+                case 'window-right': 
+                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="62" height="21" fill="none" viewBox="0 0 62 21"><g clip-path="url(#a)"><path fill="#fff" stroke="#000" stroke-width="1.3" d="M61 1H1ZM1 1h60v10H1V1Z"/><path fill="#000" d="m59 17-6.5-3.754v7.506L59 17Z"/><path fill="#000" d="M28 17v.65h25.15v-1.3H28V17Z"/></g><defs><clipPath id="a"><path fill="#fff" d="M62 0H0v21h62z"/></clipPath></defs></svg>`; 
+                    elementType = '오른쪽 창문'; 
+                    break;
+                case 'window-both': 
+                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="66" height="21" fill="none" viewBox="0 0 66 21"><g clip-path="url(#a)"><mask id="b" width="66" height="21" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M0 0h66v21H0V0Z"/></mask><g mask="url(#b)"><path fill="#fff" stroke="#000" stroke-width="1.3" d="M3 1h60Zm60 0H3v10h60V1Z"/><path fill="#000" d="m66 17-6.5-3.754v7.506L66 17Z"/><path fill="#000" d="M35 17v.65h25.15v-1.3H35V17ZM0 17l6.5-3.754v7.506L0 17Z"/><path fill="#000" d="M31 17v.65H5.85v-1.3H31V17Z"/></g></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h66v21H0z"/></clipPath></defs></svg>`; 
+                    elementType = '양쪽 창문'; 
+                    break;
+                case 'door-double': 
+                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="49" fill="none" viewBox="0 0 96 49"><g clip-path="url(#a)"><g clip-path="url(#b)"><mask id="c" width="55" height="49" x="41" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M96 0H41v49h55V0Z"/></mask><g mask="url(#c)"><path fill="#fff" d="M89 1.6a41 41 0 0 0-41 41h41v-41Zm6 40h-6v6h6v-6Z"/><path fill="#fff" d="M89 41.6H48v6h41v-6Z"/><path stroke="#000" stroke-width="1.3" d="M89 41.6h6v6h-6m0-6v6m0-6H48m41 6H48m0-6h-6v6h6m0-6v6M89 1v45"/><path stroke="#000" stroke-width="1.3" d="M89 1.6a41 41 0 0 0-41 41"/><path stroke="#000" d="M89 45.1H48"/></g></g><g clip-path="url(#d)"><mask id="e" width="55" height="49" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M0 0h55v49H0V0Z"/></mask><g mask="url(#e)"><path fill="#fff" d="M7 1.6a41 41 0 0 1 41 41H7v-41Zm-6 40h6v6H1v-6Z"/><path fill="#fff" d="M7 41.6h41v6H7v-6Z"/><path stroke="#000" stroke-width="1.3" d="M7 41.6H1v6h6m0-6v6m0-6h41m-41 6h41m0-6h6v6h-6m0-6v6M7 1v45"/><path stroke="#000" stroke-width="1.3" d="M7 1.6a41 41 0 0 1 41 41"/><path stroke="#000" d="M7 45.1h41"/></g></g></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h96v49H0z"/></clipPath><clipPath id="b"><path fill="#fff" d="M96 0H48v49h48z"/></clipPath><clipPath id="d"><path fill="#fff" d="M0 0h48v49H0z"/></clipPath></defs></svg>`; 
+                    defaultWidth = 120; 
+                    elementType = '양개형 여닫이문'; 
+                    break;
                 default: callback(null); return;
             }
+    
             fabric.loadSVGFromString(svgString, (objects, options) => {
-                objects.forEach(obj => { if (obj.stroke) { obj.set({ strokeUniform: true, strokeWidth: obj.strokeWidth || 1.3 }); } });
-                const finalGroup = new fabric.Group(objects, { left: x, top: y, originX: 'center', originY: 'center', elementType: elementType, strokeUniform: true, objectCaching: false });
-                const initialSizes = { 'door-left': 37, 'door-right': 37, 'window-left': 45, 'window-right': 45, 'window-both': 45, 'door-double': 63 };
-                finalGroup.scaleToWidth(initialSizes[type] || defaultWidth);
+                objects.forEach(obj => { 
+                    if (obj.stroke) {
+                        obj.set({
+                            strokeUniform: true,
+                            strokeWidth: obj.strokeWidth || 1.3
+                        });
+                    }
+                });
+    
+                const finalGroup = new fabric.Group(objects, {
+                    left: x,
+                    top: y,
+                    originX: 'center',
+                    originY: 'center',
+                    elementType: elementType,
+                    strokeUniform: true,
+                    objectCaching: false // SVG 그룹 객체에도 캐싱 비활성화 적용
+                });
+    
+                const initialSizes = {
+                    'door-left': 37,
+                    'door-right': 37,
+                    'window-left': 45,
+                    'window-right': 45,
+                    'window-both': 45,
+                    'door-double': 63
+                };
+                
+                const targetWidth = initialSizes[type] || defaultWidth;
+                finalGroup.scaleToWidth(targetWidth);
+                
                 callback(finalGroup);
             });
         }
@@ -943,29 +1113,23 @@
                     currentWallPath.set({ selectable: true, evented: true }); 
                     history.saveState(); 
                     updateSnapPoints();
-                    setTimeout(bringArchitecturalElementsToFront, 10);
+                    setTimeout(() => bringArchitecturalElementsToFront(), 10);
                 }
                 wallPoints = []; currentWallPath = null; hideSnapIndicator(); canvas.renderAll(); setMode('select');
             }
+    
             const activeObject = canvas.getActiveObject();
             if (activeObject && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.code)) {
                 e.preventDefault();
                 const moveDistance = e.shiftKey ? mmToPixels(1.0) : mmToPixels(0.5);
-                activeObject.getObjects ? activeObject.getObjects().forEach(obj => {
-                    switch(e.code) {
-                        case 'ArrowLeft': obj.set('left', obj.left - moveDistance); break;
-                        case 'ArrowRight': obj.set('left', obj.left + moveDistance); break;
-                        case 'ArrowUp': obj.set('top', obj.top - moveDistance); break;
-                        case 'ArrowDown': obj.set('top', obj.top + moveDistance); break;
-                    }
-                }) : (() => {
-                     switch(e.code) {
-                        case 'ArrowLeft': activeObject.set('left', activeObject.left - moveDistance); break;
-                        case 'ArrowRight': activeObject.set('left', activeObject.left + moveDistance); break;
-                        case 'ArrowUp': activeObject.set('top', activeObject.top - moveDistance); break;
-                        case 'ArrowDown': activeObject.set('top', activeObject.top + moveDistance); break;
-                    }
-                })();
+                
+                switch(e.code) {
+                    case 'ArrowLeft': activeObject.set('left', activeObject.left - moveDistance); break;
+                    case 'ArrowRight': activeObject.set('left', activeObject.left + moveDistance); break;
+                    case 'ArrowUp': activeObject.set('top', activeObject.top - moveDistance); break;
+                    case 'ArrowDown': activeObject.set('top', activeObject.top + moveDistance); break;
+                }
+                
                 activeObject.setCoords();
                 canvas.renderAll();
                 updateSizeControls();
@@ -1038,7 +1202,21 @@
                     wallPoints.push({ x: currentX, y: currentY });
                     if (currentWallPath) canvas.remove(currentWallPath);
                     const pathData = wallPoints.map((p, i) => (i === 0 ? 'M' : 'L') + ` ${p.x} ${p.y}`).join(' ');
-                    currentWallPath = new fabric.Path(pathData, { stroke: 'black', strokeWidth: defaultStrokeWidth, strokeLineJoin: 'miter', fill: 'transparent', selectable: false, evented: false, strokeUniform: true, elementType: '벽', objectCaching: false });
+                    
+                    // =========================================================
+                    // ★★★ 해결 방안 적용: 벽(Path) 생성 시 objectCaching 비활성화 ★★★
+                    // =========================================================
+                    currentWallPath = new fabric.Path(pathData, { 
+                        stroke: 'black', 
+                        strokeWidth: defaultStrokeWidth, 
+                        strokeLineJoin: 'miter', 
+                        fill: 'transparent', 
+                        selectable: false, 
+                        evented: false, 
+                        strokeUniform: true, 
+                        elementType: '벽',
+                        objectCaching: false 
+                    });
                     canvas.add(currentWallPath);
                     lastWallEndX = currentX; lastWallEndY = currentY;
                     if (previewLine) previewLine.set({ x1: currentX, y1: currentY, x2: currentX, y2: currentY });
@@ -1059,9 +1237,29 @@
             }
         });
     
-        flipBtn.addEventListener('click', () => { if (rightClickedObject) { rightClickedObject.set('flipX', !rightClickedObject.flipX); canvas.renderAll(); history.saveState(); } contextMenu.style.display = 'none'; });
-        flipVerticalBtn.addEventListener('click', () => { if (rightClickedObject) { rightClickedObject.set('flipY', !rightClickedObject.flipY); canvas.renderAll(); history.saveState(); } contextMenu.style.display = 'none'; });
-        window.addEventListener('click', (e) => { if (!contextMenu.contains(e.target)) contextMenu.style.display = 'none'; });
+        flipBtn.addEventListener('click', () => { 
+            if (rightClickedObject) { 
+                rightClickedObject.set('flipX', !rightClickedObject.flipX); 
+                canvas.renderAll(); 
+                history.saveState(); 
+            } 
+            contextMenu.style.display = 'none'; 
+        });
+    
+        flipVerticalBtn.addEventListener('click', () => { 
+            if (rightClickedObject) { 
+                rightClickedObject.set('flipY', !rightClickedObject.flipY); 
+                canvas.renderAll(); 
+                history.saveState(); 
+            } 
+            contextMenu.style.display = 'none'; 
+        });
+    
+        window.addEventListener('click', (e) => { 
+            if (!contextMenu.contains(e.target)) {
+                contextMenu.style.display = 'none'; 
+            }
+        });
     
         canvas.on('mouse:move', (e) => {
             if (isPanning) { const v = canvas.viewportTransform; v[4] += e.e.clientX - lastPosX; v[5] += e.e.clientY - lastPosY; canvas.requestRenderAll(); lastPosX = e.e.clientX; lastPosY = e.e.clientY; return; }
@@ -1087,28 +1285,66 @@
                 canvas.remove(currentLine); 
                 const pointer = canvas.getPointer(e.e); 
                 const w = Math.abs(pointer.x - startX), h = Math.abs(pointer.y - startY); 
-                if (w > 2 && h > 2) { newObject = new fabric.Rect({ left: Math.min(startX, pointer.x), top: Math.min(startY, pointer.y), width: w, height: h, fill: 'transparent', stroke: 'black', strokeWidth: defaultStrokeWidth, strokeUniform: true, elementType: '사각형', objectCaching: false }); canvas.add(newObject); } 
+                if (w > 2 && h > 2) {
+                    // =============================================================
+                    // ★★★ 해결 방안 적용: 사각형(Rect) 생성 시 objectCaching 비활성화 ★★★
+                    // =============================================================
+                    newObject = new fabric.Rect({ 
+                        left: Math.min(startX, pointer.x), 
+                        top: Math.min(startY, pointer.y), 
+                        width: w, 
+                        height: h, 
+                        fill: 'transparent', 
+                        stroke: 'black', 
+                        strokeWidth: defaultStrokeWidth, 
+                        strokeUniform: true, 
+                        elementType: '사각형',
+                        objectCaching: false
+                    }); 
+                    canvas.add(newObject);
+                } 
             }
             if(newObject) { setMode('select'); canvas.setActiveObject(newObject); }
             isDrawing = false; currentLine = null;
         });
     
         const handleRotating = (opt) => { if (opt.e.shiftKey) { const t = opt.target; t.set('angle', Math.round(t.angle / 90) * 90); } updateSizeControls(); };
+    
         const handleObjectMoving = (e) => {
             const movingObj = e.target;
-            if (!movingObj || movingObj.isGridLine) return;
-            if (movingObj.type !== 'rect' && movingObj.type !== 'path' && !movingObj.isType('group')) return;
-            const allObjects = canvas.getObjects().filter(obj => !obj.isGridLine && obj !== movingObj && (obj.type === 'rect' || obj.type === 'path' || obj.isType('group')));
+            if (!movingObj || movingObj.isGridLine || movingObj.isBackground) return;
+            if (movingObj.type !== 'rect' && movingObj.type !== 'path' && !movingObj.isType('group') && movingObj.type !== 'image') return;
+            
+            const allObjects = canvas.getObjects().filter(obj => 
+                !obj.isGridLine && !obj.isBackground && obj !== movingObj && 
+                (obj.type === 'rect' || obj.type === 'path' || obj.isType('group'))
+            );
+            
             const snapResult = findObjectSnapPosition(movingObj, allObjects);
+            
             if (snapResult.snapped) {
                 if (snapResult.snapX !== null) movingObj.set('left', snapResult.snapX);
                 if (snapResult.snapY !== null) movingObj.set('top', snapResult.snapY);
+                
                 const edges = getObjectEdges(movingObj);
-                if (snapResult.snapX !== null && snapResult.snapY !== null) { showSnapIndicator(edges.centerX, edges.centerY, true); showAlignmentLines(edges.centerX, edges.centerY, true, true);
-                } else if (snapResult.snapX !== null) { showSnapIndicator(edges.centerX, movingObj.top + movingObj.height * movingObj.scaleY / 2, true); showAlignmentLines(edges.centerX, edges.centerY, false, true);
-                } else if (snapResult.snapY !== null) { showSnapIndicator(movingObj.left + movingObj.width * movingObj.scaleX / 2, edges.centerY, true); showAlignmentLines(edges.centerX, edges.centerY, true, false); }
-            } else { hideSnapIndicator(); hideAlignmentLines(); }
-            if (movingObj.elementType && (movingObj.elementType.includes('문') || movingObj.elementType.includes('창문'))) { canvas.bringToFront(movingObj); }
+                if (snapResult.snapX !== null && snapResult.snapY !== null) {
+                    showSnapIndicator(edges.centerX, edges.centerY, true);
+                    showAlignmentLines(edges.centerX, edges.centerY, true, true);
+                } else if (snapResult.snapX !== null) {
+                    showSnapIndicator(edges.centerX, movingObj.top + movingObj.height * movingObj.scaleY / 2, true);
+                    showAlignmentLines(edges.centerX, edges.centerY, false, true);
+                } else if (snapResult.snapY !== null) {
+                    showSnapIndicator(movingObj.left + movingObj.width * movingObj.scaleX / 2, edges.centerY, true);
+                    showAlignmentLines(edges.centerX, edges.centerY, true, false);
+                }
+            } else {
+                hideSnapIndicator();
+                hideAlignmentLines();
+            }
+            
+            if (movingObj.elementType && (movingObj.elementType.includes('문') || movingObj.elementType.includes('창문'))) {
+                 canvas.bringToFront(movingObj);
+            }
         };
     
         canvas.on({ 
@@ -1118,38 +1354,38 @@
             'object:scaling': updateSizeControls, 
             'object:rotating': handleRotating,
             'object:moving': handleObjectMoving,
-            'object:moved': () => { hideSnapIndicator(); hideAlignmentLines(); bringArchitecturalElementsToFront(); }
+            'object:moved': () => { 
+                hideSnapIndicator(); 
+                hideAlignmentLines();
+                bringArchitecturalElementsToFront();
+            }
         });
     
         function updateSelection(selected) { 
             highlightPanelSelection(); 
             selectedObject = selected.length === 1 ? selected[0] : null; 
-            copyBtn.disabled = selected.length === 0;
-            if (selected.length > 0) { 
-                sizeControls.classList.add('show'); 
-                updateSizeControls(); 
-                const firstSelected = selected[0];
-                strokeWidthControl.style.display = (firstSelected.type === 'line' || firstSelected.type === 'rect' || firstSelected.isType('group') || firstSelected.type === 'path') ? 'block' : 'none';
+            copyBtn.disabled = !selectedObject;
+            if (selectedObject) { 
+                sizeControls.classList.add('show'); updateSizeControls(); 
+                strokeWidthControl.style.display = (selectedObject.type === 'line' || selectedObject.type === 'rect' || selectedObject.isType('group') || selectedObject.type === 'path') ? 'block' : 'none';
             } else { sizeControls.classList.remove('show'); } 
         }
     
         function updateSizeControls() { 
             if (selectedObject) { 
                 widthInput.value = Math.round(selectedObject.getScaledWidth()); heightInput.value = Math.round(selectedObject.getScaledHeight()); angleInput.value = Math.round(selectedObject.angle); 
-                if (selectedObject.type === 'line' || selectedObject.type === 'rect' || selectedObject.type === 'path') { strokeWidthInput.value = selectedObject.strokeWidth;
-                } else if (selectedObject.isType('group')) { const firstStroked = selectedObject.getObjects().find(o => o.stroke); if (firstStroked) strokeWidthInput.value = firstStroked.strokeWidth; }
+                if (selectedObject.type === 'line' || selectedObject.type === 'rect' || selectedObject.type === 'path') strokeWidthInput.value = selectedObject.strokeWidth;
+                else if (selectedObject.isType('group')) { const firstStroked = selectedObject.getObjects().find(o => o.stroke); if (firstStroked) strokeWidthInput.value = firstStroked.strokeWidth; }
             } 
         }
         widthInput.addEventListener('input', () => { if (selectedObject) { selectedObject.scaleToWidth(parseInt(widthInput.value, 10)); canvas.renderAll(); }});
         heightInput.addEventListener('input', () => { if (selectedObject) { selectedObject.scaleToHeight(parseInt(heightInput.value, 10)); canvas.renderAll(); }});
         angleInput.addEventListener('input', () => { if (selectedObject) { selectedObject.set('angle', parseInt(angleInput.value, 10)).setCoords(); canvas.renderAll(); }});
         strokeWidthInput.addEventListener('input', () => {
-            const activeObjects = canvas.getActiveObjects(); if (activeObjects.length === 0) return;
+            if (!selectedObject) return;
             const newWidth = parseInt(strokeWidthInput.value, 10); if(isNaN(newWidth) || newWidth < 1) return;
-            activeObjects.forEach(obj => {
-                if (obj.type === 'line' || obj.type === 'rect' || obj.type === 'path') obj.set('strokeWidth', newWidth);
-                else if (obj.isType('group')) obj.getObjects().forEach(o => { if (o.stroke) o.set('strokeWidth', newWidth); });
-            });
+            if (selectedObject.type === 'line' || selectedObject.type === 'rect' || selectedObject.type === 'path') selectedObject.set('strokeWidth', newWidth);
+            else if (selectedObject.isType('group')) selectedObject.getObjects().forEach(obj => { if (obj.stroke) obj.set('strokeWidth', newWidth); });
             canvas.renderAll(); history.saveState();
         });
     
@@ -1161,87 +1397,35 @@
     
         function deleteSelectedObjects() { canvas.getActiveObjects().forEach(obj => canvas.remove(obj)); canvas.discardActiveObject().renderAll(); }
     
-        function copyObject() { const activeObject = canvas.getActiveObject(); if (activeObject) { activeObject.clone(c => { _clipboard = c; pasteBtn.disabled = false; }, ['elementType']); } }
-
-        function pasteObject() {
-            if (!_clipboard) return;
-            _clipboard.clone(async (cloned) => {
-                canvas.discardActiveObject();
-                if (cloned.type === 'activeSelection') {
-                    // activeSelection의 경우 전체 그룹으로 처리
-                    cloned.set({
-                        left: cloned.left + 15,
-                        top: cloned.top + 15,
-                        evented: true,
-                    });
-                    // 그룹의 개별 객체들에 대해 evented 속성 설정
-                    cloned.getObjects().forEach(obj => {
-                        obj.set({ evented: true });
-                    });
-                    canvas.add(cloned);
-                    
-                    // 그룹을 즉시 해제하여 개별 객체들로 분리
-                    cloned.toActiveSelection();
-                    canvas.requestRenderAll();
-                } else {
-                    cloned.set({
-                        left: cloned.left + 15,
-                        top: cloned.top + 15,
-                        evented: true,
-                    });
-                    canvas.add(cloned);
-                    canvas.setActiveObject(cloned);
-                }
+        function copyObject() { const o = canvas.getActiveObject(); if (o) o.clone(c => { _clipboard = c; pasteBtn.disabled = false; }, ['elementType']); }
+        function pasteObject() { 
+            if (!_clipboard) return; 
+            _clipboard.clone(c => { 
+                canvas.discardActiveObject(); 
+                c.set({ left: c.left + 15, top: c.top + 15, evented: true }); 
+                if (c.isType('group')) c.getObjects().forEach(o => { 
+                    const orig = _clipboard.getObjects().find(co => co.type === o.type); 
+                    if(orig && orig.strokeWidth) o.set('strokeWidth', orig.strokeWidth); 
+                }); 
+                canvas.add(c); 
+                canvas.setActiveObject(c); 
                 canvas.requestRenderAll();
                 bringArchitecturalElementsToFront();
-            }, ['elementType']);
+            }, ['elementType']); 
         }
     
         function updateObjectPanel() {
             objectPanelList.innerHTML = '';
-            const objects = canvas.getObjects().filter(obj => !obj.isGridLine);
-            objects.forEach((obj, listIndex) => {
+            const objects = canvas.getObjects().filter(obj => !obj.isGridLine && !obj.isBackground);
+            objects.forEach((obj, index) => {
                 const li = document.createElement('li');
                 let name = obj.elementType || obj.type || '객체';
                 if(obj.type === 'text') name = `텍스트: ${obj.text.substring(0, 10)}...`;
                 else if(obj.type === 'path' && obj.elementType === '벽') name = `벽`;
                 else if(obj.type === 'rect') name = `사각형`;
-                else if(obj.elementType === '배경 이미지') name = `🖼️ 배경 이미지`;
-                li.textContent = `${name} (id: ${canvas.getObjects().indexOf(obj)})`;
-                li.dataset.listIndex = listIndex; 
-                li.addEventListener('click', (e) => {
-                    const currentIndex = parseInt(li.dataset.listIndex, 10);
-                    const currentObject = objects[currentIndex];
-                    const isCtrlOrCmd = e.ctrlKey || e.metaKey;
-                    const activeObject = canvas.getActiveObject();
-                    if (e.shiftKey && lastSelectedPanelIndex > -1) {
-                        const start = Math.min(lastSelectedPanelIndex, currentIndex);
-                        const end = Math.max(lastSelectedPanelIndex, currentIndex);
-                        const objectsToSelect = objects.slice(start, end + 1);
-                        canvas.discardActiveObject();
-                        const sel = new fabric.ActiveSelection(objectsToSelect, { canvas: canvas });
-                        canvas.setActiveObject(sel);
-                    } else if (isCtrlOrCmd) {
-                        if (currentObject.isActive()) {
-                             activeObject.removeWithUpdate(currentObject);
-                        } else {
-                            if (activeObject && activeObject.isType('activeSelection')) {
-                                activeObject.addWithUpdate(currentObject);
-                            } else if (activeObject) {
-                                const newSelection = new fabric.ActiveSelection([activeObject, currentObject], { canvas: canvas });
-                                canvas.setActiveObject(newSelection);
-                            } else {
-                                canvas.setActiveObject(currentObject);
-                            }
-                        }
-                        lastSelectedPanelIndex = currentIndex;
-                    } else {
-                        canvas.discardActiveObject();
-                        canvas.setActiveObject(currentObject);
-                        lastSelectedPanelIndex = currentIndex;
-                    }
-                    canvas.renderAll();
-                });
+                li.textContent = `${name} (id: ${index + 1})`; // 이름 중복을 피하기 위해 인덱스 추가
+                li.dataset.objectIndex = canvas.getObjects().indexOf(obj); 
+                li.addEventListener('click', () => { canvas.discardActiveObject(); canvas.setActiveObject(obj); canvas.renderAll(); });
                 objectPanelList.appendChild(li);
             });
             highlightPanelSelection();
@@ -1249,20 +1433,22 @@
     
         function highlightPanelSelection() {
             const activeObjects = canvas.getActiveObjects();
-            const listItems = document.querySelectorAll('#object-panel-list li');
-            const canvasObjects = canvas.getObjects().filter(o => !o.isGridLine);
-            listItems.forEach(li => {
-                const listIndex = parseInt(li.dataset.listIndex, 10);
-                const obj = canvasObjects[listIndex];
-                li.classList.toggle('selected', obj && activeObjects.includes(obj));
+            document.querySelectorAll('#object-panel-list li').forEach(li => {
+                const obj = canvas.getObjects()[parseInt(li.dataset.objectIndex, 10)];
+                li.classList.toggle('selected', activeObjects.includes(obj));
             });
         }
     
         ['door-left-btn', 'door-right-btn', 'window-left-btn', 'window-right-btn', 'window-both-btn', 'door-double-btn'].forEach(id => { document.getElementById(id).addEventListener('dragstart', (e) => e.dataTransfer.setData('text/plain', id.replace('-btn', ''))); });
         canvasContainer.addEventListener('dragover', (e) => e.preventDefault());
-        canvasContainer.addEventListener('drop', (e) => { e.preventDefault(); const type = e.dataTransfer.getData('text/plain'); const pointer = canvas.getPointer(e); createObject(type, pointer.x, pointer.y, (obj) => { if (obj) { canvas.add(obj); setMode('select'); canvas.setActiveObject(obj); canvas.renderAll(); } }); });
+        canvasContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const type = e.dataTransfer.getData('text/plain');
+            const pointer = canvas.getPointer(e);
+            createObject(type, pointer.x, pointer.y, (obj) => { if (obj) { canvas.add(obj); setMode('select'); canvas.setActiveObject(obj); canvas.renderAll(); } });
+        });
     
-        document.getElementById('clear-btn').addEventListener('click', () => { if (confirm('모든 내용을 삭제하시겠습니까?\n(배경 이미지도 함께 제거됩니다)')) { history.isRestoring = true; canvas.clear(); canvas.setViewportTransform([1, 0, 0, 1, 0, 0]); canvas.backgroundColor = 'white'; backgroundImage = null; bgClearBtn.disabled = true; opacityControl.style.display = 'none'; if (showGrid) drawGrid(); history.isRestoring = false; history.saveState(); updateObjectPanel(); } });
+        document.getElementById('clear-btn').addEventListener('click', () => { if (confirm('모든 내용을 삭제하시겠습니까?\n(배경 이미지도 함께 제거됩니다)')) { history.isRestoring = true; canvas.clear(); canvas.setViewportTransform([1, 0, 0, 1, 0, 0]); canvas.backgroundColor = 'white'; backgroundImageObject = null; bgClearBtn.disabled = true; opacityControl.style.display = 'none'; if (showGrid) drawGrid(); history.isRestoring = false; history.saveState(); } });
         bgImageBtn.addEventListener('click', () => { 
             const i = document.createElement('input'); 
             i.type = 'file'; 
@@ -1272,8 +1458,9 @@
                 r.onload = (ev) => { 
                     fabric.Image.fromURL(ev.target.result, (img) => { 
                         // 기존 배경 이미지가 있으면 제거
-                        const existingBg = canvas.getObjects().find(obj => obj.elementType === '배경 이미지');
-                        if (existingBg) canvas.remove(existingBg);
+                        if (backgroundImageObject) {
+                            canvas.remove(backgroundImageObject);
+                        }
                         
                         const s = Math.min(canvas.width / img.width, canvas.height / img.height); 
                         img.set({ 
@@ -1284,23 +1471,24 @@
                             top: 0,
                             selectable: true,
                             evented: true,
-                            elementType: '배경 이미지',
-                            lockRotation: true,  // 회전 방지
-                            lockScalingFlip: true  // 뒤집기 방지
+                            hasControls: true,
+                            hasBorders: true,
+                            lockMovementX: false,
+                            lockMovementY: false,
+                            isBackground: true,
+                            elementType: '배경 이미지'
                         }); 
                         canvas.add(img);
-                        canvas.sendToBack(img);  // 맨 뒤로 보내기
+                        canvas.sendToBack(img);
                         
-                        // 격자선이 있으면 격자선보다는 앞에 위치
-                        canvas.getObjects().forEach(obj => {
-                            if (obj.isGridLine) canvas.sendToBack(obj);
-                        });
+                        // 격자선이 있으면 그보다는 위에 위치
+                        canvas.getObjects().filter(o => o.isGridLine).forEach(o => canvas.sendToBack(o));
                         
-                        backgroundImage = img; 
+                        backgroundImageObject = img; 
                         bgClearBtn.disabled = false; 
                         opacityControl.style.display = 'block'; 
                         canvas.renderAll();
-                        updateObjectPanel();
+                        history.saveState();
                     }); 
                 }; 
                 r.readAsDataURL(e.target.files[0]); 
@@ -1308,14 +1496,23 @@
             i.click(); 
         });
         bgClearBtn.addEventListener('click', () => { 
-            const bgImg = canvas.getObjects().find(obj => obj.elementType === '배경 이미지');
-            if (bgImg) canvas.remove(bgImg);
-            backgroundImage = null; 
-            bgClearBtn.disabled = true; 
-            opacityControl.style.display = 'none'; 
-            updateObjectPanel();
+            if (backgroundImageObject) {
+                canvas.remove(backgroundImageObject);
+                backgroundImageObject = null; 
+                bgClearBtn.disabled = true; 
+                opacityControl.style.display = 'none';
+                canvas.renderAll();
+                history.saveState();
+            }
         });
-        bgOpacity.addEventListener('input', (e) => { const o = e.target.value; opacityValue.textContent = o + '%'; if (backgroundImage) { backgroundImage.set('opacity', o / 100); canvas.renderAll(); } });
+        bgOpacity.addEventListener('input', (e) => { 
+            const o = e.target.value; 
+            opacityValue.textContent = o + '%'; 
+            if (backgroundImageObject) { 
+                backgroundImageObject.set('opacity', o / 100); 
+                canvas.renderAll(); 
+            } 
+        });
     
         function drawGrid() {
             canvas.getObjects().forEach(o => { if (o.isGridLine) canvas.remove(o); });
@@ -1332,38 +1529,15 @@
         gridBtn.addEventListener('click', () => { showGrid = !showGrid; gridBtn.classList.toggle('active', showGrid); if (!showGrid) canvas.getObjects().forEach(o => { if(o.isGridLine) canvas.remove(o); }); else drawGrid(); updateSnapPoints(); canvas.renderAll(); });
     
         document.getElementById('export-btn').addEventListener('click', () => { 
-            const fileName = prompt('내보낼 이미지 파일명을 입력하세요:', '평면도');
-            if (!fileName) return; // 취소 버튼을 누른 경우
-            
-            // 배경 이미지 객체 찾기
-            const bgImg = canvas.getObjects().find(obj => obj.elementType === '배경 이미지');
-            
-            // 배경 이미지가 있으면 임시로 숨기기
-            if (bgImg) {
-                bgImg.set('visible', false);
-                canvas.renderAll();
-            }
-            
-            // 이미지 내보내기
             const a = document.createElement('a'); 
-            // .png 확장자가 없으면 추가
-            a.download = fileName.endsWith('.png') ? fileName : fileName + '.png'; 
+            a.download = '평면도.png'; 
             a.href = canvas.toDataURL({ format: 'png', quality: 1 }); 
             a.click(); 
-            
-            // 배경 이미지 다시 보이기
-            if (bgImg) {
-                bgImg.set('visible', true);
-                canvas.renderAll();
-            }
         });
         document.getElementById('save-btn').addEventListener('click', () => { 
-            const fileName = prompt('저장할 파일명을 입력하세요:', '평면도');
-            if (!fileName) return; // 취소 버튼을 누른 경우
-            
             const d = { 
-                version: '3.1', 
-                canvas: canvas.toJSON(['elementType']), 
+                version: '3.0', 
+                canvas: canvas.toJSON(['elementType', 'isBackground']), 
                 viewport: canvas.viewportTransform, 
                 defaultStrokeWidth, 
                 gridSnapInterval 
@@ -1371,8 +1545,7 @@
             const b = new Blob([JSON.stringify(d)], { type: 'application/json' }); 
             const u = URL.createObjectURL(b); 
             const a = document.createElement('a'); 
-            // .json 확장자가 없으면 추가
-            a.download = fileName.endsWith('.json') ? fileName : fileName + '.json'; 
+            a.download = '평면도.json'; 
             a.href = u; 
             a.click(); 
             URL.revokeObjectURL(u); 
@@ -1389,8 +1562,19 @@
                     canvas.loadFromJSON(d.canvas || d, () => { 
                         if (d.viewport) canvas.setViewportTransform(d.viewport); 
                         
-                        // 기존 버전 호환성을 위한 처리 (3.0 이하)
-                        if (d.backgroundImage && d.version !== '3.1') {
+                        // 배경 이미지 찾기 및 설정
+                        const bgImg = canvas.getObjects().find(obj => obj.isBackground);
+                        if (bgImg) {
+                            backgroundImageObject = bgImg;
+                            bgClearBtn.disabled = false;
+                            opacityControl.style.display = 'block';
+                            bgOpacity.value = (bgImg.opacity || 1) * 100;
+                            opacityValue.textContent = `${Math.round(bgOpacity.value)}%`;
+                            canvas.sendToBack(bgImg);
+                        }
+                        
+                        // 구버전 호환성을 위한 처리
+                        if (!bgImg && d.backgroundImage) {
                             fabric.Image.fromURL(d.backgroundImage.src, (img) => { 
                                 img.set({
                                     ...d.backgroundImage,
@@ -1398,28 +1582,21 @@
                                     top: 0,
                                     selectable: true,
                                     evented: true,
-                                    elementType: '배경 이미지',
-                                    lockRotation: true,
-                                    lockScalingFlip: true
+                                    hasControls: true,
+                                    hasBorders: true,
+                                    lockMovementX: false,
+                                    lockMovementY: false,
+                                    isBackground: true,
+                                    elementType: '배경 이미지'
                                 }); 
                                 canvas.add(img);
                                 canvas.sendToBack(img);
-                                backgroundImage = img; 
+                                backgroundImageObject = img; 
                                 bgClearBtn.disabled = false; 
                                 opacityControl.style.display = 'block'; 
                                 bgOpacity.value = (d.backgroundImage.opacity || 1) * 100; 
-                                opacityValue.textContent = `${Math.round(bgOpacity.value)}%`; 
+                                opacityValue.textContent = `${Math.round(bgOpacity.value)}%`;
                             });
-                        }
-                        
-                        // 배경 이미지 객체 찾기 (새 버전)
-                        const bgImg = canvas.getObjects().find(obj => obj.elementType === '배경 이미지');
-                        if (bgImg) {
-                            backgroundImage = bgImg;
-                            bgClearBtn.disabled = false;
-                            opacityControl.style.display = 'block';
-                            bgOpacity.value = (bgImg.opacity || 1) * 100;
-                            opacityValue.textContent = `${Math.round(bgOpacity.value)}%`;
                         }
                         
                         if (d.defaultStrokeWidth) { 
@@ -1437,7 +1614,6 @@
                         canvas.renderAll(); 
                         updateSnapPoints(); 
                         bringArchitecturalElementsToFront(); 
-                        updateObjectPanel();
                         history.isRestoring = false; 
                         history.saveState(); 
                     }); 
@@ -1449,30 +1625,17 @@
     
         function resizeCanvas() {
             const container = canvasContainer; const w = container.clientWidth, h = container.clientHeight;
-            if (canvas.width !== w || canvas.height !== h) { canvas.setWidth(w).setHeight(h); canvas.calcOffset(); canvas.renderAll(); }
+            canvasEl.width = w; canvasEl.height = h; canvas.setWidth(w); canvas.setHeight(h); canvas.renderAll();
         }
         const resizeObserver = new ResizeObserver(() => resizeCanvas());
         resizeObserver.observe(canvasContainer);
-        
+        resizeCanvas();
+    
         const infoBanner = document.getElementById('info-banner'), infoToggleBtn = document.getElementById('info-toggle-btn');
         infoToggleBtn.addEventListener('click', () => infoBanner.classList.toggle('collapsed'));
-
-        document.querySelectorAll('.tool-group.collapsible > h3').forEach(header => {
-            header.addEventListener('click', () => {
-                const group = header.parentElement;
-                const isCollapsed = group.classList.toggle('collapsed');
-                if (isCollapsed) {
-                    header.textContent = header.textContent.replace('▼', '▶');
-                } else {
-                    header.textContent = header.textContent.replace('▶', '▼');
-                }
-                setTimeout(resizeCanvas, 50);
-            });
-        });
-
+    
         setMode('select');
         updateSnapPoints();
-        resizeCanvas();
     </script>
 </body>
 </html>
