@@ -1241,9 +1241,12 @@
             contextMenu.style.display = 'none';
             if (e.button === 3) {
                 const target = e.target;
-                if (target && target.isType('group') && target.elementType) {
-                    e.e.preventDefault(); rightClickedObject = target;
-                    contextMenu.style.left = `${e.e.clientX}px`; contextMenu.style.top = `${e.e.clientY}px`;
+                // 그룹 객체 또는 다중 선택(ActiveSelection)에 대해 컨텍스트 메뉴 표시
+                if (target && ((target.isType('group') && target.elementType) || target.type === 'activeSelection')) {
+                    e.e.preventDefault(); 
+                    rightClickedObject = target;
+                    contextMenu.style.left = `${e.e.clientX}px`; 
+                    contextMenu.style.top = `${e.e.clientY}px`;
                     contextMenu.style.display = 'block';
                     return;
                 }
@@ -1312,7 +1315,15 @@
     
         flipBtn.addEventListener('click', () => { 
             if (rightClickedObject) { 
-                rightClickedObject.set('flipX', !rightClickedObject.flipX); 
+                if (rightClickedObject.type === 'activeSelection') {
+                    // 다중 선택인 경우 - 그룹으로 변환하여 처리
+                    const group = rightClickedObject.toGroup();
+                    group.set('flipX', !group.flipX);
+                    group.toActiveSelection();
+                } else {
+                    // 단일 객체인 경우
+                    rightClickedObject.set('flipX', !rightClickedObject.flipX); 
+                }
                 canvas.renderAll(); 
                 history.saveState(); 
             } 
@@ -1321,7 +1332,15 @@
     
         flipVerticalBtn.addEventListener('click', () => { 
             if (rightClickedObject) { 
-                rightClickedObject.set('flipY', !rightClickedObject.flipY); 
+                if (rightClickedObject.type === 'activeSelection') {
+                    // 다중 선택인 경우 - 그룹으로 변환하여 처리
+                    const group = rightClickedObject.toGroup();
+                    group.set('flipY', !group.flipY);
+                    group.toActiveSelection();
+                } else {
+                    // 단일 객체인 경우
+                    rightClickedObject.set('flipY', !rightClickedObject.flipY); 
+                }
                 canvas.renderAll(); 
                 history.saveState(); 
             } 
