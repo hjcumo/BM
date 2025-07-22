@@ -44,6 +44,69 @@
             color: #333;
         }
         
+        .dropdown-group {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            position: relative;
+            min-width: 120px;
+        }
+        
+        .dropdown-header {
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        
+        .dropdown-header:hover {
+            background-color: #e9e9e9;
+        }
+        
+        .dropdown-arrow {
+            transition: transform 0.3s;
+            font-size: 12px;
+        }
+        
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: none;
+            padding: 10px;
+            min-width: 160px;
+            width: max-content;
+        }
+        
+        .dropdown-content button {
+            width: 100%;
+            margin: 2px 0;
+            text-align: center;
+            white-space: nowrap;
+            min-width: 14px;
+            padding: 8px 15px;
+        }
+        
+        .dropdown-content.show {
+            display: block;
+        }
+        
+        .dropdown-group.open .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+        
         button {
             padding: 8px 15px;
             border: 1px solid #ddd;
@@ -507,23 +570,33 @@
                 </button>
             </div>
 
-            <div class="tool-group">
-                <h3>파일</h3>
-                <button id="save-btn">저장</button>
-                <button id="load-btn">불러오기</button>
-                <button id="export-btn">이미지 내보내기</button>
-                <button id="clear-btn">전체 삭제</button>
+            <div class="dropdown-group" id="file-dropdown">
+                <div class="dropdown-header">
+                    <span>파일</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-content">
+                    <button id="save-btn">저장</button>
+                    <button id="load-btn">불러오기</button>
+                    <button id="export-btn">이미지 내보내기</button>
+                    <button id="clear-btn">전체 삭제</button>
+                </div>
             </div>
             
-            <div class="tool-group">
-                <h3>배경 이미지</h3>
-                <button id="bg-image-btn">이미지 불러오기</button>
-                <button id="bg-clear-btn" disabled>이미지 제거</button>
-                <div style="margin-top: 10px; display: none;" id="opacity-control">
-                    <label style="font-size: 12px;">불투명도: 
-                        <input type="range" id="bg-opacity" min="10" max="100" value="50" style="width: 100px; vertical-align: middle;">
-                        <span id="opacity-value">50%</span>
-                    </label>
+            <div class="dropdown-group" id="background-dropdown">
+                <div class="dropdown-header">
+                    <span>배경 이미지</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+                <div class="dropdown-content">
+                    <button id="bg-image-btn">이미지 불러오기</button>
+                    <button id="bg-clear-btn" disabled>이미지 제거</button>
+                    <div style="margin-top: 10px; display: none;" id="opacity-control">
+                        <label style="font-size: 12px;">불투명도: 
+                            <input type="range" id="bg-opacity" min="10" max="100" value="50" style="width: 100px; vertical-align: middle;">
+                            <span id="opacity-value">50%</span>
+                        </label>
+                    </div>
                 </div>
             </div>
             
@@ -1663,6 +1736,43 @@
         const infoBanner = document.getElementById('info-banner'), infoToggleBtn = document.getElementById('info-toggle-btn');
         infoToggleBtn.addEventListener('click', () => infoBanner.classList.toggle('collapsed'));
     
+        // 드롭다운 메뉴 초기화
+        function initDropdowns() {
+            const dropdowns = document.querySelectorAll('.dropdown-group');
+            
+            dropdowns.forEach(dropdown => {
+                const header = dropdown.querySelector('.dropdown-header');
+                const content = dropdown.querySelector('.dropdown-content');
+                
+                header.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    
+                    // 다른 드롭다운 닫기
+                    dropdowns.forEach(otherDropdown => {
+                        if (otherDropdown !== dropdown) {
+                            otherDropdown.classList.remove('open');
+                            otherDropdown.querySelector('.dropdown-content').classList.remove('show');
+                        }
+                    });
+                    
+                    // 현재 드롭다운 토글
+                    dropdown.classList.toggle('open');
+                    content.classList.toggle('show');
+                });
+            });
+            
+            // 외부 클릭 시 모든 드롭다운 닫기
+            document.addEventListener('click', (e) => {
+                dropdowns.forEach(dropdown => {
+                    if (!dropdown.contains(e.target)) {
+                        dropdown.classList.remove('open');
+                        dropdown.querySelector('.dropdown-content').classList.remove('show');
+                    }
+                });
+            });
+        }
+        
+        initDropdowns();
         setMode('select');
         updateSnapPoints();
     </script>
