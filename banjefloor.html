@@ -1038,7 +1038,7 @@
                     elementType = '오른쪽 창문'; 
                     break;
                 case 'window-both': 
-                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="66" height="21" fill="none" viewBox="0 0 66 21"><g clip-path="url(#a)"><mask id="b" width="66" height="21" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M0 0h66v21H0V0Z"/></mask><g mask="url(#b)"><path fill="#fff" stroke="#000" stroke-width="1.3" d="M3 1h60Zm60 0H3v10h60V1Z"/><path fill="#000" d="m66 17-6.5-3.754v7.506L66 17Z"/><path fill="#000" d="M35 17v.65h25.15v-1.3H35V17ZM0 17l6.5-3.754v7.506L0 17Z"/><path fill="#000" d="M31 17v.65H5.85v-1.3H31V17Z"/></g></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h66v21H0z"/></clipPath></defs></svg>`; 
+                    svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="66" height="21" fill="none" viewBox="0 0 66 21"><g clip-path="url(#a)"><mask id="b" width="66" height="21" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance"><path fill="#fff" d="M0 0h66v21H0V0Z"/></mask><g mask="url(#b)"><path fill="#fff" stroke="#000" stroke-width="1.3" d="M3 1h60Zm60 0H3v10h60V1Z"/> <path fill="#000" d="m66 17-6.5-3.754v7.506L66 17Z"/><path fill="#000" d="M35 17v.65h25.15v-1.3H35V17ZM0 17l6.5-3.754v7.506L0 17Z"/><path fill="#000" d="M31 17v.65H5.85v-1.3H31V17Z"/></g></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h66v21H0z"/></clipPath></defs></svg>`; 
                     elementType = '양쪽 창문'; 
                     break;
                 case 'door-double': 
@@ -1416,13 +1416,14 @@
     
         function updateObjectPanel() {
             objectPanelList.innerHTML = '';
-            const objects = canvas.getObjects().filter(obj => !obj.isGridLine && !obj.isBackground);
+            const objects = canvas.getObjects().filter(obj => !obj.isGridLine); // 배경 이미지도 포함하도록 변경
             objects.forEach((obj, index) => {
                 const li = document.createElement('li');
                 let name = obj.elementType || obj.type || '객체';
                 if(obj.type === 'text') name = `텍스트: ${obj.text.substring(0, 10)}...`;
                 else if(obj.type === 'path' && obj.elementType === '벽') name = `벽`;
                 else if(obj.type === 'rect') name = `사각형`;
+                else if(obj.isBackground) name = `배경 이미지`;
                 li.textContent = `${name} (id: ${index + 1})`; // 이름 중복을 피하기 위해 인덱스 추가
                 li.dataset.objectIndex = canvas.getObjects().indexOf(obj); 
                 li.addEventListener('click', () => { canvas.discardActiveObject(); canvas.setActiveObject(obj); canvas.renderAll(); });
@@ -1529,12 +1530,40 @@
         gridBtn.addEventListener('click', () => { showGrid = !showGrid; gridBtn.classList.toggle('active', showGrid); if (!showGrid) canvas.getObjects().forEach(o => { if(o.isGridLine) canvas.remove(o); }); else drawGrid(); updateSnapPoints(); canvas.renderAll(); });
     
         document.getElementById('export-btn').addEventListener('click', () => { 
+            const fileName = prompt('파일명을 입력하세요:', '평면도');
+            if (fileName === null) return; // 취소한 경우
+            
+            // 배경 이미지 임시 숨기기
+            let hiddenBackground = null;
+            if (backgroundImageObject) {
+                hiddenBackground = backgroundImageObject;
+                backgroundImageObject.set('visible', false);
+            }
+            
+            canvas.renderAll();
+            
+            // 고화질로 내보내기 (배율 3배)
+            const dataURL = canvas.toDataURL({ 
+                format: 'png', 
+                quality: 1,
+                multiplier: 3 // 3배 고화질
+            });
+            
+            // 배경 이미지 다시 보이기
+            if (hiddenBackground) {
+                hiddenBackground.set('visible', true);
+                canvas.renderAll();
+            }
+            
             const a = document.createElement('a'); 
-            a.download = '평면도.png'; 
-            a.href = canvas.toDataURL({ format: 'png', quality: 1 }); 
+            a.download = (fileName || '평면도') + '.png'; 
+            a.href = dataURL; 
             a.click(); 
         });
         document.getElementById('save-btn').addEventListener('click', () => { 
+            const fileName = prompt('파일명을 입력하세요:', '평면도');
+            if (fileName === null) return; // 취소한 경우
+            
             const d = { 
                 version: '3.0', 
                 canvas: canvas.toJSON(['elementType', 'isBackground']), 
@@ -1545,7 +1574,7 @@
             const b = new Blob([JSON.stringify(d)], { type: 'application/json' }); 
             const u = URL.createObjectURL(b); 
             const a = document.createElement('a'); 
-            a.download = '평면도.json'; 
+            a.download = (fileName || '평면도') + '.json'; 
             a.href = u; 
             a.click(); 
             URL.revokeObjectURL(u); 
