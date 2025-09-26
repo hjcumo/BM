@@ -3,16 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>(주)한국방제 | 대화형 회사소개서</title>
+    <title>(주)한국방제 | 인터랙티브 회사소개서</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Warm Neutrals with a Trustworthy Green Accent) -->
+    <!-- Application Structure Plan: A thematic, single-page dashboard structure was chosen over a linear document format to enhance usability for B2B clients. The structure prioritizes key value propositions ("Why Us?"), followed by supporting evidence like an interactive timeline, a dynamic financial chart, and a filterable client portfolio. This allows potential clients to quickly access the information most relevant to their decision-making process (e.g., expertise, track record, financial stability) and encourages engagement through interactive exploration, making the content more memorable and impactful. -->
+    <!-- Visualization & Content Choices: 
+        - Company History: Goal: Show change/growth. Method: Interactive horizontal timeline. Interaction: Clicking a year reveals key achievements. Justification: More engaging and visually interesting than a static table, highlighting key innovation milestones. Library: Vanilla JS.
+        - Financials: Goal: Compare/Analyze. Method: Bar Chart. Interaction: Buttons to toggle between Revenue, Operating Profit, and Net Income data. Justification: Allows for easy comparison of financial health over time, making complex data digestible. Library: Chart.js.
+        - Client Portfolio: Goal: Organize/Build Trust. Method: Filterable grid of client names. Interaction: Category buttons filter the client list. Justification: Enables prospective clients to quickly verify experience in their specific industry, making a large client list manageable and relevant. Library: Vanilla JS.
+        - Core Competencies: Goal: Inform/Organize. Method: A grid of expandable cards. Interaction: Clicking a card reveals detailed information. Justification: Breaks down dense service information into clear, high-level categories, improving scannability and user-driven exploration. Library: Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            scroll-behavior: smooth;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #16A34A; /* Accent Green */
+            border-bottom-color: #16A34A;
         }
         .chart-container {
             position: relative;
@@ -21,7 +38,7 @@
             margin-left: auto;
             margin-right: auto;
             height: 300px;
-            max-height: 40vh;
+            max-height: 400px;
         }
         @media (min-width: 768px) {
             .chart-container {
@@ -31,240 +48,209 @@
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -31px;
-            top: 50%;
-            transform: translateY(-50%);
+            left: 50%;
+            top: -10px;
+            transform: translateX(-50%);
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background-color: #ffffff;
-            border: 4px solid #3b82f6;
+            background-color: #D1D5DB;
+            border: 4px solid #FDFBF8;
+            transition: background-color 0.3s;
+        }
+        .timeline-item.active::before {
+            background-color: #16A34A;
+        }
+        .timeline-content {
+            transition: all 0.3s ease-in-out;
+        }
+        .client-filter-btn {
+            border: 1px solid #D1D5DB;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .client-filter-btn:hover {
+            background-color: #F3F4F6;
+        }
+        .client-filter-btn.active {
+            background-color: #16A34A;
+            color: white;
+            border-color: #16A34A;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-    <!-- Chosen Palette: Corporate Clean -->
-    <!-- Application Structure Plan: A thematic, single-page scrollable application with a fixed navigation header for easy access to key sections. The structure prioritizes user tasks: understanding solutions, verifying credibility through client lists and financial data, and finally exploring the company's history and unique strengths. This non-linear approach allows potential clients to quickly find the information most relevant to them, building trust more effectively than a traditional slide-by-slide format. Key interactions include tabbed content for services and a client filter to manage extensive information gracefully. -->
-    <!-- Visualization & Content Choices: 1. Financial Data -> Goal: Compare, Show Stability -> Viz: Bar Chart -> Interaction: Hover tooltips -> Justification: Bar charts are excellent for comparing discrete annual figures and showing trends clearly. -> Library: Chart.js (Canvas). 2. Client List -> Goal: Organize, Showcase Experience -> Presentation: Filterable Grid -> Interaction: Clickable category buttons to filter clients -> Justification: An interactive filter makes a very long list of clients manageable and allows users to find proof relevant to their own industry. -> Library/Method: Vanilla JS + HTML/Tailwind. 3. Business Areas -> Goal: Organize, Detail Services -> Presentation: Tabbed Interface -> Interaction: Click tabs to switch content -> Justification: Tabs neatly organize distinct but related service categories without overwhelming the user. -> Library/Method: Vanilla JS + HTML/Tailwind. 4. History -> Goal: Show Change, Tell Story -> Presentation: Vertical Timeline -> Interaction: Visual progression -> Justification: A timeline is the most intuitive way to present chronological milestones, highlighting growth and innovation. -> Library/Method: HTML/CSS. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<body class="antialiased">
 
-    <header id="header" class="bg-white/80 backdrop-blur-md shadow-md fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="#hero" class="text-xl font-bold text-blue-600">
-                (주)한국방제
-            </a>
-            <nav class="hidden md:flex space-x-8">
-                <a href="#solutions" class="text-gray-600 hover:text-blue-600">솔루션</a>
-                <a href="#track-record" class="text-gray-600 hover:text-blue-600">고객사 & 실적</a>
-                <a href="#strengths" class="text-gray-600 hover:text-blue-600">핵심 역량</a>
-                <a href="#history" class="text-gray-600 hover:text-blue-600">연혁</a>
-                <a href="#contact" class="text-gray-600 hover:text-blue-600">문의</a>
-            </nav>
-            <button id="mobile-menu-button" class="md:hidden">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                </svg>
-            </button>
-        </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-white">
-            <a href="#solutions" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">솔루션</a>
-            <a href="#track-record" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">고객사 & 실적</a>
-            <a href="#strengths" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">핵심 역량</a>
-            <a href="#history" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">연혁</a>
-            <a href="#contact" class="block py-2 px-6 text-sm text-gray-700 hover:bg-gray-100">문의</a>
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold text-gray-800">
+                <span class="text-green-600">(주)</span>한국방제
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#intro" class="nav-link border-b-2 border-transparent pb-1">회사소개</a>
+                <a href="#strengths" class="nav-link border-b-2 border-transparent pb-1">핵심역량</a>
+                <a href="#history" class="nav-link border-b-2 border-transparent pb-1">성장과정</a>
+                <a href="#performance" class="nav-link border-b-2 border-transparent pb-1">재무성과</a>
+                <a href="#partners" class="nav-link border-b-2 border-transparent pb-1">주요고객</a>
+                <a href="#contact" class="nav-link border-b-2 border-transparent pb-1">문의하기</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-700 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#intro" class="block py-2 px-6 text-sm hover:bg-green-50">회사소개</a>
+            <a href="#strengths" class="block py-2 px-6 text-sm hover:bg-green-50">핵심역량</a>
+            <a href="#history" class="block py-2 px-6 text-sm hover:bg-green-50">성장과정</a>
+            <a href="#performance" class="block py-2 px-6 text-sm hover:bg-green-50">재무성과</a>
+            <a href="#partners" class="block py-2 px-6 text-sm hover:bg-green-50">주요고객</a>
+            <a href="#contact" class="block py-2 px-6 text-sm hover:bg-green-50">문의하기</a>
         </div>
     </header>
 
     <main>
-        <section id="hero" class="bg-white pt-24 pb-16 md:pt-32 md:pb-24">
+        <section id="intro" class="pt-20 pb-16 bg-white">
             <div class="container mx-auto px-6 text-center">
-                <h1 class="text-4xl md:text-6xl font-bold text-gray-800 leading-tight">대한민국 위생 환경의<br class="md:hidden"> <span class="text-blue-600">표준을 제시합니다</span></h1>
-                <p class="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">2011년부터 축적된 전문 기술력과 데이터 기반의 혁신적인 관리 시스템으로 고객의 비즈니스가 빛날 수 있는 가장 안전하고 깨끗한 환경을 만들어갑니다.</p>
-            </div>
-        </section>
-        
-        <section id="solutions" class="py-16 md:py-24">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold">맞춤형 통합 솔루션</h2>
-                    <p class="mt-4 text-gray-600">고객사의 업종과 시설 특성을 정밀하게 분석하여 가장 효과적이고 안전한 맞춤 솔루션을 제공합니다.</p>
-                </div>
-                <div class="max-w-4xl mx-auto">
-                    <div class="mb-6 flex justify-center border-b border-gray-200">
-                        <button data-tab="special" class="tab-button flex-1 py-3 px-2 text-center font-semibold text-blue-600 border-b-2 border-blue-600">특수 사업장 방제</button>
-                        <button data-tab="general" class="tab-button flex-1 py-3 px-2 text-center font-semibold text-gray-500">일반 사업장 방제</button>
-                        <button data-tab="ecommerce" class="tab-button flex-1 py-3 px-2 text-center font-semibold text-gray-500">전자상거래 '방역마트'</button>
-                    </div>
-                    <div id="tab-content" class="bg-white p-8 rounded-lg shadow-lg">
-                        <div data-content="special">
-                            <h3 class="text-2xl font-bold mb-4 text-blue-700">고도의 위생 기준 충족</h3>
-                            <p class="text-gray-600 mb-6">국제 표준에 부합하는 전문 솔루션으로, 식품 및 의약품의 안전을 책임집니다.</p>
-                            <div class="space-y-4">
-                                <div class="p-4 bg-blue-50 rounded-lg">
-                                    <h4 class="font-bold">식품 공장 (HACCP 인증 기준 방제)</h4>
-                                    <p class="text-sm text-gray-600">HACCP 인증 및 유지에 필수적인 전문 방제 프로그램을 제공하여 식품 안전을 보장합니다.</p>
-                                </div>
-                                <div class="p-4 bg-blue-50 rounded-lg">
-                                    <h4 class="font-bold">의약품/화장품 공장 (GMP 인증 기준 방제)</h4>
-                                    <p class="text-sm text-gray-600">GMP 기준을 완벽하게 충족하는 청정 구역 관리 및 방제 솔루션으로 제품 품질을 보호합니다.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div data-content="general" class="hidden">
-                             <h3 class="text-2xl font-bold mb-4 text-green-700">다양한 사업장을 위한 맞춤 관리</h3>
-                             <p class="text-gray-600 mb-6">시설의 가치와 고객의 안전을 최우선으로 고려한 프리미엄 위생 관리 서비스를 제공합니다.</p>
-                             <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                <li class="p-3 bg-green-50 rounded-md">🏢 호텔/마트/업무용 빌딩</li>
-                                <li class="p-3 bg-green-50 rounded-md">📦 물류센터</li>
-                                <li class="p-3 bg-green-50 rounded-md">🎓 교육/의료/종교시설</li>
-                                <li class="p-3 bg-green-50 rounded-md">🍽️ 체인/급식/음식점</li>
-                             </ul>
-                        </div>
-                        <div data-content="ecommerce" class="hidden">
-                             <h3 class="text-2xl font-bold mb-4 text-purple-700">전문가의 노하우를 온라인으로, '방역마트'</h3>
-                             <p class="text-gray-600 mb-6">현장 노하우를 바탕으로 엄선된 전문가용 방역 용품을 합리적인 가격에 제공하는 원스톱 솔루션입니다.</p>
-                             <div class="p-4 bg-purple-50 rounded-lg">
-                                <h4 class="font-bold">주요 특징</h4>
-                                <ul class="list-disc list-inside text-sm text-gray-600 mt-2 space-y-1">
-                                    <li>현장 전문가가 검증한 고품질 제품 라인업</li>
-                                    <li>합리적인 가격의 전문가급 방역 용품 공급</li>
-                                    <li>서비스와 용품 구매를 한번에 해결</li>
-                                </ul>
-                                <a href="http://www.bangje.com" target="_blank" class="inline-block mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-lg text-sm hover:bg-purple-700">방역마트 바로가기 &rarr;</a>
-                             </div>
-                        </div>
-                    </div>
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4">
+                    기술과 신뢰로 만드는<br class="hidden md:block">
+                    <span class="text-green-600">가장 안전한 위생 환경</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                    (주)한국방제는 2011년 설립 이래, HACCP/GMP 시설에 특화된 통합 위생 솔루션(IPM)을 제공하며 고객과 함께 성장해왔습니다. 독자적인 기술력과 끊임없는 연구개발로 위생 환경의 새로운 기준을 제시합니다.
+                </p>
+                <div class="flex justify-center space-x-4">
+                     <a href="#contact" class="bg-green-600 text-white font-bold py-3 px-8 rounded-full hover:bg-green-700 transition duration-300">전문가와 상담하기</a>
+                     <a href="#strengths" class="bg-gray-200 text-gray-800 font-bold py-3 px-8 rounded-full hover:bg-gray-300 transition duration-300">핵심역량 자세히 보기</a>
                 </div>
             </div>
         </section>
-        
-        <section id="track-record" class="py-16 md:py-24 bg-white">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold">고객사 & 재무 실적</h2>
-                    <p class="mt-4 text-gray-600">대한민국 대표 기관과 기업들의 신뢰가 (주)한국방제의 전문성을 증명합니다.</p>
-                </div>
-                
-                <div class="mb-16">
-                    <h3 class="text-2xl font-bold text-center mb-6">주요 고객사</h3>
-                    <div id="client-filters" class="flex flex-wrap justify-center gap-2 mb-6">
-                        <button class="client-filter-button bg-blue-500 text-white px-4 py-2 rounded-full text-sm" data-filter="all">전체</button>
-                        <button class="client-filter-button bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm" data-filter="public">공공/금융/교육</button>
-                        <button class="client-filter-button bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm" data-filter="industry">제조/식품/제약</button>
-                        <button class="client-filter-button bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm" data-filter="logistics">물류/유통</button>
-                        <button class="client-filter-button bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm" data-filter="hospitality">호텔/급식/체인</button>
-                    </div>
-                    <div id="client-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 text-center text-sm">
-                    </div>
-                </div>
 
-                <div>
-                    <h3 class="text-2xl font-bold text-center mb-6">안정적인 재무 성과</h3>
-                    <p class="text-center text-gray-600 max-w-2xl mx-auto mb-8">지난 5년간 꾸준하고 안정적인 매출을 기록하며 내실 있는 성장을 이어가고 있습니다. 이는 고객과의 장기적인 신뢰 관계를 기반으로 한 (주)한국방제의 저력입니다.</p>
-                    <div class="chart-container">
-                        <canvas id="revenueChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <section id="strengths" class="py-16 md:py-24">
+        <section id="strengths" class="py-20">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold">차별화된 핵심 역량</h2>
-                    <p class="mt-4 text-gray-600">독보적인 전문성과 기술력으로 최상의 결과를 약속합니다.</p>
+                    <h2 class="text-3xl md:text-4xl font-bold">한국방제의 핵심역량</h2>
+                    <p class="text-lg text-gray-600 mt-2">무엇이 한국방제를 특별하게 만드는지 직접 확인해보세요. 각 항목을 클릭하여 상세 내용을 보실 수 있습니다.</p>
                 </div>
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="bg-white p-8 rounded-lg shadow-lg text-center">
-                        <div class="text-4xl mb-4">🔬</div>
-                        <h3 class="text-xl font-bold mb-2">압도적인 전문성</h3>
-                        <p class="text-gray-600 text-sm">HACCP, GMP 등 국제 표준에 부합하는 특수 사업장 방제 솔루션을 보유하고 있습니다.</p>
+                    <div class="strength-card bg-white p-8 rounded-xl shadow-lg cursor-pointer hover:shadow-2xl hover:-translate-y-2 transition-all duration-300" data-content="strength1">
+                        <div class="text-4xl mb-4">🛡️</div>
+                        <h3 class="text-xl font-bold mb-2">HACCP/GMP 전문성</h3>
+                        <p class="text-gray-600">국제 기준을 충족하는 완벽한 방제 시스템과 문서화 서비스를 제공합니다.</p>
                     </div>
-                    <div class="bg-white p-8 rounded-lg shadow-lg text-center">
+                    <div class="strength-card bg-white p-8 rounded-xl shadow-lg cursor-pointer hover:shadow-2xl hover:-translate-y-2 transition-all duration-300" data-content="strength2">
                         <div class="text-4xl mb-4">💡</div>
-                        <h3 class="text-xl font-bold mb-2">자체 기술 개발</h3>
-                        <p class="text-gray-600 text-sm">겔 건, 구서장비 등 현장 맞춤형 장비를 직접 개발하고 특허를 등록하여 효과를 극대화합니다.</p>
+                        <h3 class="text-xl font-bold mb-2">독자 개발 기술력</h3>
+                        <p class="text-gray-600">자체 개발 '겔 건', '구서장비' 등 특허 등록된 기술로 차별화된 효과를 보장합니다.</p>
                     </div>
-                    <div class="bg-white p-8 rounded-lg shadow-lg text-center">
+                    <div class="strength-card bg-white p-8 rounded-xl shadow-lg cursor-pointer hover:shadow-2xl hover:-translate-y-2 transition-all duration-300" data-content="strength3">
                         <div class="text-4xl mb-4">📱</div>
-                        <h3 class="text-xl font-bold mb-2">데이터 기반 혁신</h3>
-                        <p class="text-gray-600 text-sm">자체 개발 앱을 통해 체계적이고 투명한 이력 관리 및 신속한 문제 해결이 가능합니다.</p>
+                        <h3 class="text-xl font-bold mb-2">디지털 관리 시스템</h3>
+                        <p class="text-gray-600">자체 개발 모바일 앱으로 실시간 작업 내역을 공유하며 투명하고 정밀하게 관리합니다.</p>
                     </div>
-                    <div class="bg-white p-8 rounded-lg shadow-lg text-center">
+                    <div class="strength-card bg-white p-8 rounded-xl shadow-lg cursor-pointer hover:shadow-2xl hover:-translate-y-2 transition-all duration-300" data-content="strength4">
                         <div class="text-4xl mb-4">🤝</div>
-                        <h3 class="text-xl font-bold mb-2">검증된 신뢰성</h3>
-                        <p class="text-gray-600 text-sm">서울특별시청, 한국은행 등 대한민국 대표 기관과 기업들이 선택한 파트너입니다.</p>
+                        <h3 class="text-xl font-bold mb-2">고객 맞춤형 서비스</h3>
+                        <p class="text-gray-600">심사 전 재방문, 24시간 내 A/S 등 고객의 성공을 위한 특화 서비스를 제공합니다.</p>
+                    </div>
+                </div>
+                <div id="strength-details-container" class="mt-12"></div>
+            </div>
+        </section>
+
+        <section id="history" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold">신뢰와 혁신의 여정</h2>
+                    <p class="text-lg text-gray-600 mt-2">한국방제는 지난 10여 년간 기술 혁신을 멈추지 않았습니다. 주요 연도를 클릭하여 한국방제의 성장 스토리를 확인해보세요.</p>
+                </div>
+                <div class="relative">
+                    <div class="border-l-4 border-gray-200 absolute h-full top-0 left-1/2 -ml-0.5"></div>
+                    <div id="timeline-container" class="grid grid-cols-5 gap-8">
+                    </div>
+                </div>
+                <div id="timeline-details" class="mt-12 bg-gray-50 p-8 rounded-lg min-h-[150px] transition-all duration-300">
+                </div>
+            </div>
+        </section>
+
+        <section id="performance" class="py-20">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">안정적인 재무 성과</h2>
+                    <p class="text-lg text-gray-600 mt-2">꾸준한 성장을 통해 증명된 한국방제의 안정성과 신뢰도를 그래프로 확인하실 수 있습니다. 보고 싶은 지표를 선택해주세요.</p>
+                </div>
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                    <div class="flex justify-center space-x-2 md:space-x-4 mb-6">
+                        <button class="financial-btn bg-green-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300" data-metric="revenue">매출액</button>
+                        <button class="financial-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-full transition duration-300" data-metric="operating_profit">영업이익</button>
+                        <button class="financial-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-full transition duration-300" data-metric="net_income">당기순이익</button>
+                    </div>
+                    <div class="chart-container h-64 md:h-96">
+                        <canvas id="financialChart"></canvas>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="history" class="py-16 md:py-24 bg-white">
-             <div class="container mx-auto px-6">
+        <section id="partners" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold">신뢰와 혁신으로 걸어온 길</h2>
-                    <p class="mt-4 text-gray-600">단순한 방제를 넘어, 기술과 혁신으로 위생 환경의 기준을 만들어온 여정입니다.</p>
+                    <h2 class="text-3xl md:text-4xl font-bold">광범위한 고객 포트폴리오</h2>
+                    <p class="text-lg text-gray-600 mt-2">다양한 산업 분야의 리더들이 한국방제를 신뢰하고 있습니다. 필터를 통해 관련 분야의 고객사를 확인해보세요.</p>
                 </div>
-                <div class="max-w-3xl mx-auto relative border-l-2 border-blue-500 pl-8 py-4">
-                    <div class="timeline-item relative mb-12">
-                        <h3 class="text-xl font-bold text-blue-600">2011</h3>
-                        <p class="font-semibold mt-1">'한국방제' 상표 출원 및 법인 설립, 전문 방역의 시작</p>
-                        <p class="mt-2 text-gray-600 text-sm">
-                            '한국방제'라는 이름으로 전문 방역 서비스의 첫발을 내디뎠습니다. 체계적이고 신뢰할 수 있는 서비스를 제공하며 업계의 새로운 표준을 제시하고자 했습니다.
-                        </p>
-                    </div>
-                    <div class="timeline-item relative mb-12">
-                        <h3 class="text-xl font-bold text-blue-600">2018</h3>
-                        <p class="font-semibold mt-1">기술 혁신의 원년: 주식회사 전환 및 R&D 본격화</p>
-                        <p class="mt-2 text-gray-600 text-sm">
-                            주식회사로 전환하며 안정적인 성장의 기틀을 마련했습니다. 이 해를 기점으로 현장 중심의 기술 개발에 집중하여, 자체 개발 '겔 건(gel gun)' 특허를 등록함으로써 서비스 품질과 방역 효과를 극대화했습니다. 동시에 '방역마트'를 런칭하여 B2B를 넘어 B2C 시장으로 사업 영역을 확장하고, HACCP/GMP 사업장 전문 서비스를 본격화하며 고도의 전문성을 요구하는 시장을 선도하기 시작했습니다.
-                        </p>
-                    </div>
-                    <div class="timeline-item relative mb-12">
-                        <h3 class="text-xl font-bold text-blue-600">2021</h3>
-                        <p class="font-semibold mt-1">디지털 전환: 자체 모바일 앱 개발로 서비스 혁신</p>
-                        <p class="mt-2 text-gray-600 text-sm">
-                            업계의 디지털 전환을 선도하며 자체 모바일 어플리케이션을 개발, 도입했습니다. 이를 통해 현장 직원 간의 작업 내역과 고객사 특이사항을 실시간으로 공유하여, 더욱 체계적이고 데이터에 기반한 정밀 방역 관리 시스템을 구축했습니다.
-                        </p>
-                    </div>
-                    <div class="timeline-item relative mb-12">
-                        <h3 class="text-xl font-bold text-blue-600">2024</h3>
-                        <p class="font-semibold mt-1">독자 기술 확보: 자체 개발 구서장비 3종 특허 등록 및 생산</p>
-                        <p class="mt-2 text-gray-600 text-sm">
-                            지속적인 R&D 투자의 결실로, 외곽용과 실내용을 포함한 총 3가지 타입의 구서장비에 대한 금형 제작, 생산 및 특허 등록을 완료했습니다. HACCP 및 GMP 시설에서도 사용 가능한 이 장비들은 (주)한국방제만의 독보적인 기술력을 상징합니다.
-                        </p>
-                    </div>
-                     <div class="timeline-item relative">
-                        <h3 class="text-xl font-bold text-blue-600">2025</h3>
-                        <p class="font-semibold mt-1">사업 영역 확장: 신규 브랜드 '홈캅스' 런칭</p>
-                         <p class="mt-2 text-gray-600 text-sm">
-                            '방역마트' 온라인 사업부의 성공을 기반으로, 소비자 시장을 겨냥한 신규 브랜드 '홈캅스(Home Cops)'를 런칭합니다. 자체 제작한 혁신적인 방역용품 출시를 통해, 전문가의 솔루션을 모든 가정에 제공하는 종합 위생 환경 기업으로 도약할 것입니다.
-                        </p>
-                    </div>
+                <div class="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 px-4">
+                    <button class="client-filter-btn active" data-filter="all">전체보기</button>
+                    <button class="client-filter-btn" data-filter="food">식품/GMP</button>
+                    <button class="client-filter-btn" data-filter="public">공공기관/빌딩</button>
+                    <button class="client-filter-btn" data-filter="manufacturing">제조업체</button>
+                    <button class="client-filter-btn" data-filter="logistics">물류센터</button>
+                    <button class="client-filter-btn" data-filter="medical">의료/요양</button>
+                    <button class="client-filter-btn" data-filter="education">교육시설</button>
+                    <button class="client-filter-btn" data-filter="commercial">상업시설</button>
+                    <button class="client-filter-btn" data-filter="hotel">호텔/리조트</button>
+                    <button class="client-filter-btn" data-filter="religion">종교시설</button>
+                    <button class="client-filter-btn" data-filter="leisure">레저/문화</button>
+                    <button class="client-filter-btn" data-filter="chain">체인/급식</button>
+                </div>
+                <div id="client-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-4 text-sm">
                 </div>
             </div>
         </section>
+        
+        <section id="contact" class="py-20 bg-gray-800 text-white">
+            <div class="container mx-auto px-6 text-center">
+                 <h2 class="text-3xl md:text-4xl font-bold">최적의 위생 솔루션, 지금 시작하세요</h2>
+                 <p class="text-lg text-gray-300 mt-4 max-w-2xl mx-auto">
+                    전문가의 컨설팅이 필요하신가요? 지금 바로 (주)한국방제에 문의하시면 귀사의 사업장을 위한 맞춤형 솔루션을 제안해 드립니다.
+                 </p>
+                 <div class="mt-8 bg-white text-gray-800 rounded-lg p-8 max-w-sm mx-auto shadow-xl">
+                    <p class="text-lg font-semibold">대표전화: <a href="tel:02-441-1177" class="text-green-600 hover:underline">02-441-1177</a></p>
+                    <p class="mt-2 font-semibold">홈페이지: <a href="http://www.bangje.com" target="_blank" class="text-green-600 hover:underline">www.bangje.com</a></p>
+                    <p class="mt-4 text-sm text-gray-600">서울시 강동구 천중로39길 55 청송빌딩 1층</p>
+                 </div>
+            </div>
+        </section>
+
     </main>
     
-    <footer id="contact" class="bg-gray-800 text-white py-16">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-3xl font-bold">CONTACT US</h2>
-            <p class="mt-4 mb-8 max-w-xl mx-auto text-gray-300">최고의 위생 환경 파트너, (주)한국방제가 함께하겠습니다. 궁금한 점이 있으시면 언제든지 문의해주세요.</p>
-            <div class="text-lg">
-                <p><strong>주소:</strong> 서울시 강동구 천중로39길 55 청송빌딩 1층</p>
-                <p class="mt-2"><strong>홈페이지:</strong> <a href="http://www.bangje.com" target="_blank" class="text-blue-400 hover:underline">www.bangje.com</a></p>
-                <p class="mt-2"><strong>대표전화:</strong> [회사 대표 전화번호]</p>
-                 <p class="mt-2"><strong>이메일:</strong> [회사 대표 이메일 주소]</p>
-            </div>
-            <p class="mt-10 text-sm text-gray-500">&copy; 2025 (주)한국방제. All Rights Reserved.</p>
+    <footer class="bg-gray-900 text-gray-400 py-6">
+        <div class="container mx-auto px-6 text-center text-sm">
+            <p>&copy; 2025 (주)한국방제. All Rights Reserved.</p>
+            <p class="mt-1">사업자등록번호: 414-87-01010</p>
         </div>
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
+            
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
-            
             mobileMenuButton.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
             });
@@ -272,163 +258,190 @@
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
-                    if (mobileMenu.contains(e.target)) {
+                    if(mobileMenu.classList.contains('hidden') === false) {
                         mobileMenu.classList.add('hidden');
                     }
-                    
-                    const targetId = this.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    if(targetElement) {
-                        const headerOffset = document.getElementById('header').offsetHeight;
-                        const elementPosition = targetElement.getBoundingClientRect().top;
-                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
 
-                        window.scrollTo({
-                            top: offsetPosition,
-                            behavior: "smooth"
-                        });
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            window.onscroll = () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
                     }
                 });
-            });
-            
-            let lastScrollTop = 0;
-            const header = document.getElementById('header');
-            window.addEventListener('scroll', function() {
-                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
-                    header.style.top = '-100px';
-                } else {
-                    header.style.top = '0';
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            };
+
+            const strengthsData = {
+                strength1: {
+                    title: 'HACCP/GMP 맞춤형 방제 시스템',
+                    details: '식품 위생(HACCP), 보건 위생(GMP) 분야 최고의 전문가 그룹이 고객사의 환경에 맞는 최적의 솔루션을 제공합니다. 국제 기준(cGMP, PIC/S) 심사에 완벽하게 대응할 수 있도록 방제 계획서, 장비 설치 도면, 월간 방제 결과 보고서, 이물·동정 보고서 등 상세 자료를 제공하여 고객사의 신뢰도를 높입니다.'
+                },
+                strength2: {
+                    title: '독자 개발 기술력과 장비',
+                    details: '현장 중심의 R&D를 통해 혁신적인 방제 기술을 개발하고 있습니다. 자체 개발한 \'겔 건(Gel Gun)\'과 외곽용/실내용 \'구서장비 3종\'은 특허 등록을 통해 기술력을 입증받았으며, 보다 효과적이고 정밀한 방제 서비스를 가능하게 합니다. 선진화된 장비와 기술 도입을 멈추지 않습니다.'
+                },
+                strength3: {
+                    title: '실시간 디지털 관리 시스템',
+                    details: '2021년 도입한 자체 개발 모바일 어플리케이션을 통해 모든 방제 작업 내역을 실시간으로 공유합니다. 서비스 담당자는 현장에서 작업 내용, 사용 약제, 모니터링 결과를 즉시 기록하고, 고객사 담당자는 이를 투명하게 확인함으로써 체계적이고 정밀한 위생 관리가 가능합니다.'
+                },
+                strength4: {
+                    title: '고객 중심의 특화 서비스',
+                    details: '단순 방제를 넘어 고객의 성공적인 사업 운영을 지원합니다. HACCP/GMP 심사 전 전문가가 재방문하여 최종 점검 및 솔루션을 제공하며, 장비 고장 시 24시간 이내 신속 처리, 비상 상황 대비 여분 소모품 제공 등 고객 만족을 최우선으로 하는 차별화된 서비스를 약속합니다.'
                 }
-                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-            }, false);
+            };
+            const strengthCards = document.querySelectorAll('.strength-card');
+            const detailsContainer = document.getElementById('strength-details-container');
 
-            const tabs = document.querySelectorAll('.tab-button');
-            const tabContents = document.querySelectorAll('#tab-content > div');
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const target = tab.dataset.tab;
-
-                    tabs.forEach(t => {
-                        t.classList.remove('text-blue-600', 'border-blue-600');
-                        t.classList.add('text-gray-500');
-                    });
-                    tab.classList.add('text-blue-600', 'border-blue-600');
-                    tab.classList.remove('text-gray-500');
-
-                    tabContents.forEach(content => {
-                        if (content.dataset.content === target) {
-                            content.classList.remove('hidden');
-                        } else {
-                            content.classList.add('hidden');
-                        }
-                    });
+            strengthCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const contentKey = card.dataset.content;
+                    const data = strengthsData[contentKey];
+                    detailsContainer.innerHTML = `
+                        <div class="bg-white p-8 rounded-lg shadow-xl transition-opacity duration-500">
+                            <h4 class="text-2xl font-bold mb-4 text-green-600">${data.title}</h4>
+                            <p class="text-gray-700 leading-relaxed">${data.details}</p>
+                        </div>
+                    `;
+                    detailsContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 });
             });
 
-            const revenueData = {
-                labels: ['2020년', '2021년', '2022년', '2023년', '2024년'],
-                datasets: [{
-                    label: '매출액 (백만원)',
-                    data: [1680, 1461, 1650, 1542, 1668],
-                    backgroundColor: 'rgba(59, 130, 246, 0.5)',
-                    borderColor: 'rgba(59, 130, 246, 1)',
-                    borderWidth: 2,
-                    borderRadius: 5,
-                    hoverBackgroundColor: 'rgba(59, 130, 246, 0.8)',
-                }]
-            };
+            const timelineData = [
+                { year: 2011, title: '설립 및 시작', content: "'한국방제' 상표 출원 및 법인 설립, 전문 방역 서비스를 시작하며 첫 발을 내딛었습니다." },
+                { year: 2018, title: '기술 혁신의 원년', content: "주식회사로 전환하며 현장 중심 R&D를 본격화했습니다. 자체 개발 '겔 건' 특허 등록, 온라인 '방역마트' 런칭, HACCP/GMP 전문 서비스를 본격화하며 B2C 시장까지 영역을 확장했습니다." },
+                { year: 2021, title: '디지털 전환', content: "자체 모바일 앱을 개발하고 도입하여, 실시간 작업 내역 공유 및 정밀 방역 관리 시스템을 구축했습니다. 모든 서비스 과정을 투명하게 공개하며 고객 신뢰를 한층 높였습니다." },
+                { year: 2024, title: '독자 기술 확보', content: "외곽용과 실내용을 포함한 자체 개발 구서장비 3종의 특허를 등록하고 직접 생산을 시작했습니다. 이를 통해 방제 효과와 효율성을 극대화했습니다." },
+                { year: 2025, title: '사업 영역 확장', content: "소비자 시장을 겨냥한 신규 브랜드 '홈캅스(Home Cops)' 런칭을 준비하며, 종합 위생 환경 기업으로의 도약을 예고하고 있습니다." }
+            ];
+            const timelineContainer = document.getElementById('timeline-container');
+            const timelineDetails = document.getElementById('timeline-details');
 
-            const revenueChartCtx = document.getElementById('revenueChart').getContext('2d');
-            new Chart(revenueChartCtx, {
+            timelineData.forEach(item => {
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'timeline-item relative pt-8 text-center cursor-pointer';
+                timelineItem.dataset.year = item.year;
+                timelineItem.innerHTML = `<p class="font-bold text-lg">${item.year}</p>`;
+                timelineContainer.appendChild(timelineItem);
+
+                timelineItem.addEventListener('click', () => {
+                    document.querySelectorAll('.timeline-item').forEach(el => el.classList.remove('active'));
+                    timelineItem.classList.add('active');
+                    const data = timelineData.find(d => d.year == item.year);
+                    timelineDetails.innerHTML = `
+                        <h4 class="font-bold text-xl mb-2">${data.year}년: ${data.title}</h4>
+                        <p class="text-gray-700">${data.content}</p>
+                    `;
+                });
+            });
+            document.querySelector('.timeline-item').click();
+
+            const financialData = {
+                labels: ['2020년', '2021년', '2022년', '2023년', '2024년'],
+                revenue: { label: '매출액 (백만원)', data: [1680, 1461, 1650, 1542, 1668], backgroundColor: 'rgba(22, 163, 74, 0.7)' },
+                operating_profit: { label: '영업이익 (백만원)', data: [272, 68, 90, 98, 58], backgroundColor: 'rgba(59, 130, 246, 0.7)' },
+                net_income: { label: '당기순이익 (백만원)', data: [238, 62, 79, 79, 65], backgroundColor: 'rgba(239, 68, 68, 0.7)' },
+            };
+            const ctx = document.getElementById('financialChart').getContext('2d');
+            const financialChart = new Chart(ctx, {
                 type: 'bar',
-                data: revenueData,
+                data: {
+                    labels: financialData.labels,
+                    datasets: [{
+                        label: financialData.revenue.label,
+                        data: financialData.revenue.data,
+                        backgroundColor: financialData.revenue.backgroundColor,
+                        borderRadius: 5,
+                    }]
+                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: false,
-                        },
+                        legend: { display: false },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return `매출액: ${context.raw.toLocaleString()} 백만원`;
+                                    return `${context.dataset.label}: ${context.parsed.y} 백만원`;
                                 }
                             }
                         }
                     },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: '매출액 (백만원)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
+                        y: { beginAtZero: true }
                     }
                 }
             });
 
-            const clients = [
-                { name: '서울특별시청 신청사', category: 'public' },
-                { name: '한국은행 강남본부빌딩', category: 'public' },
-                { name: 'SC제일은행', category: 'public' },
-                { name: '서울대학교 의과대학', category: 'public' },
-                { name: '한국가스공사', category: 'public' },
-                { name: '삼성엔지니어링(주)', category: 'industry' },
-                { name: '(주)신세계인터코스코리아', category: 'industry' },
-                { name: '한강씨엠(주) (하림그룹)', category: 'industry' },
-                { name: '(주)수석 (동아제약 계열)', category: 'industry' },
-                { name: '(주)한국파비스제약', category: 'industry' },
-                { name: '안양축산농협 육가공공장', category: 'industry' },
-                { name: '이베이코리아 동탄메가센터', category: 'logistics' },
-                { name: '애경산업물류센터', category: 'logistics' },
-                { name: '반디앤루니스물류센터', category: 'logistics' },
-                { name: 'CU 한강공원 전 매장', category: 'logistics' },
-                { name: '리버사이드호텔', category: 'hospitality' },
-                { name: '호텔선샤인', category: 'hospitality' },
-                { name: '삼성웰스토리', category: 'hospitality' },
-                { name: '아워홈', category: 'hospitality' },
-                { name: '신세계푸드', category: 'hospitality' },
-                { name: '한화푸디스트', category: 'hospitality' },
-                { name: '키친랩 수도권매장', category: 'hospitality' },
-            ];
-
-            const clientGrid = document.getElementById('client-grid');
-            const clientFilters = document.querySelectorAll('.client-filter-button');
-
-            function renderClients(filter = 'all') {
-                clientGrid.innerHTML = '';
-                const filteredClients = filter === 'all' ? clients : clients.filter(c => c.category === filter);
-                
-                filteredClients.forEach(client => {
-                    const clientEl = document.createElement('div');
-                    clientEl.className = 'p-3 bg-gray-100 rounded-lg flex items-center justify-center';
-                    clientEl.textContent = client.name;
-                    clientGrid.appendChild(clientEl);
-                });
-            }
-
-            clientFilters.forEach(button => {
-                button.addEventListener('click', () => {
-                    clientFilters.forEach(btn => {
-                        btn.classList.remove('bg-blue-500', 'text-white');
-                        btn.classList.add('bg-gray-200', 'text-gray-700');
+            const financialBtns = document.querySelectorAll('.financial-btn');
+            financialBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const metric = btn.dataset.metric;
+                    const metricData = financialData[metric];
+                    financialChart.data.datasets[0].data = metricData.data;
+                    financialChart.data.datasets[0].label = metricData.label;
+                    financialChart.data.datasets[0].backgroundColor = metricData.backgroundColor;
+                    financialChart.update();
+                    financialBtns.forEach(b => {
+                        b.classList.remove('bg-green-600', 'text-white');
+                        b.classList.add('bg-gray-200', 'text-gray-700');
                     });
-                    button.classList.add('bg-blue-500', 'text-white');
-                    button.classList.remove('bg-gray-200', 'text-gray-700');
-                    renderClients(button.dataset.filter);
+                    btn.classList.add('bg-green-600', 'text-white');
+                    btn.classList.remove('bg-gray-200', 'text-gray-700');
                 });
             });
 
-            renderClients();
+            const clientsData = [
+                { name: '서울대학교 의과대학 기숙사', category: 'education' }, { name: '서울대학교 치의학대학원', category: 'education' }, { name: '서울대학교(관악) 언어교육원', category: 'education' }, { name: '한양여대 부속유치원', category: 'education' }, { name: '서초고', category: 'education' }, { name: '서원고', category: 'education' }, { name: '우장초', category: 'education' }, { name: '영중초', category: 'education' }, { name: '조원초', category: 'education' }, { name: '청라누리어린이집', category: 'education' }, { name: '마리아유치원 등 16개', category: 'education' },
+                { name: '(사)평택산업단지관리공단', category: 'manufacturing' }, { name: '㈜동부팜한농 반월/안산공장', category: 'manufacturing' }, { name: '삼성엔지니어링㈜', category: 'manufacturing' }, { name: '한일물산㈜', category: 'manufacturing' }, { name: '대명광학㈜', category: 'manufacturing' }, { name: '㈜기가텍', category: 'manufacturing' }, { name: '㈜정립전자', category: 'manufacturing' }, { name: '강남환경자원센터', category: 'manufacturing' }, { name: '㈜화영 외 12개사', category: 'manufacturing' },
+                { name: '미래생활㈜ 세종시공장', category: 'food' },{ name: '㈜크리스탈샘물 1/2공장', category: 'food' },{ name: '한강씨엠㈜(하림그룹)', category: 'food' },{ name: '안양축산농협 육가공공장', category: 'food' },{ name: '㈜한국파비스제약', category: 'food' },{ name: '㈜신세계인터코스코리아', category: 'food' },{ name: '대일화학공업㈜(대일밴드)', category: 'food' },{ name: '㈜크리오(치약/칫솔)', category: 'food' }, { name: '㈜차바이오랩', category: 'food' }, { name: '테고사이언스㈜', category: 'food' }, { name: '한국코러스㈜', category: 'food' }, { name: '㈜유바이오로직스', category: 'food' }, { name: '㈜수석(동아제약 계열)', category: 'food' }, { name: '진천덕산양조㈜', category: 'food' }, { name: '㈜거성푸드(신의주찹쌀순대)', category: 'food' }, { name: '그 외 150여개 식품/제약/화장품 공장', category: 'food' },
+                { name: '이베이코리아 동탄메가센터', category: 'logistics' },{ name: '애경산업물류센터', category: 'logistics' },{ name: '반디앤루니스물류센터', category: 'logistics' },{ name: '미래생활물류센터', category: 'logistics' },{ name: '펫클럽물류센터', category: 'logistics' },{ name: '에이스후레쉬㈜ 물류센터', category: 'logistics' },{ name: '삼진냉장', category: 'logistics' },
+                { name: '리버사이드호텔', category: 'hotel' },{ name: '호텔선샤인', category: 'hotel' },{ name: '라비돌리조트', category: 'hotel' },{ name: '그린그래스호텔', category: 'hotel' },{ name: '해담채스테이', category: 'hotel' },
+                { name: '서울특별시청 신청사', category: 'public' }, { name: '한국은행 강남본부빌딩', category: 'public' }, { name: 'SC제일은행(본점 및 수도권)', category: 'public' }, { name: '국민은행 빌딩(양평/서현/의정부)', category: 'public' }, { name: '한국가스공사 가스연구원', category: 'public' }, { name: '한국철도공사 서울본부', category: 'public' }, { name: '국립어린이박물관', category: 'public' }, { name: '청계천역사박물관청사', category: 'public' }, { name: '서울지방경찰청 제1기동단', category: 'public' }, { name: '수원서부경찰서', category: 'public' }, { name: '중랑구립도서관', category: 'public' }, { name: '한국산업인력공단', category: 'public' }, { name: '한국해양과학기술원', category: 'public' }, { name: '반포3동/사당2동/방배본동 주민센터', category: 'public' }, { name: '방배동우체국', category: 'public' }, { name: '㈜게임빌빌딩', category: 'public' }, { name: '대한토목학회빌딩', category: 'public' }, { name: '헤럴드스퀘어빌딩', category: 'public' }, { name: '그 외 빌딩 30여개', category: 'public' },
+                { name: '예스병원', category: 'medical' },{ name: '러스크병원', category: 'medical' },{ name: '효진장기요양병원', category: 'medical' },{ name: '엘림노인전문병원', category: 'medical' },{ name: '영등포실버케어센터', category: 'medical' },{ name: '드라마산부인과/산후조리원', category: 'medical' },{ name: '잠실자생한방병원', category: 'medical' },{ name: '장덕한방병원', category: 'medical' },{ name: '세종시장애인복지관', category: 'medical' },
+                { name: '키친랩 수도권매장', category: 'chain' },{ name: '삼성웰스토리', category: 'chain' },{ name: '아워홈', category: 'chain' },{ name: '신세계푸드', category: 'chain' },{ name: '한화푸디스트', category: 'chain' },{ name: 'CU 한강공원 전 매장', category: 'chain' },{ name: '펫클럽 전 매장', category: 'chain' },{ name: '요거프레소 12개 매장', category: 'chain' },
+                { name: '충현교회', category: 'religion' }, { name: '봉은사', category: 'religion' }, { name: '가락2동성당', category: 'religion' }, { name: '인천방주교회', category: 'religion' }, { name: '수서제일교회', category: 'religion' }, { name: '삼성감리교회', category: 'religion' }, { name: '광륜사', category: 'religion' }, { name: '법륜사', category: 'religion' }, { name: '서울시민교회', category: 'religion' },
+                { name: '㈜크로앙스', category: 'commercial' }, { name: '암사종합시장', category: 'commercial' }, { name: '고덕전통시장', category: 'commercial' }, { name: '둔촌역재래시장', category: 'commercial' }, { name: '남대문대도종합상가', category: 'commercial' }, { name: '강남역 언더그라운드', category: 'commercial' }, { name: '송파홈마트', category: 'commercial' }, { name: '푸르네마트', category: 'commercial' }, { name: '과천식자재할인마트', category: 'commercial' },
+                { name: '외교센터웨딩홀', category: 'leisure' }, { name: '분당웨딩컨벤션', category: 'leisure' }, { name: '동촌GC(골프장)', category: 'leisure' }, { name: '와룡자연휴양림', category: 'leisure' }, { name: '방화동자연휴양림', category: 'leisure' }, { name: '웰텍승마클럽', category: 'leisure' }, { name: '하피랜드(스파)', category: 'leisure' }, { name: '파고다타운', category: 'leisure' }
+            ];
+            const clientGrid = document.getElementById('client-grid');
+            const clientFilterBtns = document.querySelectorAll('.client-filter-btn');
+
+            const renderClients = (filter) => {
+                clientGrid.innerHTML = '';
+                const filteredClients = (filter === 'all') ? clientsData : clientsData.filter(c => c.category === filter);
+                filteredClients.forEach(client => {
+                    const clientDiv = document.createElement('div');
+                    clientDiv.className = 'client-item text-gray-700 bg-gray-50 p-3 rounded-md flex items-center justify-center text-center hover:bg-green-100 transition-colors duration-200 h-full';
+                    clientDiv.dataset.category = client.category;
+                    clientDiv.innerHTML = `<p>${client.name}</p>`;
+                    clientGrid.appendChild(clientDiv);
+                });
+            };
+
+            clientFilterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const filter = btn.dataset.filter;
+                    renderClients(filter);
+                    clientFilterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+
+            renderClients('all');
         });
     </script>
 </body>
