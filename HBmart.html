@@ -10,132 +10,86 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
-        body {
-            font-family: 'Inter', 'Noto Sans KR', sans-serif;
-            background-color: #F8FAFC;
-        }
+        body { font-family: 'Inter', 'Noto Sans KR', sans-serif; background-color: #F8FAFC; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .number-input::-webkit-outer-spin-button, .number-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .number-input { -moz-appearance: textfield; }
+        .card { background: white; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); border: 1px solid #F1F5F9; }
+        .input-group label { color: #64748B; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; }
+        .input-field, .select-field { border: 1px solid #E2E8F0; border-radius: 0.5rem; padding: 0.75rem; transition: all 0.2s; width: 100%; font-size: 0.95rem; }
+        .input-field:focus, .select-field:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); outline: none; }
+        .sticky-summary { position: sticky; top: 2rem; }
+        .chart-container { position: relative; height: 250px; width: 100%; margin-top: 1rem; margin-bottom: 2rem; }
+        .quantity-control-btn { background-color: #F1F5F9; color: #64748B; transition: all 0.2s; }
+        .quantity-control-btn:hover { background-color: #E2E8F0; color: #334155; }
+        .radio-label { cursor: pointer; padding: 0.5rem 0.75rem; border-radius: 0.5rem; border: 1px solid #E2E8F0; transition: all 0.2s; font-size: 0.875rem; display: flex; align-items: center; }
+        .radio-label:hover { background-color: #F8FAFC; }
+        input[type="radio"]:checked+.radio-label { background-color: #EEF2FF; border-color: #6366F1; color: #4F46E5; font-weight: 600; }
+        input[type="radio"] { display: none; }
+        .result-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #F1F5F9; }
+        .result-row:last-child { border-bottom: none; }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
+        /* Print report hidden on screen */
+        #printReport { display: none; }
 
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
+        /* ========== PRINT STYLES ========== */
+        @media print {
+            @page { size: A4; margin: 14mm 12mm; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            body { background: white !important; padding: 0 !important; margin: 0 !important; font-size: 10px; }
 
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
+            .max-w-7xl, footer { display: none !important; }
+            #printReport { display: block !important; max-width: 100%; margin: 0; padding: 0; }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+            .p-header { text-align: center; border-bottom: 2.5px solid #4F46E5; padding-bottom: 8px; margin-bottom: 10px; }
+            .p-header h1 { font-size: 18px; font-weight: 800; color: #1E293B; margin: 0; }
+            .p-header p { font-size: 10px; color: #64748B; margin: 3px 0 0 0; }
 
-        .number-input::-webkit-outer-spin-button,
-        .number-input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
+            .p-vat { text-align: center; font-size: 9px; color: #92400E; background: #FFFBEB !important; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; border: 1px solid #FDE68A; }
 
-        .number-input {
-            -moz-appearance: textfield;
-        }
+            .p-result { border: 2.5px solid #4F46E5; border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 10px; background: #EEF2FF !important; }
+            .p-result.neg { border-color: #EF4444; background: #FEF2F2 !important; }
+            .p-result .val { font-size: 24px; font-weight: 900; color: #4F46E5; margin: 2px 0; }
+            .p-result.neg .val { color: #EF4444; }
+            .p-result .pct { font-size: 12px; font-weight: 700; color: #818CF8; }
+            .p-result.neg .pct { color: #F87171; }
+            .p-result .lbl { font-size: 10px; color: #64748B; margin: 0; }
 
-        .card {
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            border: 1px solid #F1F5F9;
-        }
+            .p-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+            .p-box { border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px 10px; break-inside: avoid; }
+            .p-box h3 { font-size: 11px; font-weight: 700; color: #4F46E5; margin: 0 0 6px 0; padding-bottom: 3px; border-bottom: 1px solid #EEF2FF; }
 
-        .input-group label {
-            color: #64748B;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-        }
+            .p-tbl { width: 100%; border-collapse: collapse; font-size: 9px; }
+            .p-tbl td { padding: 2px 4px; border-bottom: 1px solid #F1F5F9; }
+            .p-tbl td:last-child { text-align: right; font-weight: 600; white-space: nowrap; }
+            .p-tbl .tot td { border-top: 1.5px solid #CBD5E1; font-weight: 700; }
 
-        .input-field,
-        .select-field {
-            border: 1px solid #E2E8F0;
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            transition: all 0.2s;
-            width: 100%;
-            font-size: 0.95rem;
-        }
+            /* Bottom two-column: chart left, detail right */
+            .p-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
 
-        .input-field:focus,
-        .select-field:focus {
-            border-color: #6366F1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-            outline: none;
-        }
+            .p-chart-box { border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+            .p-chart-box h3 { font-size: 11px; font-weight: 700; color: #4F46E5; margin: 0 0 6px 0; padding-bottom: 3px; border-bottom: 1px solid #EEF2FF; width: 100%; }
+            .p-chart-box img { max-width: 220px; max-height: 220px; }
 
-        .sticky-summary {
-            position: sticky;
-            top: 2rem;
-        }
+            .p-chart-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; justify-content: center; margin-top: 8px; font-size: 8.5px; color: #475569; }
+            .p-chart-legend span { display: flex; align-items: center; gap: 3px; }
+            .p-chart-legend .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
 
-        .chart-container {
-            position: relative;
-            height: 250px;
-            width: 100%;
-            margin-top: 1rem;
-            margin-bottom: 2rem;
-        }
+            .p-detail-box { border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px 10px; }
+            .p-detail-box h3 { font-size: 11px; font-weight: 700; color: #4F46E5; margin: 0 0 6px 0; padding-bottom: 3px; border-bottom: 1px solid #EEF2FF; }
 
-        .quantity-control-btn {
-            background-color: #F1F5F9;
-            color: #64748B;
-            transition: all 0.2s;
-        }
+            .p-detail { width: 100%; border-collapse: collapse; font-size: 9.5px; }
+            .p-detail td { padding: 3px 4px; border-bottom: 1px solid #F1F5F9; }
+            .p-detail td:last-child { text-align: right; font-weight: 600; white-space: nowrap; }
+            .p-detail .sep td { border-bottom: 1.5px solid #E2E8F0; padding: 1px 0; }
+            .p-detail .hi td { background: #EEF2FF !important; font-weight: 700; color: #4338CA; padding: 4px; }
+            .p-detail .ded td:last-child { color: #EF4444; }
+            .p-detail .final td { font-weight: 900; font-size: 10.5px; }
 
-        .quantity-control-btn:hover {
-            background-color: #E2E8F0;
-            color: #334155;
-        }
-
-        .radio-label {
-            cursor: pointer;
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            border: 1px solid #E2E8F0;
-            transition: all 0.2s;
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .radio-label:hover {
-            background-color: #F8FAFC;
-        }
-
-        input[type="radio"]:checked+.radio-label {
-            background-color: #EEF2FF;
-            border-color: #6366F1;
-            color: #4F46E5;
-            font-weight: 600;
-        }
-
-        input[type="radio"] {
-            display: none;
-        }
-
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #F1F5F9;
-        }
-
-        .result-row:last-child {
-            border-bottom: none;
+            .p-footer { text-align: center; font-size: 8px; color: #94A3B8; margin-top: 8px; padding-top: 6px; border-top: 1px solid #E2E8F0; }
         }
     </style>
 </head>
@@ -143,114 +97,66 @@
 <body class="p-4 md:p-8 min-h-screen">
 
     <div class="max-w-7xl mx-auto">
-        <!-- Header -->
         <header class="mb-8 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl md:text-3xl font-bold text-slate-800">
-                    <span class="mr-2"></span> 판매 마진 분석
-                </h1>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800"> 판매 마진 분석</h1>
                 <p class="text-slate-500 mt-1 text-sm">방역마트</p>
                 <span class="inline-block mt-2 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">💡 모든 금액은 VAT(부가세) 포함 기준으로 계산됩니다</span>
             </div>
-            <button onclick="window.print()"
-                class="hidden md:flex items-center px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
+            <button onclick="printReport()" class="hidden md:flex items-center px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
                 <span>🖨️ 인쇄/PDF 저장</span>
             </button>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-            <!-- Left Column: Inputs (7/12) -->
+            <!-- Left Column: Inputs -->
             <div class="lg:col-span-7 space-y-6">
-
-                <!-- 1. 기본 판매 설정 -->
+                <!-- 1. 판매 상품 구성 -->
                 <div class="card p-6">
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center">
-                            <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3 text-sm">1</span> 판매 상품 구성
-                        </h2>
-                        <span id="totalSaleDisplay"
-                            class="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">판매합계: 0원</span>
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center"><span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3 text-sm">1</span> 판매 상품 구성</h2>
+                        <span id="totalSaleDisplay" class="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">판매합계: 0원</span>
                     </div>
-
-                    <div id="saleLineContainer" class="space-y-4">
-                        <!-- Sale Item Template will be injected here -->
-                    </div>
-
-                    <button id="addSaleBtn" type="button"
-                        class="mt-4 w-full py-3 border-2 border-dashed border-indigo-200 rounded-lg text-indigo-500 font-medium hover:bg-indigo-50 hover:border-indigo-300 transition flex items-center justify-center">
-                        <span class="mr-2">＋</span> 판매 상품 추가하기
-                    </button>
-
+                    <div id="saleLineContainer" class="space-y-4"></div>
+                    <button id="addSaleBtn" type="button" class="mt-4 w-full py-3 border-2 border-dashed border-indigo-200 rounded-lg text-indigo-500 font-medium hover:bg-indigo-50 hover:border-indigo-300 transition flex items-center justify-center"><span class="mr-2">＋</span> 판매 상품 추가하기</button>
                     <div class="mt-6">
                         <div class="input-group">
                             <label>판매 채널 타입 (수수료)</label>
                             <div class="flex gap-2 text-sm">
-                                <label>
-                                    <input type="radio" name="salesType" value="business">
-                                    <span class="radio-label">사업자 (3.7%)</span>
-                                </label>
-                                <label>
-                                    <input type="radio" name="salesType" value="member">
-                                    <span class="radio-label">회원 (3.7%)</span>
-                                </label>
-                                <label>
-                                    <input type="radio" name="salesType" value="general" checked>
-                                    <span class="radio-label">일반 (13%)</span>
-                                </label>
+                                <label><input type="radio" name="salesType" value="business"><span class="radio-label">사업자 (3.7%)</span></label>
+                                <label><input type="radio" name="salesType" value="member"><span class="radio-label">회원 (3.7%)</span></label>
+                                <label><input type="radio" name="salesType" value="general" checked><span class="radio-label">일반 (13%)</span></label>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <!-- 2. 상품 매입 구성 -->
                 <div class="card p-6">
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-lg font-bold text-slate-800 flex items-center">
-                            <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3 text-sm">2</span> 상품 구성
-                        </h2>
-                        <span id="totalPurchaseDisplay"
-                            class="text-sm font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">매입합계: 0원</span>
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center"><span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3 text-sm">2</span> 상품 구성</h2>
+                        <span id="totalPurchaseDisplay" class="text-sm font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">매입합계: 0원</span>
                     </div>
-
-                    <div id="productLineContainer" class="space-y-4">
-                        <!-- Product Item Template will be injected here -->
-                    </div>
-
-                    <button id="addInfoBtn" type="button"
-                        class="mt-4 w-full py-3 border-2 border-dashed border-indigo-200 rounded-lg text-indigo-500 font-medium hover:bg-indigo-50 hover:border-indigo-300 transition flex items-center justify-center">
-                        <span class="mr-2">＋</span> 구성 상품 추가하기
-                    </button>
+                    <div id="productLineContainer" class="space-y-4"></div>
+                    <button id="addInfoBtn" type="button" class="mt-4 w-full py-3 border-2 border-dashed border-indigo-200 rounded-lg text-indigo-500 font-medium hover:bg-indigo-50 hover:border-indigo-300 transition flex items-center justify-center"><span class="mr-2">＋</span> 구성 상품 추가하기</button>
                     <input type="hidden" id="totalPurchasePrice">
                 </div>
-
-                <!-- 3. 배송 및 기타 비용 -->
+                <!-- 3. 배송/판관비/광고 비용 -->
                 <div class="card p-6">
-                    <h2 class="text-lg font-bold text-slate-800 mb-6 flex items-center">
-                        <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3 text-sm">3</span> 배송/판관비/광고 비용
-                    </h2>
-
+                    <h2 class="text-lg font-bold text-slate-800 mb-6 flex items-center"><span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3 text-sm">3</span> 배송/판관비/광고 비용</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="input-group">
                             <label>고객 부담 배송비 설정</label>
                             <div class="flex gap-2 mb-3">
-                                <label class="flex-1">
-                                    <input type="radio" name="customerShippingType" value="free">
-                                    <span class="radio-label justify-center">무료배송</span>
-                                </label>
-                                <label class="flex-1">
-                                    <input type="radio" name="customerShippingType" value="paid" checked>
-                                    <span class="radio-label justify-center">유료배송</span>
-                                </label>
+                                <label class="flex-1"><input type="radio" name="customerShippingType" value="free"><span class="radio-label justify-center">무료배송</span></label>
+                                <label class="flex-1"><input type="radio" name="customerShippingType" value="paid" checked><span class="radio-label justify-center">유료배송</span></label>
                             </div>
-                            <div id="shippingCostInputArea" class="">
+                            <div id="shippingCostInputArea">
                                 <select id="customerShippingAmount" class="select-field bg-slate-50">
                                     <option value="3000">3,000원</option>
                                     <option value="5000">5,000원</option>
                                 </select>
                             </div>
                         </div>
-
                         <div class="input-group">
                             <label>출고 배송비 (택배사 계약단가)</label>
                             <select id="outgoingShippingCost" class="select-field">
@@ -272,7 +178,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="input-group">
                             <label>판관비 (포장/소모품/관리비 등)</label>
@@ -289,13 +194,10 @@
                             <label>광고 마케팅비</label>
                             <div class="flex items-center gap-2">
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" id="adEnabled"
-                                        class="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                        checked>
+                                    <input type="checkbox" id="adEnabled" class="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" checked>
                                     <span class="text-sm text-slate-600">집행함</span>
                                 </label>
-                                <input type="number" id="advertisingRate" value="30"
-                                    class="number-input input-field flex-1" placeholder="예: 30">
+                                <input type="number" id="advertisingRate" value="30" class="number-input input-field flex-1" placeholder="예: 30">
                                 <span class="text-slate-500 font-medium">%</span>
                             </div>
                         </div>
@@ -303,158 +205,77 @@
                 </div>
             </div>
 
-            <!-- Right Column: Dashboard (5/12) -->
+            <!-- Right Column: Dashboard -->
             <div class="lg:col-span-5">
                 <div class="sticky-summary space-y-6">
-
-                    <!-- Result Card -->
                     <div class="card p-6 border-indigo-100 shadow-xl ring-1 ring-indigo-50">
                         <h2 class="text-xl font-bold text-slate-800 mb-2">최종 분석 결과</h2>
-                        <div id="marginResultBox"
-                            class="text-center py-6 bg-slate-50 rounded-xl mb-6 transition-colors">
+                        <div id="marginResultBox" class="text-center py-6 bg-slate-50 rounded-xl mb-6 transition-colors">
                             <p class="text-sm text-slate-500 mb-1">순수익 (Net Profit)</p>
                             <div class="text-4xl font-black text-slate-800" id="finalMarginPrice">0원</div>
                             <div class="text-lg font-bold text-slate-500 mt-1" id="finalMarginPercent">0%</div>
                         </div>
-
-                        <!-- Chart -->
-                        <div class="chart-container">
-                            <canvas id="costChart"></canvas>
-                        </div>
-
-                        <!-- Detail Table -->
+                        <div class="chart-container"><canvas id="costChart"></canvas></div>
                         <div class="space-y-2 text-sm text-slate-600 mt-4">
-                            <!-- Revenue -->
-                            <div class="result-row">
-                                <span>(+) 판매가</span>
-                                <span class="font-bold text-slate-800" id="dispSalePrice">0원</span>
-                            </div>
-                            <div class="result-row">
-                                <span>(+) 고객 부담 배송비</span>
-                                <span class="font-bold text-slate-800" id="dispCustShip">0원</span>
-                            </div>
-
+                            <div class="result-row"><span>(+) 판매가</span><span class="font-bold text-slate-800" id="dispSalePrice">0원</span></div>
+                            <div class="result-row"><span>(+) 고객 부담 배송비</span><span class="font-bold text-slate-800" id="dispCustShip">0원</span></div>
                             <div class="my-3 border-t border-slate-200"></div>
-
-                            <!-- Fees -->
-                            <div class="result-row text-sm">
-                                <span>(-) 채널 수수료 <span class="text-xs text-slate-400"
-                                        id="dispChannelFeeRate"></span></span>
-                                <span class="text-red-500" id="dispChannelFee">0원</span>
-                            </div>
-                            <div class="result-row text-sm">
-                                <span>(-) 배송비 수수료 <span class="text-xs text-slate-400">(3.3%)</span></span>
-                                <span class="text-red-500" id="dispShipFee">0원</span>
-                            </div>
-
-                            <div class="result-row bg-indigo-50 p-2 rounded-lg font-bold text-indigo-700 my-2">
-                                <span>(=) 정산 예정금액</span>
-                                <span id="settlementAmt">0원</span>
-                            </div>
-
-                            <!-- Deductions -->
-                            <div class="result-row pt-2">
-                                <span>(-) 상품 매입 원가</span>
-                                <span class="text-red-500" id="totalPurchaseAmt">0원</span>
-                            </div>
-                            <div class="result-row">
-                                <span>(-) 출고 배송비 <span class="text-xs text-slate-400"
-                                        id="dispOutShipName"></span></span>
-                                <span class="text-red-500" id="dispOutShip">0원</span>
-                            </div>
-                            <div class="result-row">
-                                <span>(-) 판관비 <span class="text-xs text-slate-400" id="dispPkgRate"></span></span>
-                                <span class="text-red-500" id="dispPkg">0원</span>
-                            </div>
-                            <div class="result-row">
-                                <span>(-) 광고 비용 <span class="text-xs text-slate-400" id="dispAdRate"></span></span>
-                                <span class="text-red-500" id="totalAdAmt">0원</span>
-                            </div>
+                            <div class="result-row text-sm"><span>(-) 채널 수수료 <span class="text-xs text-slate-400" id="dispChannelFeeRate"></span></span><span class="text-red-500" id="dispChannelFee">0원</span></div>
+                            <div class="result-row text-sm"><span>(-) 배송비 수수료 <span class="text-xs text-slate-400">(3.3%)</span></span><span class="text-red-500" id="dispShipFee">0원</span></div>
+                            <div class="result-row bg-indigo-50 p-2 rounded-lg font-bold text-indigo-700 my-2"><span>(=) 정산 예정금액</span><span id="settlementAmt">0원</span></div>
+                            <div class="result-row pt-2"><span>(-) 상품 매입 원가</span><span class="text-red-500" id="totalPurchaseAmt">0원</span></div>
+                            <div class="result-row"><span>(-) 출고 배송비 <span class="text-xs text-slate-400" id="dispOutShipName"></span></span><span class="text-red-500" id="dispOutShip">0원</span></div>
+                            <div class="result-row"><span>(-) 판관비 <span class="text-xs text-slate-400" id="dispPkgRate"></span></span><span class="text-red-500" id="dispPkg">0원</span></div>
+                            <div class="result-row"><span>(-) 광고 비용 <span class="text-xs text-slate-400" id="dispAdRate"></span></span><span class="text-red-500" id="totalAdAmt">0원</span></div>
                         </div>
                     </div>
-
-                    <!-- Action Buttons -->
                     <div class="grid grid-cols-2 gap-3">
-                        <button onclick="copyResults()"
-                            class="card p-3 text-center hover:bg-slate-50 transition active:scale-95 text-sm font-bold text-slate-600">
-                            📋 결과 텍스트 복사
-                        </button>
-                        <button onclick="location.reload()"
-                            class="card p-3 text-center hover:bg-slate-50 transition active:scale-95 text-sm font-bold text-slate-600">
-                            🔄 초기화
-                        </button>
+                        <button onclick="copyResults()" class="card p-3 text-center hover:bg-slate-50 transition active:scale-95 text-sm font-bold text-slate-600">📋 결과 텍스트 복사</button>
+                        <button onclick="location.reload()" class="card p-3 text-center hover:bg-slate-50 transition active:scale-95 text-sm font-bold text-slate-600">🔄 초기화</button>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <footer class="mt-12 mb-6 text-center">
-        <p class="text-sm text-slate-400 font-medium tracking-wide">Created by M. G. HAN</p>
-    </footer>
+    <footer class="mt-12 mb-6 text-center"><p class="text-sm text-slate-400 font-medium tracking-wide">Created by M. G. HAN</p></footer>
 
-    <!-- Template for Sale Line -->
+    <!-- PRINT REPORT -->
+    <div id="printReport"></div>
+
+    <!-- Template: Sale Line -->
     <template id="saleLineTemplate">
         <div class="sale-line bg-indigo-50/50 p-4 rounded-lg border border-indigo-100 relative group animate-fade-in">
-            <button type="button"
-                class="del-btn absolute top-2 right-2 text-slate-400 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition">✕</button>
+            <button type="button" class="del-btn absolute top-2 right-2 text-slate-400 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition">✕</button>
             <div class="grid grid-cols-12 gap-3 items-end">
-                <div class="col-span-12 md:col-span-5">
-                    <label class="block text-xs font-medium text-slate-500 mb-1">상품명</label>
-                    <input type="text" class="sale-name input-field text-sm" placeholder="판매 상품명">
-                </div>
-                <div class="col-span-5 md:col-span-3">
-                    <label class="block text-xs font-medium text-slate-500 mb-1">판매 단가</label>
-                    <input type="text" class="sale-price number-input input-field text-sm text-right font-bold text-indigo-600" placeholder="0">
-                </div>
-                <div class="col-span-4 md:col-span-2">
-                    <label class="block text-xs font-medium text-slate-500 mb-1">수량</label>
-                    <input type="number" class="sale-qty input-field text-sm text-center" value="1" min="1">
-                </div>
-                <div class="col-span-3 md:col-span-2 text-right pb-2">
-                    <span class="sale-subtotal text-sm font-bold text-indigo-700">0원</span>
-                </div>
+                <div class="col-span-12 md:col-span-5"><label class="block text-xs font-medium text-slate-500 mb-1">상품명</label><input type="text" class="sale-name input-field text-sm" placeholder="판매 상품명"></div>
+                <div class="col-span-5 md:col-span-3"><label class="block text-xs font-medium text-slate-500 mb-1">판매 단가</label><input type="text" class="sale-price number-input input-field text-sm text-right font-bold text-indigo-600" placeholder="0"></div>
+                <div class="col-span-4 md:col-span-2"><label class="block text-xs font-medium text-slate-500 mb-1">수량</label><input type="number" class="sale-qty input-field text-sm text-center" value="1" min="1"></div>
+                <div class="col-span-3 md:col-span-2 text-right pb-2"><span class="sale-subtotal text-sm font-bold text-indigo-700">0원</span></div>
             </div>
         </div>
     </template>
 
-    <!-- Template for Product Line -->
+    <!-- Template: Product Line -->
     <template id="productLineTemplate">
         <div class="product-line bg-slate-50 p-4 rounded-lg border border-slate-100 relative group animate-fade-in">
-            <button type="button"
-                class="del-btn absolute top-2 right-2 text-slate-400 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition">✕</button>
+            <button type="button" class="del-btn absolute top-2 right-2 text-slate-400 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition">✕</button>
             <div class="grid grid-cols-12 gap-3 items-end">
-                <div class="col-span-12 md:col-span-5">
-                    <label class="block text-xs font-medium text-slate-500 mb-1">상품명</label>
-                    <input type="text" class="prod-name input-field text-sm" placeholder="상품명">
-                </div>
-                <div class="col-span-5 md:col-span-3">
-                    <label class="block text-xs font-medium text-slate-500 mb-1">단가</label>
-                    <input type="text" class="prod-price number-input input-field text-sm text-right" placeholder="0">
-                </div>
-                <div class="col-span-4 md:col-span-2">
-                    <label class="block text-xs font-medium text-slate-500 mb-1">수량</label>
-                    <input type="number" class="prod-qty input-field text-sm text-center" value="1" min="1">
-                </div>
-                <div class="col-span-3 md:col-span-2 text-right pb-2">
-                    <span class="prod-subtotal text-sm font-bold text-slate-700">0원</span>
-                </div>
+                <div class="col-span-12 md:col-span-5"><label class="block text-xs font-medium text-slate-500 mb-1">상품명</label><input type="text" class="prod-name input-field text-sm" placeholder="상품명"></div>
+                <div class="col-span-5 md:col-span-3"><label class="block text-xs font-medium text-slate-500 mb-1">단가</label><input type="text" class="prod-price number-input input-field text-sm text-right" placeholder="0"></div>
+                <div class="col-span-4 md:col-span-2"><label class="block text-xs font-medium text-slate-500 mb-1">수량</label><input type="number" class="prod-qty input-field text-sm text-center" value="1" min="1"></div>
+                <div class="col-span-3 md:col-span-2 text-right pb-2"><span class="prod-subtotal text-sm font-bold text-slate-700">0원</span></div>
             </div>
         </div>
     </template>
 
     <script>
-        // State
         let chartInstance = null;
-
-        // Elements
         const saleLineContainer = document.getElementById('saleLineContainer');
         const saleTemplate = document.getElementById('saleLineTemplate');
         const productLineContainer = document.getElementById('productLineContainer');
         const template = document.getElementById('productLineTemplate');
 
-        // --- Formatting Utils ---
         const formatNum = (n) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         const parseNum = (str) => parseInt(str.toString().replace(/,/g, '')) || 0;
         const formatCurrency = (n) => `${formatNum(Math.round(n))}원`;
@@ -465,303 +286,279 @@
             calculate();
         }
 
-        // --- Logic ---
         function addSaleLine() {
             const clone = saleTemplate.content.cloneNode(true);
             const div = clone.querySelector('.sale-line');
-
-            div.querySelector('.del-btn').addEventListener('click', () => {
-                div.remove();
-                calculate();
-            });
-
+            div.querySelector('.del-btn').addEventListener('click', () => { div.remove(); calculate(); });
             div.querySelector('.sale-price').addEventListener('input', handleNumberInput);
             div.querySelector('.sale-qty').addEventListener('input', calculate);
             div.querySelector('.sale-qty').addEventListener('change', calculate);
-
             saleLineContainer.appendChild(clone);
         }
 
         function addProductLine() {
             const clone = template.content.cloneNode(true);
             const div = clone.querySelector('.product-line');
-
-            div.querySelector('.del-btn').addEventListener('click', () => {
-                div.remove();
-                calculate();
-            });
-
+            div.querySelector('.del-btn').addEventListener('click', () => { div.remove(); calculate(); });
             div.querySelector('.prod-price').addEventListener('input', handleNumberInput);
             div.querySelector('.prod-qty').addEventListener('input', calculate);
-            div.querySelector('.prod-qty').addEventListener('change', calculate); // for spinner arrows
-
+            div.querySelector('.prod-qty').addEventListener('change', calculate);
             productLineContainer.appendChild(clone);
         }
 
         function getFormData() {
-            // 1. Sales Price (sum of all sale lines)
             let salePrice = 0;
+            const saleItems = [];
             document.querySelectorAll('.sale-line').forEach(line => {
+                const name = line.querySelector('.sale-name').value || '(미입력)';
                 const price = parseNum(line.querySelector('.sale-price').value);
                 const qty = parseInt(line.querySelector('.sale-qty').value) || 0;
                 const sub = price * qty;
                 line.querySelector('.sale-subtotal').textContent = formatCurrency(sub);
                 salePrice += sub;
+                if (price > 0) saleItems.push({ name, price, qty, sub });
             });
             document.getElementById('totalSaleDisplay').textContent = `판매합계: ${formatCurrency(salePrice)}`;
 
-            // 2. Sales Type & Fee
             const salesType = document.querySelector('input[name="salesType"]:checked').value;
             let feeRate = 0.13;
             if (salesType === 'business' || salesType === 'member') feeRate = 0.037;
             const channelFee = salePrice * feeRate;
 
-            // 3. Product Cost
             let totalPurchase = 0;
+            const purchaseItems = [];
             document.querySelectorAll('.product-line').forEach(line => {
+                const name = line.querySelector('.prod-name').value || '(미입력)';
                 const price = parseNum(line.querySelector('.prod-price').value);
                 const qty = parseInt(line.querySelector('.prod-qty').value) || 0;
                 const sub = price * qty;
                 line.querySelector('.prod-subtotal').textContent = formatCurrency(sub);
                 totalPurchase += sub;
+                if (price > 0) purchaseItems.push({ name, price, qty, sub });
             });
             document.getElementById('totalPurchaseDisplay').textContent = `매입합계: ${formatCurrency(totalPurchase)}`;
 
-            // 4. Shipping & Packaging
             const shippingType = document.querySelector('input[name="customerShippingType"]:checked').value;
             const customerShippingAmt = shippingType === 'paid' ? parseInt(document.getElementById('customerShippingAmount').value) : 0;
-            const shippingFee = customerShippingAmt * 0.033; // 3.3% fee on shipping
-
+            const shippingFee = customerShippingAmt * 0.033;
             const outgoingShippingUnit = parseInt(document.getElementById('outgoingShippingCost').value);
             const shippingQty = parseInt(document.getElementById('shippingQty').value) || 1;
             const outgoingShipping = outgoingShippingUnit * shippingQty;
             document.getElementById('shippingQtyTotal').textContent = `합계: ${formatCurrency(outgoingShipping)}`;
             const pkgRate = parseFloat(document.getElementById('packagingCostRate').value);
             const pkgCost = salePrice * pkgRate;
-
-            // 5. Advertising
             const adEnabled = document.getElementById('adEnabled').checked;
             const adRate = adEnabled ? parseFloat(document.getElementById('advertisingRate').value) : 0;
             const adCost = salePrice * (adRate / 100);
 
-            // Calculation
-            // 정산금액 = (판매가 + 고객배송비) - (채널수수료 + 배송비수수료)
             const settlement = (salePrice + customerShippingAmt) - (channelFee + shippingFee);
-
-            // 순수익 = 정산금액 - (매입가 + 출고배송비 + 판관비 + 광고비)
             const totalCost = totalPurchase + outgoingShipping + pkgCost + adCost;
             const margin = settlement - totalCost;
             const marginPercent = salePrice > 0 ? (margin / salePrice) * 100 : 0;
+            const outShipSel = document.getElementById('outgoingShippingCost');
+            const outShipName = outShipSel.options[outShipSel.selectedIndex].text.split(' -')[0];
 
             return {
-                salePrice, customerShippingAmt,
-                totalPurchase,
+                salePrice, customerShippingAmt, totalPurchase,
                 channelFee, shippingFee, feeRate,
-                outgoingShipping, pkgCost, adCost,
-                pkgRateDouble: pkgRate, adEnabled, adRate,
+                outgoingShipping, outgoingShippingUnit, shippingQty,
+                pkgCost, adCost, pkgRateDouble: pkgRate, adEnabled, adRate,
                 settlement, margin, marginPercent,
+                saleItems, purchaseItems,
                 salesTypeText: document.querySelector('input[name="salesType"]:checked').nextElementSibling.innerText,
-                outgoingShippingName: document.getElementById('outgoingShippingCost').options[document.getElementById('outgoingShippingCost').selectedIndex].text.split(' -')[0] + `×${shippingQty}`
+                outgoingShippingName: outShipName + `×${shippingQty}`,
+                outgoingShippingLabel: outShipName,
+                customerShippingType: shippingType
             };
         }
 
         function calculate() {
             const d = getFormData();
-
-            // DOM Update
             document.getElementById('finalMarginPrice').textContent = formatCurrency(d.margin);
             document.getElementById('finalMarginPrice').className = `text-4xl font-black ${d.margin >= 0 ? 'text-indigo-600' : 'text-red-500'}`;
             document.getElementById('finalMarginPercent').textContent = `${d.marginPercent.toFixed(1)}%`;
             document.getElementById('finalMarginPercent').className = `text-lg font-bold mt-1 ${d.margin >= 0 ? 'text-indigo-400' : 'text-red-400'}`;
-
-            // Background Alert styling
             const resBox = document.getElementById('marginResultBox');
-            if (d.margin < 0) {
-                resBox.classList.remove('bg-indigo-50', 'bg-slate-50');
-                resBox.classList.add('bg-red-50');
-            } else if (d.salePrice > 0) {
-                resBox.classList.remove('bg-red-50', 'bg-slate-50');
-                resBox.classList.add('bg-indigo-50');
-            } else {
-                resBox.classList.remove('bg-red-50', 'bg-indigo-50');
-                resBox.classList.add('bg-slate-50');
-            }
-
+            if (d.margin < 0) { resBox.classList.remove('bg-indigo-50','bg-slate-50'); resBox.classList.add('bg-red-50'); }
+            else if (d.salePrice > 0) { resBox.classList.remove('bg-red-50','bg-slate-50'); resBox.classList.add('bg-indigo-50'); }
+            else { resBox.classList.remove('bg-red-50','bg-indigo-50'); resBox.classList.add('bg-slate-50'); }
             document.getElementById('dispSalePrice').textContent = formatCurrency(d.salePrice);
             document.getElementById('dispCustShip').textContent = formatCurrency(d.customerShippingAmt);
-
-            document.getElementById('dispChannelFeeRate').textContent = `(${(d.feeRate * 100).toFixed(1)}%)`;
+            document.getElementById('dispChannelFeeRate').textContent = `(${(d.feeRate*100).toFixed(1)}%)`;
             document.getElementById('dispChannelFee').textContent = `-${formatCurrency(d.channelFee)}`;
             document.getElementById('dispShipFee').textContent = `-${formatCurrency(d.shippingFee)}`;
-
             document.getElementById('settlementAmt').textContent = formatCurrency(d.settlement);
-
             document.getElementById('totalPurchaseAmt').textContent = `-${formatCurrency(d.totalPurchase)}`;
-
             document.getElementById('dispOutShipName').textContent = `(${d.outgoingShippingName})`;
             document.getElementById('dispOutShip').textContent = `-${formatCurrency(d.outgoingShipping)}`;
-
-            document.getElementById('dispPkgRate').textContent = `(${(d.pkgRateDouble * 100).toFixed(0)}%)`;
+            document.getElementById('dispPkgRate').textContent = `(${(d.pkgRateDouble*100).toFixed(0)}%)`;
             document.getElementById('dispPkg').textContent = `-${formatCurrency(d.pkgCost)}`;
-
             document.getElementById('dispAdRate').textContent = d.adEnabled ? `(${d.adRate}%)` : '';
             document.getElementById('totalAdAmt').textContent = `-${formatCurrency(d.adCost)}`;
-
             updateChart(d);
         }
 
         function updateChart(d) {
-            // Chart Logic
             const ctx = document.getElementById('costChart').getContext('2d');
-
-            // 데이터가 없으면 차트 숨기기 또는 빈 상태
             if (d.salePrice === 0 && d.totalPurchase === 0) {
-                if (chartInstance) {
-                    chartInstance.data.datasets[0].data = [1];
-                    chartInstance.data.labels = ['입력 대기'];
-                    chartInstance.data.datasets[0].backgroundColor = ['#E2E8F0'];
-                    chartInstance.update();
-                }
+                if (chartInstance) { chartInstance.data.datasets[0].data = [1]; chartInstance.data.labels = ['입력 대기']; chartInstance.data.datasets[0].backgroundColor = ['#E2E8F0']; chartInstance.update(); }
                 return;
             }
-
-            const dataValues = [
-                Math.max(0, d.margin),
-                d.totalPurchase,
-                d.channelFee + d.shippingFee,
-                d.outgoingShipping + d.pkgCost,
-                d.adCost
-            ];
-            const labels = ['순수익', '상품매입', '수수료', '물류/판관비', '광고비'];
-            const colors = ['#4F46E5', '#94A3B8', '#F59E0B', '#10B981', '#EF4444'];
-
-            if (chartInstance) {
-                chartInstance.data.datasets[0].data = dataValues;
-                chartInstance.data.labels = labels;
-                chartInstance.data.datasets[0].backgroundColor = colors;
-                chartInstance.update();
-            } else {
+            const dataValues = [Math.max(0,d.margin), d.totalPurchase, d.channelFee+d.shippingFee, d.outgoingShipping+d.pkgCost, d.adCost];
+            const labels = ['순수익','상품매입','수수료','물류/판관비','광고비'];
+            const colors = ['#4F46E5','#94A3B8','#F59E0B','#10B981','#EF4444'];
+            if (chartInstance) { chartInstance.data.datasets[0].data = dataValues; chartInstance.data.labels = labels; chartInstance.data.datasets[0].backgroundColor = colors; chartInstance.update(); }
+            else {
                 chartInstance = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: dataValues,
-                            backgroundColor: colors,
-                            borderWidth: 0,
-                            hoverOffset: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        cutout: '65%',
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: { usePointStyle: true, boxWidth: 8, font: { size: 11 } }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        let label = context.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed !== null) {
-                                            label += formatCurrency(context.parsed);
-                                        }
-                                        return label;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    type:'doughnut', data:{labels, datasets:[{data:dataValues, backgroundColor:colors, borderWidth:0, hoverOffset:4}]},
+                    options:{responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8,font:{size:11}}},tooltip:{callbacks:{label:function(c){let l=c.label||'';if(l)l+=': ';if(c.parsed!==null)l+=formatCurrency(c.parsed);return l;}}}}}
                 });
             }
         }
 
+        /* ==================== PRINT ==================== */
+        function buildPrintReport() {
+            const d = getFormData();
+            const now = new Date();
+            const ds = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            const neg = d.margin < 0;
+            const fc = neg ? '#EF4444' : '#4F46E5';
+
+            // Convert chart canvas to base64 image
+            const chartImg = document.getElementById('costChart').toDataURL('image/png', 1.0);
+
+            const saleRows = d.saleItems.map(i => `<tr><td>${i.name}</td><td>${formatCurrency(i.price)} × ${i.qty}</td><td>${formatCurrency(i.sub)}</td></tr>`).join('');
+            const purchaseRows = d.purchaseItems.map(i => `<tr><td>${i.name}</td><td>${formatCurrency(i.price)} × ${i.qty}</td><td>${formatCurrency(i.sub)}</td></tr>`).join('');
+
+            // Build chart legend data
+            const legendItems = [
+                { color: '#4F46E5', label: '순수익', val: Math.max(0, d.margin) },
+                { color: '#94A3B8', label: '상품매입', val: d.totalPurchase },
+                { color: '#F59E0B', label: '수수료', val: d.channelFee + d.shippingFee },
+                { color: '#10B981', label: '물류/판관비', val: d.outgoingShipping + d.pkgCost },
+                { color: '#EF4444', label: '광고비', val: d.adCost },
+            ];
+            const legendHtml = legendItems.map(i => `<span><span class="dot" style="background:${i.color}"></span>${i.label} ${formatCurrency(i.val)}</span>`).join('');
+
+            document.getElementById('printReport').innerHTML = `
+                <div class="p-header">
+                    <h1>📊 판매 마진 분석 리포트</h1>
+                    <p>방역마트 · ${ds} · ${d.salesTypeText}</p>
+                </div>
+                <div class="p-vat">💡 모든 금액은 VAT(부가세) 포함 기준으로 계산되었습니다</div>
+
+                <div class="p-result ${neg?'neg':''}">
+                    <p class="lbl">순수익 (Net Profit)</p>
+                    <p class="val">${formatCurrency(d.margin)}</p>
+                    <p class="pct">마진율 ${d.marginPercent.toFixed(1)}%</p>
+                </div>
+
+                <div class="p-grid2">
+                    <div class="p-box">
+                        <h3>🛒 판매 상품 구성</h3>
+                        <table class="p-tbl">
+                            ${saleRows || '<tr><td colspan="3" style="text-align:center;color:#94A3B8">입력 없음</td></tr>'}
+                            <tr class="tot"><td colspan="2">판매합계</td><td>${formatCurrency(d.salePrice)}</td></tr>
+                        </table>
+                    </div>
+                    <div class="p-box">
+                        <h3>📦 상품 매입 구성</h3>
+                        <table class="p-tbl">
+                            ${purchaseRows || '<tr><td colspan="3" style="text-align:center;color:#94A3B8">입력 없음</td></tr>'}
+                            <tr class="tot"><td colspan="2">매입합계</td><td>${formatCurrency(d.totalPurchase)}</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="p-bottom">
+                    <!-- LEFT: Chart -->
+                    <div class="p-chart-box">
+                        <h3>📊 비용 구조 분석</h3>
+                        <img src="${chartImg}" alt="비용 구조 차트">
+                        <div class="p-chart-legend">${legendHtml}</div>
+                    </div>
+
+                    <!-- RIGHT: Detail Table -->
+                    <div class="p-detail-box">
+                        <h3>📋 손익 상세 내역</h3>
+                        <table class="p-detail">
+                            <tr><td>(+) 판매가</td><td>${formatCurrency(d.salePrice)}</td></tr>
+                            <tr><td>(+) 고객 부담 배송비 (${d.customerShippingType==='free'?'무료':'유료'})</td><td>${formatCurrency(d.customerShippingAmt)}</td></tr>
+                            <tr class="sep"><td colspan="2"></td></tr>
+                            <tr class="ded"><td>(-) 채널 수수료 (${(d.feeRate*100).toFixed(1)}%)</td><td>-${formatCurrency(d.channelFee)}</td></tr>
+                            <tr class="ded"><td>(-) 배송비 수수료 (3.3%)</td><td>-${formatCurrency(d.shippingFee)}</td></tr>
+                            <tr class="hi"><td>(=) 정산 예정금액</td><td>${formatCurrency(d.settlement)}</td></tr>
+                            <tr class="sep"><td colspan="2"></td></tr>
+                            <tr class="ded"><td>(-) 상품 매입 원가</td><td>-${formatCurrency(d.totalPurchase)}</td></tr>
+                            <tr class="ded"><td>(-) 출고 배송비 (${d.outgoingShippingLabel} ${formatCurrency(d.outgoingShippingUnit)}×${d.shippingQty})</td><td>-${formatCurrency(d.outgoingShipping)}</td></tr>
+                            <tr class="ded"><td>(-) 판관비 (${(d.pkgRateDouble*100).toFixed(0)}%)</td><td>-${formatCurrency(d.pkgCost)}</td></tr>
+                            <tr class="ded"><td>(-) 광고 비용 ${d.adEnabled?`(${d.adRate}%)`:'(미집행)'}</td><td>-${formatCurrency(d.adCost)}</td></tr>
+                            <tr class="sep"><td colspan="2"></td></tr>
+                            <tr class="final"><td style="color:${fc}">✅ 순수익</td><td style="color:${fc}">${formatCurrency(d.margin)}</td></tr>
+                            <tr class="final"><td style="color:${fc}">📈 마진율</td><td style="color:${fc}">${d.marginPercent.toFixed(1)}%</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="p-footer">Created by M. G. HAN · 본 문서는 시뮬레이션 결과이며, 실제 정산과 다를 수 있습니다.</div>
+            `;
+        }
+
+        function printReport() {
+            buildPrintReport();
+            setTimeout(() => window.print(), 300);
+        }
+
+        /* ==================== COPY ==================== */
         function copyResults() {
             const d = getFormData();
-            const text = `
-[마진 계산 결과 상세]
+            const sl = d.saleItems.map(i => `  · ${i.name}: ${formatCurrency(i.price)} × ${i.qty} = ${formatCurrency(i.sub)}`).join('\n');
+            const pl = d.purchaseItems.map(i => `  · ${i.name}: ${formatCurrency(i.price)} × ${i.qty} = ${formatCurrency(i.sub)}`).join('\n');
+            const text = `[마진 계산 결과 상세]
 ----------------------------
-(+) 판매가: ${formatCurrency(d.salePrice)}
+[판매 구성]
+${sl || '  (입력 없음)'}
+(+) 판매합계: ${formatCurrency(d.salePrice)}
 (+) 고객부담 배송비: ${formatCurrency(d.customerShippingAmt)}
 ----------------------------
-(-) 채널 수수료(${(d.feeRate * 100).toFixed(1)}%): ${formatCurrency(d.channelFee)}
+(-) 채널 수수료(${(d.feeRate*100).toFixed(1)}%): ${formatCurrency(d.channelFee)}
 (-) 배송비 수수료(3.3%): ${formatCurrency(d.shippingFee)}
 (=) 정산 예정금액: ${formatCurrency(d.settlement)}
 ----------------------------
-(-) 상품 매입가: ${formatCurrency(d.totalPurchase)}
+[매입 구성]
+${pl || '  (입력 없음)'}
+(-) 상품 매입합계: ${formatCurrency(d.totalPurchase)}
 (-) 출고 배송비(${d.outgoingShippingName}): ${formatCurrency(d.outgoingShipping)}
-(-) 판관비(${(d.pkgRateDouble * 100).toFixed(0)}%): ${formatCurrency(d.pkgCost)}
-(-) 광고 비용${d.adEnabled ? `(${d.adRate}%)` : ''}: ${formatCurrency(d.adCost)}
+(-) 판관비(${(d.pkgRateDouble*100).toFixed(0)}%): ${formatCurrency(d.pkgCost)}
+(-) 광고 비용${d.adEnabled?`(${d.adRate}%)`:''}: ${formatCurrency(d.adCost)}
 ----------------------------
 [최종 결과]
 ✅ 순수익: ${formatCurrency(d.margin)}
 📈 마진율: ${d.marginPercent.toFixed(1)}%
-            `.trim();
+* 모든 금액은 VAT 포함 기준`;
             navigator.clipboard.writeText(text).then(() => alert('상세 결과가 복사되었습니다!'));
         }
 
-        // --- Init ---
+        /* ==================== INIT ==================== */
         document.addEventListener('DOMContentLoaded', () => {
-            // Add initial lines
-            addSaleLine();
-            addProductLine();
-
-            // Buttons
+            addSaleLine(); addProductLine();
             document.getElementById('addSaleBtn').addEventListener('click', addSaleLine);
             document.getElementById('addInfoBtn').addEventListener('click', addProductLine);
-
-            // Event Listeners for Global Form
-            const inputs = document.querySelectorAll('input, select');
-            inputs.forEach(input => {
-                input.addEventListener('input', calculate);
-                input.addEventListener('change', calculate);
-            });
-
-            // Handle shipping toggle
+            document.querySelectorAll('input, select').forEach(input => { input.addEventListener('input', calculate); input.addEventListener('change', calculate); });
             document.querySelectorAll('input[name="customerShippingType"]').forEach(r => {
-                r.addEventListener('change', (e) => {
-                    document.getElementById('customerShippingAmountInputArea') // typo in HTML check?
-                    const selectArea = document.getElementById('shippingCostInputArea');
-                    if (e.target.value === 'free') selectArea.classList.add('hidden');
-                    else selectArea.classList.remove('hidden');
-                    calculate();
-                });
+                r.addEventListener('change', (e) => { const a=document.getElementById('shippingCostInputArea'); if(e.target.value==='free')a.classList.add('hidden');else a.classList.remove('hidden'); calculate(); });
             });
-
-            // Handle Ad Toggle
             document.getElementById('adEnabled').addEventListener('change', (e) => {
                 document.getElementById('advertisingRate').disabled = !e.target.checked;
-                if (!e.target.checked) document.getElementById('advertisingRate').classList.add('bg-slate-100');
-                else document.getElementById('advertisingRate').classList.remove('bg-slate-100');
+                if(!e.target.checked) document.getElementById('advertisingRate').classList.add('bg-slate-100'); else document.getElementById('advertisingRate').classList.remove('bg-slate-100');
                 calculate();
             });
-
-            // Shipping Quantity +/- Buttons
-            document.getElementById('shippingQtyMinus').addEventListener('click', () => {
-                const input = document.getElementById('shippingQty');
-                const val = parseInt(input.value) || 1;
-                if (val > 1) input.value = val - 1;
-                calculate();
-            });
-            document.getElementById('shippingQtyPlus').addEventListener('click', () => {
-                const input = document.getElementById('shippingQty');
-                const val = parseInt(input.value) || 1;
-                input.value = val + 1;
-                calculate();
-            });
+            document.getElementById('shippingQtyMinus').addEventListener('click', () => { const i=document.getElementById('shippingQty'); const v=parseInt(i.value)||1; if(v>1)i.value=v-1; calculate(); });
+            document.getElementById('shippingQtyPlus').addEventListener('click', () => { const i=document.getElementById('shippingQty'); i.value=(parseInt(i.value)||1)+1; calculate(); });
             document.getElementById('shippingQty').addEventListener('input', calculate);
             document.getElementById('shippingQty').addEventListener('change', calculate);
-
-            // Initial chart init
-            updateChart({ salePrice: 0, totalPurchase: 0 });
+            updateChart({ salePrice:0, totalPurchase:0 });
         });
-
     </script>
 </body>
-
 </html>
