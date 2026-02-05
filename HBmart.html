@@ -218,7 +218,7 @@
                 <!-- 3. 배송 및 기타 비용 -->
                 <div class="card p-6">
                     <h2 class="text-lg font-bold text-slate-800 mb-6 flex items-center">
-                        <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3 text-sm">3</span> 배송/포장/광고 비용
+                        <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3 text-sm">3</span> 배송/판관비/광고 비용
                     </h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -252,16 +252,28 @@
                                 <option value="5000">대형 - 5,000원</option>
                                 <option value="5500">이형 - 5,500원</option>
                             </select>
+                            <div class="flex items-center gap-3 mt-3">
+                                <span class="text-xs font-medium text-slate-500">수량</span>
+                                <div class="flex items-center border border-slate-200 rounded-lg overflow-hidden">
+                                    <button type="button" id="shippingQtyMinus" class="quantity-control-btn w-9 h-9 flex items-center justify-center text-lg font-bold">−</button>
+                                    <input type="number" id="shippingQty" value="1" min="1" class="number-input w-12 h-9 text-center text-sm font-bold border-x border-slate-200 outline-none">
+                                    <button type="button" id="shippingQtyPlus" class="quantity-control-btn w-9 h-9 flex items-center justify-center text-lg font-bold">+</button>
+                                </div>
+                                <span id="shippingQtyTotal" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full">합계: 0원</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="input-group">
-                            <label>포장재 비용 (박스/테이프 등)</label>
+                            <label>판관비 (포장/소모품/관리비 등)</label>
                             <select id="packagingCostRate" class="select-field">
-                                <option value="0.02">판매가 대비 2%</option>
-                                <option value="0.03">판매가 대비 3%</option>
-                                <option value="0.04">판매가 대비 4%</option>
+                                <option value="0">미발생 - 0%</option>
+                                <option value="0.03">소규모 경비 - 3%</option>
+                                <option value="0.05" selected>기본 판관비 - 5%</option>
+                                <option value="0.08">중소규모 운영 - 8%</option>
+                                <option value="0.10">일반 사업자 - 10%</option>
+                                <option value="0.15">조직 운영 포함 - 15%</option>
                             </select>
                         </div>
                         <div class="input-group">
@@ -342,7 +354,7 @@
                                 <span class="text-red-500" id="dispOutShip">0원</span>
                             </div>
                             <div class="result-row">
-                                <span>(-) 포장비 비용 <span class="text-xs text-slate-400" id="dispPkgRate"></span></span>
+                                <span>(-) 판관비 <span class="text-xs text-slate-400" id="dispPkgRate"></span></span>
                                 <span class="text-red-500" id="dispPkg">0원</span>
                             </div>
                             <div class="result-row">
@@ -461,7 +473,10 @@
             const customerShippingAmt = shippingType === 'paid' ? parseInt(document.getElementById('customerShippingAmount').value) : 0;
             const shippingFee = customerShippingAmt * 0.033; // 3.3% fee on shipping
 
-            const outgoingShipping = parseInt(document.getElementById('outgoingShippingCost').value);
+            const outgoingShippingUnit = parseInt(document.getElementById('outgoingShippingCost').value);
+            const shippingQty = parseInt(document.getElementById('shippingQty').value) || 1;
+            const outgoingShipping = outgoingShippingUnit * shippingQty;
+            document.getElementById('shippingQtyTotal').textContent = `합계: ${formatCurrency(outgoingShipping)}`;
             const pkgRate = parseFloat(document.getElementById('packagingCostRate').value);
             const pkgCost = salePrice * pkgRate;
 
@@ -474,7 +489,7 @@
             // 정산금액 = (판매가 + 고객배송비) - (채널수수료 + 배송비수수료)
             const settlement = (salePrice + customerShippingAmt) - (channelFee + shippingFee);
 
-            // 순수익 = 정산금액 - (매입가 + 출고배송비 + 포장비 + 광고비)
+            // 순수익 = 정산금액 - (매입가 + 출고배송비 + 판관비 + 광고비)
             const totalCost = totalPurchase + outgoingShipping + pkgCost + adCost;
             const margin = settlement - totalCost;
             const marginPercent = salePrice > 0 ? (margin / salePrice) * 100 : 0;
@@ -487,7 +502,7 @@
                 pkgRateDouble: pkgRate, adEnabled, adRate,
                 settlement, margin, marginPercent,
                 salesTypeText: document.querySelector('input[name="salesType"]:checked').nextElementSibling.innerText,
-                outgoingShippingName: document.getElementById('outgoingShippingCost').options[document.getElementById('outgoingShippingCost').selectedIndex].text.split(' -')[0]
+                outgoingShippingName: document.getElementById('outgoingShippingCost').options[document.getElementById('outgoingShippingCost').selectedIndex].text.split(' -')[0] + `×${shippingQty}`
             };
         }
 
@@ -558,7 +573,7 @@
                 d.outgoingShipping + d.pkgCost,
                 d.adCost
             ];
-            const labels = ['순수익', '상품매입', '수수료', '물류/포장', '광고비'];
+            const labels = ['순수익', '상품매입', '수수료', '물류/판관비', '광고비'];
             const colors = ['#4F46E5', '#94A3B8', '#F59E0B', '#10B981', '#EF4444'];
 
             if (chartInstance) {
@@ -621,7 +636,7 @@
 ----------------------------
 (-) 상품 매입가: ${formatCurrency(d.totalPurchase)}
 (-) 출고 배송비(${d.outgoingShippingName}): ${formatCurrency(d.outgoingShipping)}
-(-) 포장비 비용(${(d.pkgRateDouble * 100).toFixed(0)}%): ${formatCurrency(d.pkgCost)}
+(-) 판관비(${(d.pkgRateDouble * 100).toFixed(0)}%): ${formatCurrency(d.pkgCost)}
 (-) 광고 비용${d.adEnabled ? `(${d.adRate}%)` : ''}: ${formatCurrency(d.adCost)}
 ----------------------------
 [최종 결과]
@@ -667,6 +682,22 @@
                 else document.getElementById('advertisingRate').classList.remove('bg-slate-100');
                 calculate();
             });
+
+            // Shipping Quantity +/- Buttons
+            document.getElementById('shippingQtyMinus').addEventListener('click', () => {
+                const input = document.getElementById('shippingQty');
+                const val = parseInt(input.value) || 1;
+                if (val > 1) input.value = val - 1;
+                calculate();
+            });
+            document.getElementById('shippingQtyPlus').addEventListener('click', () => {
+                const input = document.getElementById('shippingQty');
+                const val = parseInt(input.value) || 1;
+                input.value = val + 1;
+                calculate();
+            });
+            document.getElementById('shippingQty').addEventListener('input', calculate);
+            document.getElementById('shippingQty').addEventListener('change', calculate);
 
             // Initial chart init
             updateChart({ salePrice: 0, totalPurchase: 0 });
