@@ -147,9 +147,10 @@
         <header class="mb-8 flex items-center justify-between">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold text-slate-800">
-                    <span class="mr-2">📊</span> 판매 마진 분석기
+                    <span class="mr-2"></span> 판매 마진 분석
                 </h1>
-                <p class="text-slate-500 mt-1 text-sm">실시간으로 마진율을 시뮬레이션 해보세요.</p>
+                <p class="text-slate-500 mt-1 text-sm">방역마트</p>
+                <span class="inline-block mt-2 text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">💡 모든 금액은 VAT(부가세) 포함 기준으로 계산됩니다</span>
             </div>
             <button onclick="window.print()"
                 class="hidden md:flex items-center px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
@@ -164,16 +165,24 @@
 
                 <!-- 1. 기본 판매 설정 -->
                 <div class="card p-6">
-                    <h2 class="text-lg font-bold text-slate-800 mb-6 flex items-center">
-                        <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3 text-sm">1</span> 판매 기본 설정
-                    </h2>
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-lg font-bold text-slate-800 flex items-center">
+                            <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3 text-sm">1</span> 판매 상품 구성
+                        </h2>
+                        <span id="totalSaleDisplay"
+                            class="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">판매합계: 0원</span>
+                    </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="input-group">
-                            <label>판매 가격 (원)</label>
-                            <input type="text" id="salePrice" placeholder="0"
-                                class="number-input input-field text-lg font-bold text-indigo-600">
-                        </div>
+                    <div id="saleLineContainer" class="space-y-4">
+                        <!-- Sale Item Template will be injected here -->
+                    </div>
+
+                    <button id="addSaleBtn" type="button"
+                        class="mt-4 w-full py-3 border-2 border-dashed border-indigo-200 rounded-lg text-indigo-500 font-medium hover:bg-indigo-50 hover:border-indigo-300 transition flex items-center justify-center">
+                        <span class="mr-2">＋</span> 판매 상품 추가하기
+                    </button>
+
+                    <div class="mt-6">
                         <div class="input-group">
                             <label>판매 채널 타입 (수수료)</label>
                             <div class="flex gap-2 text-sm">
@@ -385,6 +394,31 @@
         <p class="text-sm text-slate-400 font-medium tracking-wide">Created by M. G. HAN</p>
     </footer>
 
+    <!-- Template for Sale Line -->
+    <template id="saleLineTemplate">
+        <div class="sale-line bg-indigo-50/50 p-4 rounded-lg border border-indigo-100 relative group animate-fade-in">
+            <button type="button"
+                class="del-btn absolute top-2 right-2 text-slate-400 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100 transition">✕</button>
+            <div class="grid grid-cols-12 gap-3 items-end">
+                <div class="col-span-12 md:col-span-5">
+                    <label class="block text-xs font-medium text-slate-500 mb-1">상품명</label>
+                    <input type="text" class="sale-name input-field text-sm" placeholder="판매 상품명">
+                </div>
+                <div class="col-span-5 md:col-span-3">
+                    <label class="block text-xs font-medium text-slate-500 mb-1">판매 단가</label>
+                    <input type="text" class="sale-price number-input input-field text-sm text-right font-bold text-indigo-600" placeholder="0">
+                </div>
+                <div class="col-span-4 md:col-span-2">
+                    <label class="block text-xs font-medium text-slate-500 mb-1">수량</label>
+                    <input type="number" class="sale-qty input-field text-sm text-center" value="1" min="1">
+                </div>
+                <div class="col-span-3 md:col-span-2 text-right pb-2">
+                    <span class="sale-subtotal text-sm font-bold text-indigo-700">0원</span>
+                </div>
+            </div>
+        </div>
+    </template>
+
     <!-- Template for Product Line -->
     <template id="productLineTemplate">
         <div class="product-line bg-slate-50 p-4 rounded-lg border border-slate-100 relative group animate-fade-in">
@@ -415,7 +449,8 @@
         let chartInstance = null;
 
         // Elements
-        const salePriceInput = document.getElementById('salePrice');
+        const saleLineContainer = document.getElementById('saleLineContainer');
+        const saleTemplate = document.getElementById('saleLineTemplate');
         const productLineContainer = document.getElementById('productLineContainer');
         const template = document.getElementById('productLineTemplate');
 
@@ -431,6 +466,22 @@
         }
 
         // --- Logic ---
+        function addSaleLine() {
+            const clone = saleTemplate.content.cloneNode(true);
+            const div = clone.querySelector('.sale-line');
+
+            div.querySelector('.del-btn').addEventListener('click', () => {
+                div.remove();
+                calculate();
+            });
+
+            div.querySelector('.sale-price').addEventListener('input', handleNumberInput);
+            div.querySelector('.sale-qty').addEventListener('input', calculate);
+            div.querySelector('.sale-qty').addEventListener('change', calculate);
+
+            saleLineContainer.appendChild(clone);
+        }
+
         function addProductLine() {
             const clone = template.content.cloneNode(true);
             const div = clone.querySelector('.product-line');
@@ -448,8 +499,16 @@
         }
 
         function getFormData() {
-            // 1. Sales Price
-            const salePrice = parseNum(salePriceInput.value);
+            // 1. Sales Price (sum of all sale lines)
+            let salePrice = 0;
+            document.querySelectorAll('.sale-line').forEach(line => {
+                const price = parseNum(line.querySelector('.sale-price').value);
+                const qty = parseInt(line.querySelector('.sale-qty').value) || 0;
+                const sub = price * qty;
+                line.querySelector('.sale-subtotal').textContent = formatCurrency(sub);
+                salePrice += sub;
+            });
+            document.getElementById('totalSaleDisplay').textContent = `판매합계: ${formatCurrency(salePrice)}`;
 
             // 2. Sales Type & Fee
             const salesType = document.querySelector('input[name="salesType"]:checked').value;
@@ -648,10 +707,12 @@
 
         // --- Init ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Add initial product line
+            // Add initial lines
+            addSaleLine();
             addProductLine();
 
             // Buttons
+            document.getElementById('addSaleBtn').addEventListener('click', addSaleLine);
             document.getElementById('addInfoBtn').addEventListener('click', addProductLine);
 
             // Event Listeners for Global Form
@@ -660,9 +721,6 @@
                 input.addEventListener('input', calculate);
                 input.addEventListener('change', calculate);
             });
-
-            // Specifically handling the sales price formatting
-            salePriceInput.addEventListener('input', handleNumberInput);
 
             // Handle shipping toggle
             document.querySelectorAll('input[name="customerShippingType"]').forEach(r => {
